@@ -9,7 +9,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">
-                <router-link to="/dashboard">
+                <router-link :to="{ name: 'dashboard' }">
                   <i class="fa fa-tachometer nav-icon"></i> Dashboard
                 </router-link>
               </li>

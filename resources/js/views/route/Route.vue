@@ -22,7 +22,7 @@
 
     <section class="content">
       <div class="container-fluid">
-        <add-section :show.sync="show" body-background="bg-lightyellow">
+        <add-section :show.sync="show">
           <template v-slot:heading>
             <header-icon 
               icon-inner="fa-route" 
@@ -35,11 +35,11 @@
             </header-icon>
           </template>
           <form>     
-            <div class="row justify-content-center">
-              <div class="col-sm-7">
+            <!-- <div class="row justify-content-center"> -->
+              <!-- <div class="col-sm-7"> -->
                 <box 
                   background-color="hsla(261, 63%, 80%, 1)" 
-                  border-radius=".5"                  
+                  border-radius=".5"
                   heading-background="hsla(261, 70%, 85%, 1)" 
                   heading-border-radius="5"
                   heading-width="11.25" 
@@ -47,7 +47,7 @@
                   :shadow="true"
                 >
                   <template v-slot:heading>First City Info</template>
-                  <div class="form-row justify-content-center">
+                  <div class="row justify-content-center">
                     <div class="col-sm-5">
                       <divisions id="firstCityDiv" v-model="selectedDivisionForFirstCity" />
                     </div>
@@ -56,12 +56,13 @@
                     </div>
                   </div>
                 </box>
-              </div>
+              <!-- </div>  -->
 
-              <div class="col-sm-7">
+              <!-- <div class="col-sm-7"> -->
                 <box 
                   background-color="hsla(22, 75%, 73%, 1)"
-                  border-radius=".5"                   
+                  border-radius=".5"
+                  :margin='{top: 3, bottom: 2.1875}'
                   heading-background="hsla(22, 81%, 78%, 1)" 
                   heading-border-radius="5"
                   heading-width="11.25" 
@@ -69,7 +70,7 @@
                   :shadow="true"
                 >
                   <template v-slot:heading>Second City Info</template> 
-                  <div class="form-row justify-content-center">
+                  <div class="row justify-content-center">
                     <div class="col-sm-5">
                       <divisions id="secondCityDiv" v-model="selectedDivisionForSecondCity" />
                     </div>
@@ -79,17 +80,33 @@
                     </div>
                   </div>
                 </box>
-              </div>
+              <!-- </div> -->
 
-              <div class="col-sm-7 px-4 py-3 bg-skyblue rounded-xlg shadow">
-                <div class="form-group">
-                  <label for="routeDistance">Route Distance</label>
-                  <input v-model="routeDistance" type="number" class="form-control" v-bind:class="{ 'is-invalid': has('distance') }" name="route_distance" id="routeDistance" placeholder="Distance">
-                  <span class="invalid-feedback" v-if="has('distance')" v-text="get('distance')"></span>
-                </div>
-              </div>                    
+              <!-- <div class="col-12 px-4 py-3 bg-skyblue rounded-xlg shadow"> -->
+              <box 
+                  background-color="hsla(199, 70%, 80%, 1)"
+                  border-radius=".5"
+                  :margin='{top: 3, bottom: 2.1875}'
+                  heading-background="hsla(199, 79%, 85%, 1)" 
+                  heading-border-radius="5"
+                  heading-width="11.25" 
+                  heading-show="true"
+                  :shadow="true"
+                >
+                  <template v-slot:heading>Route Info</template>
+                  <div class="row justify-content-center">
+                    <div class="col-sm-6">
+                      <div class="form-group">
+                        <label for="routeDistance">Distance</label>
+                        <input v-model="routeDistance" type="number" class="form-control" v-bind:class="{ 'is-invalid': has('distance') }" name="route_distance" id="routeDistance" placeholder="Distance">
+                        <span class="invalid-feedback" v-if="has('distance')" v-text="get('distance')"></span>
+                      </div>
+                    </div>
+                  </div>
+              </box>
+              <!-- </div>                     -->
 
-              <div class="col-sm-7 text-center my-4">
+              <div class="col-12 text-center my-4">
                 <div class="button-group">
                   <button @click.prevent="save()" class="btn btn-primary mr-2" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
                   Save
@@ -99,7 +116,7 @@
                   Cancel</button>
                 </div>
               </div>
-            </div>
+            <!-- </div> -->
           </form>  
         </add-section>
 

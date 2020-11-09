@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="card card-outline card-primary w-100">
+    <div :class="['card', 'card-outline', outlineColor, 'w-100']">
       <div class="card-header">
         <!-- <expand :show.sync="show"></expand> -->
         <div class="heading"><slot name="heading"></slot></div>
@@ -41,6 +41,10 @@
       // props: ['show', 'showFooter', 'pZero'],      
       props: {
         bodyBackground: String,
+        outlineColor: {
+          type: String,
+          default: 'card-info'
+        },
         show: {
           type: Boolean,
           default: false
