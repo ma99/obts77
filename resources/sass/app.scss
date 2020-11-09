@@ -1,0 +1,32 @@
+// Font awesome
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+// @import '~@fortawesome/fontawesome-free/scss/brands';
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+
+@import '~overlayscrollbars/css/OverlayScrollbars';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+//  AdminLTE (includes bootstrap)
+// @import '~admin-lte/build/scss/AdminLTE';
+
+// Variables
+@import 'variables';
+//colors
+@import 'colors';
+
+@import 'buttons';
+
+//Utilities
+@import 'utilities';
+
+
+
+// Additional Syles for app
+@import 'extra';

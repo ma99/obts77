@@ -1,0 +1,25 @@
+/** Buttons Extra **/
+.btn-primary-light {
+	@include button-variant($primary-light, $primary-light-border);
+	color: $primary-light-color;
+}
+
+.btn-success-light {
+	@include button-variant($success-light, $success-light-border);
+	color: $success-light-color;
+}
+
+.btn-danger-light {
+	@include button-variant($danger-light, $danger-light-border);
+	color: $danger-light-color;
+}
+
+.btn-warning-light {
+	@include button-variant($warning-light, $warning-light-border);
+	color: $warning-light-color;
+}
+
+.btn-info-light {
+	@include button-variant($info-light, $info-light-border);
+	color: $info-light-color;
+}

@@ -1,0 +1,96 @@
+.z-1035 {
+	z-index: 1035;
+}
+
+.border-rounded {
+	border-radius: 5rem!important;
+}
+
+.rounded-xlg {
+ border-radius: .5rem; 
+}
+
+/** TEXT COLOR 
+*****************************/
+
+.dodgerblue {
+  color: $dodger-blue;
+}
+.mayablue {
+  color: $maya-blue;
+}
+
+/** TEXT SHADOW
+*****************************/
+.text-shadow {
+  text-shadow: 1px 2px 4px hsla(0, 0%, 0%, 39%);
+}
+
+.box-shadow {
+  box-shadow: 0 3px 4px 0 hsla(0, 0%, 20%, 1);
+}
+
+/** BACKGROUND COLOR 
+*****************************/
+
+.bg-lightpurple {
+  background-color: #E7E8FF;
+}
+.bg-app-purple {
+  background-color: #d3d4ff;
+}
+.bg-lightyellow {
+  background-color: #FFFEE7
+}
+.bg-lightlemonyellow {
+	background-color: #fff9c4;
+}
+.bg-mediumlemonyellow {
+	background-color: #fff59d;
+}
+.bg-mediumyellow {
+  background-color: #ffe066;
+}
+
+.bg-aliceblue {
+  background-color: #e7f5ff;
+}
+
+.bg-mayablue {
+  background-color: $maya-blue; 
+}
+
+.bg-lightgreen {
+  background-color: #F1F8E9;
+}
+
+.bg-darkgreen {
+  background-color: #FFFDE7;
+}
+.bg-skyblue {
+  background-color: $skyblue;
+}
+.bg-darkblue {
+  background-color: hsl(203, 40%, 38%);
+  color: hsl(203, 90%, 80%);
+}
+.bg-oceanblue {
+  background-color: hsl(203, 80%, 90%);    
+}  
+.bg-grape {
+	background-color: $grape;
+	color: white;
+}
+.bg-peach {
+	background-color: $peach;
+	color: black;
+}
+.bg-red {
+  background-color: hsla(0, 49.1%, 66.9%, 1);
+}
+.bg-darkergreen {
+  background-color: hsla(188, 52%, 28%, 1);
+}
+.bg-cyan {
+  background-color: hsla(187, 74%, 65%, 1);
+}
