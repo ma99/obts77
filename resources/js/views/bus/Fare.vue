@@ -160,11 +160,11 @@
                   <!-- </div>   -->
                   <div class="col-12 text-center mt-2 mb-2">
                   <div class="button-group">
-                    <button v-on:click.prevent="save()"  type="button" class="btn btn-primary mr-2" :disabled="!isValid" v-show="!editMode">
+                    <button v-on:click.prevent="save()"  type="button" class="btn btn-primary mr-2 px-5" :disabled="!isValid" v-show="!editMode">
                       <i class="far fa-save mr-2"></i>
                     Save
                     </button>
-                    <button v-on:click.prevent="update()"  type="button" class="btn btn-info mr-2" :disabled="!isValid" v-show="editMode">
+                    <button v-on:click.prevent="update()"  type="button" class="btn btn-info mr-2 px-5" :disabled="!isValid" v-show="editMode">
                       <i class="fas fa-save mr-2"></i>
                       Update
                     </button>
@@ -181,7 +181,7 @@
           </template> -->
         </add-section>
 
-        <error-modal modal-id="error" :error-list="errorList" />
+        <error-modal btn-color="btn-warning" modal-id="error" :error-list="errorList" />
 
         <show-alert :show.sync="showAlert" :type="alertType"> 
               <!-- altert type can be success/info/warning/danger/dark -->
@@ -191,7 +191,7 @@
         <div class="row justify-content-center py-3">
           <div class="card w-100">
             <div class="card-body p-0">
-                <div class="scrollbar rounded-top">
+                <div class="scrollbar">
                   <table class="table table-striped table-hover">
                       <thead class="bg-secondary">
                         <tr>
@@ -224,12 +224,12 @@
                           <td>
                             <div class="mb-2">           
                               <button type="button" class="btn btn-outline-info" v-on:click.prevent="edit(availableFare)">    
-                                <i class="button-icon fas fa-pen"></i>Edit
+                                <i class="far fa-edit mr-2"></i>Edit
                               </button>
                             </div>
                             <div>                                 
                               <button v-on:click.prevent="remove(availableFare)" class="btn btn-outline-danger">
-                                <i class="button-icon fas fa-trash"></i>Remove
+                                <i class="far fa-trash-alt mr-2"></i>Remove
                               </button> 
                             </div>
                           </td>                        
@@ -262,7 +262,6 @@
             Box,
             'route-list': Route,
             'error-modal': ErrorModal,
-
         },
 
         data() {
@@ -295,27 +294,7 @@
                     routeId: '',                          
                 }
             },
-                watch: {
-                    success() {
-                        if (this.success) {
-                          // this.actionAlert('Fare For', `${this.city.name} Added successfully!`, 'success');
-                          this.loading = false;
-                          let actionStatus = this.setActionStatus();
-                          let icon = this.setIconBasedOn(actionStatus)
-                          this.actionAlert('Fare', actionStatus, icon);
-                          this.reset();
-                          // this.resetErrors();
-                          this.setSuccess({ status: false });
-                        }
-                    },
-                    'routeId'(value, oldValue) {
-                      if (this.editMode) return;
-                      if (value) {
-                        this.city = '';
-                        this.getCitiesByRoute(value);
-                      }
-                    },
-                },                
+
                async mounted() {          
                     this.loading = true;
 
@@ -339,6 +318,33 @@
                 beforeUnmount() {
                   this.instanceOfScrollbar.destroy();
                   this.resetErrors();
+                },
+                watch: {
+                    success() {
+                        if (this.success) {
+                          // this.actionAlert('Fare For', `${this.city.name} Added successfully!`, 'success');
+                          this.loading = false;
+                          let actionStatus = this.setActionStatus();
+                          let icon = this.setIconBasedOn(actionStatus)
+                          this.actionAlert('Fare', actionStatus, icon);
+                          this.reset();
+                          // this.resetErrors();
+                          this.setSuccess({ status: false });
+                        }
+                    },
+                    'routeId'(value, oldValue) {
+                      if (this.editMode) return;
+                      if (value) {
+                        this.city = '';
+                        this.getCitiesByRoute(value);
+                      }
+                    },                              
+                    errors: {
+                       handler(value){
+                        this.loading = false
+                       },
+                       deep: true
+                    }
                 },
                 computed: {
                   ...mapState([

@@ -63,7 +63,17 @@
           },
           headingBorderRadius: { //rem
             default: 0
-          }
+          },
+          // headingShadow: {
+          //   default() {
+          //     return {
+          //       x: 0,
+          //       y: 0,
+          //       z: 0,
+          //       color: 'hsla(0, 0%, 0%, .15)'
+          //     }
+          //   }
+          // }
         },
         data() {
             return {
@@ -114,6 +124,8 @@
                 position: 'absolute',
                 padding: '0.3125rem 0.625rem',
                 width: `${this.headingWidth}rem`,
+                // box-shadow: `${this.headingShadow.x}` `${this.headingShadow.y}` `${this.headingShadow.z}` `${this.headingShadow.color}`;
+                boxShadow: '0 0.0625rem 0 hsla(0, 0%, 0%, .15)'
               }
             },            
         },

@@ -22,7 +22,7 @@
 
     <section class="content">
       <div class="container-fluid">
-        <add-section :show.sync="show" body-background="bg-lightgreen">
+        <add-section :show.sync="show">
           <template v-slot:heading>
             <header-icon 
               icon-inner="fa-couch" 
@@ -35,45 +35,58 @@
             </header-icon>              
           </template>
           <form> 
-            <div class="form-row justify-content-center">
-                
-              <div class="col-sm-2">
-                <div class="form-group">
-                  <label for="numberOfCol">Column #</label>
-                  <input v-model="numberOfCol" type="number" min="1" max="4" class="form-control" id="numberOfCol" placeholder="Column Number" disabled>
-                </div>
-              </div>
-                
-              <div class="col-sm-2">
-                <div class="form-group">
-                  <label for="numberOfRow">Row #</label>
-                  <input v-model="numberOfRow" type="number" min="1" max="25" class="form-control" id="numberOfRow" placeholder="Row Number" :disabled="isDisabled">
-                </div>
-              </div>
+            <box                   
+              background-color="hsla(88, 60%, 87%, 1)" 
+              border-radius=".5"
+              :margin='{top: 1.25, bottom: 1.25}'
+              heading-background="hsla(89, 80%, 90%, 1)" 
+              heading-border-radius="5"
+              heading-width="11.25" 
+              heading-show="true"
+              :shadow="true"
+            >
+              <template v-slot:heading>Seat Plan</template>
 
-              <div class="col-sm-5">
-                <div class="button-group">                        
-                  <button v-on:click.prevent="createList()" class="btn btn-info mr-2" v-show="!showSeatPlan" :disabled="!isValidForShow">
-                    <i class="far fa-eye mr-2"></i>Show
-                  </button>                  
-
-                  <button class="btn btn-secondary mr-2" @click.prevent="hideSeatPlan()" v-show="showSeatPlan" :disabled="!isValidForShow">
-                    <i class="far fa-eye-slash mr-2"></i>Hide
-                  </button>                  
+              <div class="form-row justify-content-center">
                   
-                  <button v-on:click.prevent="saveSeatList()" class="btn btn-primary mr-2" :disabled="!showSeatPlan">
-                    <i class="far fa-save mr-2"></i>Save
-                  </button>
-
-                  <button v-on:click.prevent="reset()" class="btn btn-warning">
-                    <i class="far fa-window-close mr-2"></i>
-                  Reset
-                  </button>                    
-
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="numberOfCol">Column #</label>
+                    <input v-model="numberOfCol" type="number" min="1" max="4" class="form-control" id="numberOfCol" placeholder="Column Number" disabled>
+                  </div>
                 </div>
-              </div>  
+                  
+                <div class="col-sm-2">
+                  <div class="form-group">
+                    <label for="numberOfRow">Row #</label>
+                    <input v-model="numberOfRow" type="number" min="1" max="25" class="form-control" id="numberOfRow" placeholder="Row Number" :disabled="isDisabled">
+                  </div>
+                </div>
 
-            </div>
+                <div class="col-sm-6">
+                  <div class="button-group">                        
+                    <button v-on:click.prevent="createList()" class="btn btn-info mr-2" v-show="!showSeatPlan" :disabled="!isValidForShow">
+                      <i class="far fa-eye mr-2"></i>Show
+                    </button>                  
+
+                    <button class="btn btn-secondary mr-2" @click.prevent="hideSeatPlan()" v-show="showSeatPlan" :disabled="!isValidForShow">
+                      <i class="far fa-eye-slash mr-2"></i>Hide
+                    </button>                  
+                    
+                    <button v-on:click.prevent="saveSeatList()" class="btn btn-primary mr-2 px-5" :disabled="!showSeatPlan">
+                      <i class="far fa-save mr-2"></i>Save
+                    </button>
+
+                    <button v-on:click.prevent="reset()" class="btn btn-warning">
+                      <i class="far fa-window-close mr-2"></i>
+                    Reset
+                    </button>                    
+
+                  </div>
+                </div>  
+              </div>
+
+            </box>
           </form>  
         </add-section>        
         
@@ -160,7 +173,7 @@
                   </span>
                 </div> -->
                 <div class="card-body p-0">
-                    <div class="scrollbar rounded-top">
+                    <div class="scrollbar">
                       <table class="table table-striped table-hover">
                           <thead class="bg-secondary">
                             <tr>
@@ -219,6 +232,7 @@
       import { mapState, mapGetters, mapActions } from 'vuex';
 
       import AppModal from '../../components/AppModal';
+      import Box from '../../components/Box';  
       import ErrorModal from '../../components/ErrorModal';  
       import SeatLayout from '../../components/SeatLayout';  
   
@@ -228,7 +242,8 @@
       components: {
           'app-modal': AppModal,
           'error-modal': ErrorModal,
-           'seat-layout': SeatLayout,
+          'seat-layout': SeatLayout,
+          Box,
         },       
       data() {
                 return {                    
@@ -304,6 +319,12 @@
                   // this.resetErrors();
                   this.setSuccess({ status: false });
               }
+          },
+          errors: {
+             handler(value){
+              this.loading = false
+             },
+             deep: true
           }         
       },
 

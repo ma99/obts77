@@ -28,44 +28,62 @@
           <strong> Bus </strong> has been <strong>{{ actionStatus }} </strong>
         </show-alert>
 
-        <div class="d-md-flex align-items-center mb-3 shadow">
-              <div class="p-3 align-self-stretch bg-lightyellow">
+        <div class="d-md-flex align-items-center mb-3">
+              <!-- <div class="p-3 align-self-stretch bg-lightyellow"> -->
+              <div class="p-3 align-self-stretch">
 
                 <div class="card card-outline card-info">
-                  <div class="card-header">
-                    Add New Bus Type
+                  <div class="card-header text-info">
+                    <h5>Add Bus Type</h5>
                   </div>
-                  <div class="card-body">
+                  <div class="card-body bg-lightcyan">
                     <form>
-                      <div class="form-row ml-3 justify-content-center">
-                        <div class="form-group col-md-10">
-                          <label for="inputTypeName">Type</label>
-                          <input v-model="type.name" type="text" class="form-control" v-bind:class="{ 'is-invalid': has('name') }" id="inputTypeName" placeholder="Bus Type">                          
-                          <span class="invalid-feedback" v-if="has('name')" v-text="get('name')"></span>
-                          
-                          <small v-show="!has('name')" class="form-text text-muted mt-2">For combined bus type, use '|'. i,e. AC|Deluxe</small>
-                        </div>                        
-                        <div class="form-group col-md-10">
-                          <label for="inputTypeKey">Key</label>
-                          <input v-model="type.key" type="text" class="form-control" id="inputTypeKey" placeholder="Bus Type Key" readonly>
-                        </div>                        
+                      <!-- <div class="form-row ml-3 justify-content-center"> -->
+                      <div class="row justify-content-center">
+                        <div class="col-10">      
+                          <div class="group">
+                            <label for="inputTypeName">Type</label>
+                            <input v-model="type.name" type="text" class="form-control" v-bind:class="{ 'is-invalid': has('name') }" id="inputTypeName" placeholder="Bus Type">                          
+                            <span class="invalid-feedback" v-if="has('name')" v-text="get('name')"></span>
+                            
+                            <small v-show="!has('name')" class="form-text text-muted mt-2">For combined bus type, use '|'. i,e. AC|Deluxe</small>
+                          </div>     
+                        </div>
+
+                        <div class="col-10 mt-2">
+                          <div class="group">
+                            <label for="inputTypeKey">Key</label>
+                            <input v-model="type.key" type="text" class="form-control" id="inputTypeKey" placeholder="Bus Type Key" readonly>
+                          </div> 
+                        </div>   
+                        <div class="col-12 text-center mt-4 mb-2">
+                          <div class="button-group">
+                            <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
+                            Save
+                          </button>
+                            <button @click.prevent="reset()" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
+
+                            Cancel</button>
+                          </div>
+                        </div>
                       </div>
                     </form>
                   </div>
-                  <div class="card-footer text-center">
+                <!--   <div class="card-footer text-center">
                      <div class="button-group">
-                      <button @click.prevent="save()" class="btn btn-primary mr-2" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
+                      <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
                       Save
                     </button>
                       <button @click.prevent="reset()" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
 
                       Cancel</button>
                     </div>
-                  </div>
+                  </div> -->
                 </div>
               </div>
 
-              <div class="p-3 align-self-stretch bg-oceanblue flex-fill">
+              <!-- <div class="p-3 align-self-stretch bg-oceanblue flex-fill"> -->
+              <div class="p-3 align-self-stretch flex-fill">
             
                 <div v-if="!typesAvailable" class="text-center mt-2">
                   <span class="fa-stack">
@@ -79,8 +97,8 @@
                   {{ get('type') }}
                 </div>              
 
-                <div v-show="typesAvailable" class="card card-outline card-primary">
-                  <div class="card-header">
+                <div v-show="typesAvailable" class="card">
+                  <!-- <div class="card-header">
                     Available Bus Types                    
                     <span class="float-right">
                       <high-light 
@@ -91,11 +109,11 @@
                         {{types.length}}
                       </high-light>
                     </span>
-                  </div>
+                  </div> -->
                   <div class="card-body p-0">
                     <div class="scrollbar">
                       <table class="table table-striped table-hover">
-                        <thead>
+                        <thead class="bg-info">
                           <tr>
                             <th>SL.# </th>
                             <th>TYPE NAME</th>
@@ -122,7 +140,7 @@
                   <div class="card-footer">
                     <h5 class="px-1"> 
                       {{ types.length }} 
-                      <small class="text-muted"> types available.</small>
+                      <small class="text-muted"> types bus available.</small>
                     </h5>          
                   </div>                 
                 </div>
@@ -179,6 +197,12 @@ export default {
               this.alertType = 'success';
               // this.showAlert = true; 
           }
+      },
+      errors: {
+         handler(value){
+          this.loading = false
+         },
+         deep: true
       }
     },    
     beforeUnmount() {
@@ -327,4 +351,7 @@ export default {
 </script>           
 <style lang="scss" scoped>    
   .fa-stack { font-size: 4.5em; }
+  .table thead th {
+    border-bottom: 1px solid hsl(188, 78%, 41%);
+  } 
 </style>

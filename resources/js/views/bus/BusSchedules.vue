@@ -119,7 +119,17 @@
             <div class="text-muted text-center h4 mt-3" v-if="has('schedules')">
             <i class="fas fa-info-circle"></i>
               {{ get('schedules') }}
+            </div>
+
+            <!-- <div class="text-muted text-center h4 mt-3" v-if="has('schedule')">
+            <i class="fas fa-info-circle"></i>
+              {{ get('schedule') }}
             </div>              
+
+            <div class="text-muted text-center h4 mt-3" v-if="has('bus-schedules')">
+            <i class="fas fa-info-circle"></i>
+              {{ get('bus-schedules') }}
+            </div> -->
 
             <div v-show="schedulesAvailable" class="card mt-1 w-100">
               <div class="card-header">

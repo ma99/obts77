@@ -108,7 +108,7 @@
 
               <div class="col-12 text-center my-4">
                 <div class="button-group">
-                  <button @click.prevent="save()" class="btn btn-primary mr-2" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
+                  <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
                   Save
                 </button>
                   <button @click.prevent="reset()" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
@@ -143,7 +143,7 @@
               </span>
             </div> -->
             <div class="card-body p-0">
-                <div class="scrollbar rounded-top">
+                <div class="scrollbar">
                   <table class="table table-striped table-hover">
                       <thead class="bg-secondary">
                         <tr>
@@ -257,6 +257,12 @@
                     // this.resetErrors();
                     this.setSuccess({ status: false });
                 }
+            },
+            errors: {
+               handler(value){
+                this.loading = false
+               },
+               deep: true
             }     
         },
         computed: {

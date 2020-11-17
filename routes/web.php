@@ -127,3 +127,9 @@ Route::get('/map', function() {
 });
 
 Auth::routes();
+
+\DB::listen(function($sql) {
+    \Log::info($sql->sql);
+    \Log::info($sql->bindings);
+    \Log::info($sql->time);
+});

@@ -1,13 +1,12 @@
 <template>
   <div class="row justify-content-center">
-    <div class="seat-layout">
+    <div class="seat-layout" ref="seatlayout">
       <div class="card w-75">
         <div class="card-header bg-primary">
-          Seat Layout          
+          Seat Layout   
+          <!-- <button @click="calculateHeight()">Calculate Height</button>        -->
         </div>
         <div class="card-body bg-skyblue">
-<!--           <div class="scrollbar">            
- -->          
             <div class="row driver-seat">                      
               <button class="btn btn-outline-secondary" :disabled="true">Driver</button>                      
             </div>
@@ -44,21 +43,16 @@
         return {                    
             numberOfCol: 4,                            
             numberOfRow: 4,                            
-            seatChar:["A","B", "C" , "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"],
-            //seatList: [],
-            //seatListLength: '',
-            //selectedSeatPlan: [],      
-            //show: false,
+            seatChar:["A","B", "C" , "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"],            
             index: 2, // empty space strating for this index then index+4
-            indexList: [],            
-            //loading: false,
-            //fiveColValue: '',
-            //modal: false,
+            indexList: [],                        
             totalSeats: '',
         }
       },                        
       mounted() {
-          console.log('seat layout component mounted.')          
+          console.log('seat layout component mounted.')   
+          //  this.$nextTick(() => {
+          // });
       },      
       watch: {
         seatList() {
@@ -67,9 +61,13 @@
           this.totalSeatsCount(this.seatList);          
         }
       },
-      computed: {        
-      },
+      // computed: {                
+      // },
       methods: {      
+        // calculateHeight() {
+        //   let h = this.$refs.seatlayout.getBoundingClientRect().height; 
+        //   this.$emit('calculate-height', h)
+        // },
         buttonIsDisabled(seatStatus) {
           return seatStatus=='n/a'? true : false
         },
@@ -87,7 +85,7 @@
                 this.indexList.push(index);
                 index = index+4; 
                 //console.log('index', index);
-            }
+            }          
         },                  
         emptySpace(index, seatNo) {  //2, 6, 10
             if ( this.isFiveCol(seatNo) ) {
@@ -123,7 +121,6 @@
           // console.log(count);
           this.totalSeats = count;
         },                    
-
       }      
     }
 </script>

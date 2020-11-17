@@ -58,7 +58,7 @@
                   </div>
                   <div class="col-sm-7 text-center my-2">
                     <div class="button-group">
-                      <button @click.prevent="save()" class="btn btn-primary mr-2" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
+                      <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
                       Save
                     </button>
                       <button @click.prevent="reset()" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
@@ -89,23 +89,23 @@
       
         <div class="row justify-content-center py-3">
           <div class="card card-secondary w-100">
-            <div class="card-header">Service Available City Info                       
-            </div>
+            <!-- <div class="card-header">Service Available City Info                       
+            </div> -->
             <div class="card-body p-0">
                 <div class="scrollbar">
                   <table class="table table-striped table-hover">
-                    <thead>
+                    <thead class="bg-secondary">
                       <tr>
                         <th>Sl. No.</th>
                         <th>District ID
-                          <span type="button" @click="isSortingAvailableBy('district')" :disabled="!disableSorting">
-                            <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                          <span type="button" @click.prevent="isSortingAvailableBy('district')" :disabled="!disableSorting">
+                            <i class="fas fa-sort-numeric-down"></i>
                           </span>
                         </th>
                         <th>City ID</th>
                         <th>City
-                             <span type="button" @click="isSortingAvailableBy('name')" :disabled="disableSorting">
-                                <i class="fa fa-sort-amount-asc" aria-hidden="true"></i>
+                             <span type="button" @click.prevent="isSortingAvailableBy('name')" :disabled="disableSorting">
+                                <i class="fas fa-sort-alpha-down"></i>
                             </span>
                         </th>                        
                         <th>Action</th>
@@ -220,6 +220,12 @@
                   this.alertType = 'success';
                   // this.showAlert = true; 
               }
+            },
+            errors: {
+               handler(value){
+                this.loading = false
+               },
+               deep: true
             }
         },
         computed: {

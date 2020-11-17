@@ -153,11 +153,11 @@
                 </box>
                 <div class="col-12 text-center mt-4 mb-2">
                   <div class="button-group">
-                    <button v-on:click.prevent="save()"  type="button" class="btn btn-primary mr-2" :disabled="!isValid" v-show="!editMode">
+                    <button v-on:click.prevent="save()"  type="button" class="btn btn-primary mr-2 px-5" :disabled="!isValid" v-show="!editMode">
                       <i class="far fa-save mr-2"></i>
                     Save
                     </button>
-                    <button v-on:click.prevent="update()"  type="button" class="btn btn-info mr-2" :disabled="!isValid" v-show="editMode">
+                    <button v-on:click.prevent="update()"  type="button" class="btn btn-info mr-2 px-5" :disabled="!isValid" v-show="editMode">
                       <i class="fas fa-save mr-2"></i>
                       Update
                     </button>
@@ -171,10 +171,10 @@
         </add-section>
         
         <app-modal modal-id="busSeatPlan"> 
-          <seat-layout :seatList="selectedSeatPlan.seat_list" />
+          <seat-layout ref="sl" :seatList="selectedSeatPlan.seat_list" />
         </app-modal>
 
-        <error-modal modal-id="error" :error-list="errorList" />
+        <error-modal btn-color="btn-warning" modal-id="error" :error-list="errorList" />
 
         <show-alert :show.sync="showAlert" :type="alertType"> 
           <strong> Bus </strong> has been <strong>{{ actionStatus }} </strong>
@@ -195,8 +195,8 @@
               </span>
             </div> -->
             <div class="card-body p-0">
-                <div class="scrollbar rounded-top">
-                  <table class="table table-striped table-hover table-sm">
+                <div class="scrollbar">
+                  <table class="table table-striped table-hover">
                       <thead class="bg-secondary">
                         <tr>
                           <th>Sl. No.</th>
@@ -299,6 +299,7 @@
                       id: '',
                       index: '',
                     },
+                    divHeight: 0,
                     disableShowButton: false,
                     disableSorting: true,
                     editMode: false,
@@ -325,6 +326,26 @@
                     show: false,                    
                     modal: false,
                 }
+              },
+                
+                async mounted() {
+                    this.loading = true;
+                    
+                    await this.getBusTypes();
+                    await this.getBuses();
+                    await this.getSeatPlans();
+
+                    this.loading = false;
+
+                    if (this.any(this.errors)) {
+                      this.setListOf(this.errors, this.errorList)
+                    }
+
+                    this.enableScroll();
+                },               
+                beforeUnmount() {
+                  this.instanceOfScrollbar.destroy();
+                  this.resetErrors();
                 },
                 watch: {
                     'bus.regNumber'(val, oldVal) {
@@ -358,27 +379,14 @@
                           this.alertType = 'success';
                           // this.showAlert = true; 
                       }
+                    },                              
+                    errors: {
+                       handler(value){
+                        this.loading = false
+                       },
+                       deep: true
                     }
                 },               
-                async mounted() {
-                    this.loading = true;
-                    
-                    await this.getBusTypes();
-                    await this.getBuses();
-                    await this.getSeatPlans();
-
-                    this.loading = false;
-
-                    if (this.any(this.errors)) {
-                      this.setListOf(this.errors, this.errorList)
-                    }
-
-                    this.enableScroll();
-                },               
-                beforeUnmount() {
-                  this.instanceOfScrollbar.destroy();
-                  this.resetErrors();
-                },
 
                 computed: {     
                     ...mapState([
@@ -416,7 +424,7 @@
                     ...mapGetters('route', [
                         'getRouteBy'
                     ]),
-
+                   
                     isValid() {
                         return this.bus.regNumber != '' && 
                                 this.bus.numberPlate != '' &&
@@ -444,6 +452,7 @@
                   ...mapActions('seatplan', [
                     'getSeatPlans'
                   ]),  
+                  
                   setActionStatus() {
                     if (this.editMode == true) {
                       this.actionStatus = 'Updated';
@@ -457,12 +466,7 @@
                   setIconBasedOn(status) {
                     return (status == 'Added') ?
                            'success' : 'info';
-                  },
-                  showTheModal(modalId) {                    
-                    $(`#${modalId}`).modal({
-                      backdrop: 'static'
-                    })
-                  },
+                  },                  
                   setListOf(errors, list) {                    
                     Object.keys(errors).forEach(key => {
                       // console.log(key, errors[key][0]);
@@ -473,6 +477,11 @@
                     });
                     // console.table(list);
                     this.showTheModal('error');                   
+                  },
+                  showTheModal(modalId) {                    
+                    $(`#${modalId}`).modal({
+                      backdrop: 'static'
+                    })    
                   },
                   actionAlert(name, status, icon) {
                       swal({           
@@ -590,30 +599,17 @@
                             },                                
                         },
                       })
-                      .then((value) => {
+                      .then(async (value) => {
                         if (value) {
 
                           vm.loading = true;
-                          vm.response = '';
+                          // vm.response = '';
                           vm.showAlert = false;
-                          vm.deleteBus(bus.id);
+                          await vm.deleteBus(bus.id);
 
-                          // axios.delete('/buses/'+bus.id)
-                          // .then(function (response) {               
-                          //     response.data.error ? vm.error = response.data.error : vm.response = response.data;
-                          //     if (vm.response) {               
-                          //         vm.removeBusFromAvailableBusList(bus.id); // update the array after removing
-                          //         vm.loading = false;
-                          //         vm.actionStatus = 'Removed';
-                          //         vm.alertType = 'danger';
-                          //         vm.showAlert= true;
-                          //         return;                      
-                          //     }                            
-                          //     vm.loading = false;
-                          // }); 
-                          vm.loading = false;
                           vm.actionStatus = 'Removed';
                           vm.alertType = 'danger';
+                          vm.loading = false;
                           vm.showAlert= true;                    
                         }                   
                       }); 

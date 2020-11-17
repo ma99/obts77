@@ -67,7 +67,7 @@ export const addCity = ({ commit, dispatch }, city) => {
 
     export const deleteCity = ({ commit, state }, id) => {
 
-        City.delete(id).then(response => {
+        return City.delete(id).then(response => {
         
             let index = state.cityList.findIndex(city => city.id === id);
                         

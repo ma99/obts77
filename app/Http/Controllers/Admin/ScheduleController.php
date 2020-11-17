@@ -110,8 +110,8 @@ class ScheduleController extends Controller
                     return $query
                         ->where('departure_time', $this->request->departure_time)
                         ->where('arrival_time', $this->request->arrival_time);
-                    }),
-                ],
+                }),
+            ],
             'arrival_time' => 'required|after:departure_time',
         ],
         [

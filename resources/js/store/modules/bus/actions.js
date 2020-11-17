@@ -125,7 +125,7 @@ import Bus from '../../../api/bus';
 
     export const deleteBus = ({ commit, state }, id) => {
 
-        Bus.delete(id).then(response => {
+        return Bus.delete(id).then(response => {
         
             let index = state.availableBusList.findIndex(bus => bus.bus.id === id);
                         

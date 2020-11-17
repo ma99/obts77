@@ -30,23 +30,24 @@ class SearchSchedulesController extends Controller
         });
      }
 
-     public function busSchedules(Bus $bus)
-     {
-          // $error = ['error' => 'No results found'];
-          $schedules = $bus->schedules()->get();
+     // public function busSchedules(Bus $bus)
+     // {
+     //      // $error = ['error' => 'No results found'];
+     //      $schedules = $bus->schedules()->get();
           
-          if ( $schedules->count() ) {
-               return $schedules;
-          }
-            throw new ModelNotFoundException('Schedules not available.');
+     //      if ( $schedules->count() ) {
+     //           return $schedules;
+     //      }
+     //        throw new ModelNotFoundException('Schedules not available.');
         
-     }
-    // public function busSchedules(Bus $bus)
-    // {
-    //     return tap($bus->schedules()->get(), function($schedules) {
-    //         if (!count($schedules)) {     
-    //             DataException::dataNotFoundFor('schedule');
-    //         }
-    //     });
-    // }
+     // }
+
+    public function busSchedules(Bus $bus)
+    {
+        return tap($bus->schedules()->get(), function($schedules) {
+            if (!count($schedules)) {     
+                DataException::dataNotFoundFor('bus- schedules');
+            }
+        });
+    }
 }
