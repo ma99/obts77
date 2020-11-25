@@ -15,17 +15,20 @@ class CreateBusesTable extends Migration
     {
         Schema::create('buses', function (Blueprint $table) {
             $table->bigIncrements('id');            
-            $table->unsignedBigInteger('route_id');            
-            $table->unsignedBigInteger('seat_plan_id');            
+            // $table->unsignedBigInteger('route_id');             
+            $table->foreignId('route_id')
+                  ->constrained()
+                  ->onDelete('cascade');
+            // $table->unsignedBigInteger('seat_plan_id');
+            $table->foreignId('seat_plan_id')
+                ->constrained()
+                ->onDelete('cascade');            
             $table->unsignedBigInteger('type_id');            
             $table->string('reg_no');
             $table->string('number_plate');
-            //$table->enum('type', ['ac', 'ac-deluxe', 'deluxe', 'non-ac']);
             $table->text('description')->nullable();           
             $table->timestamps();
 
-            $table->foreign('seat_plan_id')
-                  ->references('id')->on('seat_plans');
         });
     }
 

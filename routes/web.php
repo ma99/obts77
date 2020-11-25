@@ -71,7 +71,7 @@ Route::group(['middleware' => ['auth', 'role:super_admin']], function () {
 	
 	//route cities
 	Route::post('/{route}/cities', 'Admin\RouteCitiesController@store');
-	Route::delete('/route-cities/{route}/{city}', 'Admin\RouteCitiesController@destroy');
+	Route::delete('/route-cities/{route}/{routeCity}', 'Admin\RouteCitiesController@destroy');
 //});	// end of group
 
 Route::group(['middleware' => ['auth', 'role:super_admin,admin,operator']], function () {

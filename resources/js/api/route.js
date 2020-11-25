@@ -13,8 +13,8 @@ export default {
 		return Api.post(`/${route}/cities`, data);
 	},
 
-	detach(city, route) {
-		return Api.delete(`route-cities/${route}/${city}`);
+	detach(routeCity, route) {
+		return Api.delete(`route-cities/${route}/${routeCity}`);
 	},
 
 	store(data) {

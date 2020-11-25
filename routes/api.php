@@ -47,7 +47,7 @@ Route::get('/divisions', 'Api\SearchDivisionsController@index');
 Route::get('/districts', 'Api\SearchDistrictsController@index');
 Route::get('/upazilas', 'Api\SearchUpazilasController@index');
 Route::get('/cities', 'Api\SearchCitiesController@index');
-Route::get('/{route}/cities', 'Api\SearchCitiesController@routeCities');
+// Route::get('/{route}/cities', 'Api\SearchCitiesController@routeCities');
 
 //city
 
@@ -57,3 +57,4 @@ Route::get('/dropping', 'Api\SearchCitiesController@droppingPoints');
 
 // Routes Cities
 Route::get('/route-cities', 'Api\SearchRoutesCitiesController@index');
+Route::get('/{route}/cities', 'Api\SearchRoutesCitiesController@routeCities');

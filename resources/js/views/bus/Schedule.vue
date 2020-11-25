@@ -161,6 +161,8 @@
           </form>
         </add-section>
         
+        <error-modal modal-id="error" :error-list="errorList" />
+
         <loader :show="loading"></loader>
 
         <div class="row justify-content-center">
@@ -225,6 +227,8 @@
             return {
                 arrivalTime: '',
                 departureTime: '',
+                errorList: [],
+                instanceOfScrollbar: undefined,
                 loading: false,
                 schedule: '',
                 //schedule: {},

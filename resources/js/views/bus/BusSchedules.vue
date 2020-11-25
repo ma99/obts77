@@ -9,7 +9,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">
-                <router-link to="/dashboard">
+                <router-link :to="{ name: 'dashboard' }">
                   <i class="fa fa-tachometer nav-icon"></i> Dashboard
                 </router-link>
               </li>
@@ -21,10 +21,13 @@
     </div>
 
     <section class="content">      
+      <error-modal modal-id="error" :error-list="errorList" />
+      
+      <loader :show="loading"></loader>
+
       <show-alert :show.sync="showAlert" :type="alertType">               
        <strong> City </strong> has been <strong>{{ actionStatus }} </strong>
       </show-alert>        
-      <loader :show="loading"></loader>
       
       <div class="d-md-flex">
         <div class="p-3 bg-aliceblue flex-fill">
@@ -73,14 +76,15 @@
             <div class="form-group">
                 <label for="schedule">Schedules: 
                 </label>
-                <span class="text-muted"><small>Departure - Arrival</small></span>
+                <!-- <span class="text-muted mx-2"><small>Departure - Arrival</small></span> -->
+                <span class="text-muted mx-2"><small>Departure Time</small></span>
                 <select v-model="schedules" class="form-control" multiple size="7">
 
                   <option v-for="schedule in availableScheduleList"
                        v-bind:value="
                             schedule.id"
                     >
-                       {{ schedule.departure_time }}  - {{ schedule.arrival_time }}
+                       {{ schedule.departure_time }}  
                   </option>                                             
                 </select>
                 <span v-show="availableScheduleList.length > 0" class="text-muted font-italic"><small>*Select multiple by pressing <kbd>Ctrl</kbd> key </small></span>
@@ -98,12 +102,20 @@
               {{ get('bus_id') }}
             </div>
 
-            <div class="form-group mt-4">
-              
+            <!-- <div class="form-group mt-4">              
                 <button v-on:click.prevent="save()"  type="button" class="btn btn-primary" :disabled="!isValid">Add</button>
-                <button v-on:click.prevent="reset('all')"  type="button" class="btn btn-warning">Cancel</button>
-              
-            </div>               
+                <button v-on:click.prevent="reset('all')"  type="button" class="btn btn-warning">Cancel</button>              
+            </div>                -->
+            <div class="button-group mt-4">
+              <button @click.prevent="save()"  type="button" class="btn btn-primary mr-2 px-5" :disabled="!isValid">
+                <i class="far fa-save mr-2"></i>
+              Save
+              </button>                     
+              <button @click.prevent="reset('all')"  type="button" class="btn btn-warning">
+                <i class="far fa-window-close"></i>
+                Cancel
+              </button>
+            </div>
           </form>
           
         </div>
@@ -116,11 +128,11 @@
               </span>         
             </div>                
 
-            <div class="text-muted text-center h4 mt-3" v-if="has('schedules')">
-            <i class="fas fa-info-circle"></i>
-              {{ get('schedules') }}
+            <!-- <div class="text-muted text-center h4 mt-3" v-if="has('schedules')">
+              <i class="fas fa-info-circle"></i>
+                  {{ get('schedules') }}
             </div>
-
+ -->
             <!-- <div class="text-muted text-center h4 mt-3" v-if="has('schedule')">
             <i class="fas fa-info-circle"></i>
               {{ get('schedule') }}
@@ -136,7 +148,7 @@
                 Available Schedules for the BUS
               </div>
               <div class="card-body p-0">
-                <div id="scrollbar">
+                <div class="scrollbar">
                   <table class="table table-striped table-hover">
                       <thead>
                         <tr>
@@ -181,271 +193,301 @@
 </template>
 <script>
 
+import ErrorModal from '../../components/ErrorModal'; 
+
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-export default {        
+export default {  
+    components: {
+      'error-modal': ErrorModal,
+    },      
     data() {
-            return {                    
-                actionStatus: '',
-                alertType: '',
-                bus: {}, 
-                loading: false,                   
-                showAlert: false,
-                show: false,                    
-                departureCity: '',
-                disableSorting: true,
-                schedules: [],
+      return {                    
+          actionStatus: '',
+          alertType: '',
+          bus: {}, 
+          loading: false,                   
+          showAlert: false,
+          show: false,                    
+          departureCity: '',
+          disableSorting: true,
+          errorList: [],
+          instanceOfScrollbar: undefined,
+          schedules: [],
+      }
+    },
+    async mounted() {
+        this.loading = true;
+        await this.getRoutes();
+        await this.getBuses();
+        await this.getSchedules();
+        await this.getAvailableCities();
+        this.loading = false;
+
+        if (this.any(this.errors)) {
+          this.setListOf(this.errors, this.errorList)
+        }
+        this.enableScroll();
+        this.objectToEmptyString();                    
+    },  
+    beforeUnmount() {
+        this.instanceOfScrollbar.destroy();
+        $().alert('dispose'); 
+        this.resetErrors();
+    },
+    watch: {                    
+      async 'bus.bus.id'(val, oldVal) {
+
+          if (this.isEmpty(this.bus)) return;
+          
+          await this.getCitiesFromRoutesBy(
+            this.bus.bus.route_id);
+
+          this.getRouteCityList();
+
+          if (this.any) {
+            this.resetErrors();
+          }
+          
+          this.disableSorting = true;
+          this.getSchedulesByBus(val);
+
+        },
+        success() {
+            if (this.success) {
+                this.actionAlert();
+                this.reset();
+                // this.resetErrors();
+                this.setSuccess({ status: false });
+                this.actionStatus = 'Added';
+                this.alertType = 'success';
+                this.showAlert = true; 
             }
+        }
+    },            
+    computed: {
+        ...mapState([
+            'errors',
+            'success'
+        ]),
+        ...mapGetters([
+            'get',
+            'has',  
+            'any'                      
+        ]),
+      
+        ...mapState('bus', [
+            'availableBusList',
+            'schedulesByBus'
+        ]),
+
+        ...mapState('schedule', [
+          'availableScheduleList',
+        ]),
+
+        ...mapState('route', [
+          'routeCityList'
+        ]),
+        ...mapGetters('route', [
+            'getRouteBy',
+            //'routeCityList'
+        ]),
+
+      ...mapGetters('city', [
+          'getCityById',
+      ]),
+
+      showError() {
+        if (this.has('bus_id')) return this.show = true;
+        return this.show = false;
+      },
+      schedulesAvailable() {
+          if (this.schedulesByBus.length > 0) {
+           return true;
+          }
+          return false;
+         // return 
+         //      (this.schedulesByBus.length > 0) ?
+         //      true : false;
+      },
+
+      numberPlate() {
+        if (this.isEmpty(this.bus)) return;
+        return this.bus.bus.number_plate;                    
+      },
+
+      routeName() {                    
+        if (this.isEmpty(this.bus)) return;
+
+        let route = this.getRouteBy(this.bus.bus.route_id);
+
+        return `${route.first_city}  <i class="fas fa-exchange-alt"></i> ${route.second_city}`;
+      },
+
+      totalSeats() {
+        if (this.isEmpty(this.bus)) return;
+        
+         return this.bus.total_seats;
+      },
+
+      isValid() {
+            return this.bus.id != '' && 
+                    this.departureCity != '' &&
+                    this.schedules.length > 0
+         }
+    },
+    methods: {  
+        ...mapActions([
+            'setSuccess',
+            'resetErrors'
+        ]),
+        ...mapActions('bus', [
+          'getBuses',
+          'getSchedulesByBus',
+          'addSchedulesByBus',
+          'removeScheduleByBus',
+          'emptySchedulesByBus',
+          'sortBusSchedulesByCity',
+          'sortBusSchedulesByTime'
+        ]),
+        ...mapActions('schedule', [
+          'getSchedules',
+        ]),
+      ...mapActions('route', [
+        'getRoutes',
+        'getCitiesFromRoutesBy',
+        'getRouteCityList',
+        'emptyCitiesByRoute'
+      ]),
+
+      ...mapActions('city', {
+        getAvailableCities: 'getBusAvailableToCities',
+      }),
+
+      actionAlert() {
+          swal({           
+            title: 'Schedules for the BUS',
+            text: 'Added successfully!',
+            icon: "success",
+            timer: 2000,
+            closeOnClickOutside: false,
+          });
+      },
+      isEmpty(obj) {
+        return Object.keys(obj).length === 0;
+      },
+      objectToEmptyString() {
+        // To display ('Please select one') first disabled option in SELECT box
+        this.bus = '';
+        this.departureCity = '';
+      },                                    
+      save() {
+        this.loading = true;
+
+        let data = {
+          bus_id: this.bus.bus.id,
+          schedules: this.schedules,
+          departure_city_id: this.departureCity,
+        };
+        this.addSchedulesByBus({
+            data: data,              
+            id: this.bus.bus.id,
+        });
+        this.loading = false;
+      },
+      
+      enableScroll() {
+        this.instanceOfScrollbar = OverlayScrollbars(document.getElementsByClassName("scrollbar"),
+            { 
+              className: "os-theme-dark",
+              sizeAutoCapable: true,
+              scrollbars: {
+                autoHide: "never",
+                clickScrolling: true
+              } 
+        })
+      },       
+      setListOf(errors, list) {
+        Object.keys(errors).forEach(key => {
+          list.push({
+            key: key.toUpperCase(),
+            value: errors[key][0]
+          })
+        });
+        this.showTheModal('error');
+      },
+      showTheModal(modalId) {                  
+        $(`#${modalId}`).modal({
+          backdrop: 'static'
+        })
+      },
+      remove(schedule) { 
+          var vm = this;
+          swal({
+            title: "Are you sure?",
+            text: "This Schedule will be Removed!",
+            icon: "error",                 
+            dangerMode: true,
+            buttons: {
+                cancel: "Cancel",
+                confirm: {
+                  text: "Remove It!",
+                  value: true,
+                },                                
             },
-            watch: {                    
-              async 'bus.bus.id'(val, oldVal) {
+          })
+          .then((value) => {
+            if (value) {
 
-                  if (this.isEmpty(this.bus)) return;
-                  
-                  await this.getCitiesFromRoutesBy(
-                    this.bus.bus.route_id);
+              vm.loading = true;
+              vm.showAlert = false;
 
-                  this.getRouteCityList();
+              vm.removeScheduleByBus({
+                schedule: schedule.id, 
+                bus: vm.bus.bus.id
+              });
 
-                  if (this.any) {
-                    this.resetErrors();
-                  }
-                  
-                  this.disableSorting = true;
-                  this.getSchedulesByBus(val);
+              vm.loading = false;
+              vm.actionStatus = 'Removed';
+              vm.alertType = 'danger';
+              vm.showAlert= true;
+            }                   
+          }); 
+      },
+      
+      reset(all) { 
+        if(all) {
+          this.bus = '';
+          this.departureCity = '';
+          this.schedules = [];
+          this.show = false;
+          this.emptySchedulesByBus();
+          this.emptyCitiesByRoute();
+          // $('.alert').alert('close');
+          this.resetErrors();
+          return; 
+        }
+        this.resetErrors();
+        this.departureCity = '';
+        this.schedules = [];
+        this.show = false;
+      },
+      swAlert(text, icon) {
+        swal({
+          text: text, 
+          icon: icon,
+        });
+      },
+      sortBusSchedulesBy(value) {
+        if (value == 'city' ) {
+          this.sortBusSchedulesByCity();
+          this.disableSorting = false;
+          return;
+        }
 
-                },
-                success() {
-                    if (this.success) {
-                        this.actionAlert();
-                        this.reset();
-                        this.resetErrors();
-                        this.setSuccess({ status: false });
-                        this.actionStatus = 'Added';
-                        this.alertType = 'success';
-                        this.showAlert = true; 
-                    }
-                }
-            },      
-            async mounted() {
-                this.loading = true;
-                await this.getRoutes();
-                await this.getBuses();
-                await this.getSchedules();
-                await this.getAvailableCities();
-                this.loading = false;
-
-                this.enableScroll();
-                this.objectToEmptyString();                    
-            },  
-            computed: {
-                ...mapState([
-                    'errors',
-                    'success'
-                ]),
-                ...mapGetters([
-                    'get',
-                    'has',  
-                    'any'                      
-                ]),
-              
-                ...mapState('bus', [
-                    'availableBusList',
-                    'schedulesByBus'
-                ]),
-
-                ...mapState('schedule', [
-                  'availableScheduleList',
-                ]),
-
-                ...mapState('route', [
-                  'routeCityList'
-                ]),
-                ...mapGetters('route', [
-                    'getRouteBy',
-                    //'routeCityList'
-                ]),
-
-              ...mapGetters('city', [
-                  'getCityById',
-              ]),
-
-              showError() {
-                if (this.has('bus_id')) return this.show = true;
-                return this.show = false;
-              },
-              schedulesAvailable() {
-                  if (this.schedulesByBus.length > 0) {
-                   return true;
-                  }
-                  return false;
-                 // return 
-                 //      (this.schedulesByBus.length > 0) ?
-                 //      true : false;
-              },
-
-              numberPlate() {
-                if (this.isEmpty(this.bus)) return;
-                return this.bus.bus.number_plate;                    
-              },
-
-              routeName() {                    
-                if (this.isEmpty(this.bus)) return;
-
-                let route = this.getRouteBy(this.bus.bus.route_id);
-
-                return `${route.first_city}  <i class="fas fa-exchange-alt"></i> ${route.second_city}`;
-              },
-
-              totalSeats() {
-                if (this.isEmpty(this.bus)) return;
-                
-                 return this.bus.total_seats;
-              },
-
-              isValid() {
-                    return this.bus.id != '' && 
-                            this.departureCity != '' &&
-                            this.schedules.length > 0
-                 }
-            },
-            methods: {  
-                ...mapActions([
-                    'setSuccess',
-                    'resetErrors'
-                ]),
-                ...mapActions('bus', [
-                  'getBuses',
-                  'getSchedulesByBus',
-                  'addSchedulesByBus',
-                  'removeScheduleByBus',
-                  'emptySchedulesByBus',
-                  'sortBusSchedulesByCity',
-                  'sortBusSchedulesByTime'
-                ]),
-                ...mapActions('schedule', [
-                  'getSchedules',
-                ]),
-              ...mapActions('route', [
-                'getRoutes',
-                'getCitiesFromRoutesBy',
-                'getRouteCityList'
-              ]),
-
-              ...mapActions('city', {
-                getAvailableCities: 'getBusAvailableToCities',
-              }),
-
-              actionAlert() {
-                  swal({           
-                    title: 'Schedules for the BUS',
-                    text: 'Added successfully!',
-                    icon: "success",
-                    timer: 2000,
-                    closeOnClickOutside: false,
-                  });
-              },
-              isEmpty(obj) {
-                return Object.keys(obj).length === 0;
-              },
-              objectToEmptyString() {
-                // To display ('Please select one') first disabled option in SELECT box
-                this.bus = '';
-                this.departureCity = '';
-              },                                    
-              save() {
-                this.loading = true;
-
-                let data = {
-                  bus_id: this.bus.bus.id,
-                  schedules: this.schedules,
-                  departure_city_id: this.departureCity,
-                };
-                this.addSchedulesByBus({
-                    data: data,              
-                    id: this.bus.bus.id,
-                });
-                this.loading = false;
-              },
-              
-              enableScroll() {
-                //initializes the plugin with empty options
-                $('#scrollbar').overlayScrollbars({ /* your options */ 
-                  sizeAutoCapable: true,
-                  overflowBehavior : {
-                    x : "scroll",
-                    y : "scroll"
-                  },
-                  scrollbars: {
-                    autoHide: "never",
-                    clickScrolling: true
-                  }
-                }); 
-              },       
-              
-              remove(schedule) { 
-                  var vm = this;
-                  swal({
-                    title: "Are you sure?",
-                    text: "This Schedule will be Removed!",
-                    icon: "error",                 
-                    dangerMode: true,
-                    buttons: {
-                        cancel: "Cancel",
-                        confirm: {
-                          text: "Remove It!",
-                          value: true,
-                        },                                
-                    },
-                  })
-                  .then((value) => {
-                    if (value) {
-
-                      vm.loading = true;
-                      vm.showAlert = false;
-
-                      vm.removeScheduleByBus({
-                        schedule: schedule.id, 
-                        bus: vm.bus.bus.id
-                      });
-
-                      vm.loading = false;
-                      vm.actionStatus = 'Removed';
-                      vm.alertType = 'danger';
-                      vm.showAlert= true;
-                    }                   
-                  }); 
-              },
-              
-              reset(all) { 
-                if(all) {
-                  this.bus = '';
-                  this.departureCity = '';
-                  this.schedules = [];
-                  this.show = false;
-                  this.emptySchedulesByBus();
-                  return; 
-                }
-                this.departureCity = '';
-                this.schedules = [];
-                this.show = false;
-              },
-              swAlert(text, icon) {
-                swal({
-                  text: text, 
-                  icon: icon,
-                });
-              },
-              sortBusSchedulesBy(value) {
-                if (value == 'city' ) {
-                  this.sortBusSchedulesByCity();
-                  this.disableSorting = false;
-                  return;
-                }
-
-                this.sortBusSchedulesByTime();
-                this.disableSorting = true;
-              },
+        this.sortBusSchedulesByTime();
+        this.disableSorting = true;
+      },
     }
 }
 </script>
@@ -456,5 +498,5 @@ export default {
     color: white;
   }
   .fa-stack { font-size: 4.5em; }
-  i { vertical-align: middle; }
+  // i { vertical-align: middle; }
 </style>

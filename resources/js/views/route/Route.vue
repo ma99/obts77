@@ -98,14 +98,35 @@
                     <div class="col-sm-6">
                       <div class="form-group">
                         <label for="routeDistance">Distance</label>
-                        <input v-model="routeDistance" type="number" class="form-control" v-bind:class="{ 'is-invalid': has('distance') }" name="route_distance" id="routeDistance" placeholder="Distance">
-                        <span class="invalid-feedback" v-if="has('distance')" v-text="get('distance')"></span>
+
+                        <div class="input-group">
+                          <input v-model="routeDistance" type="number" class="form-control" v-bind:class="{ 'is-invalid': has('distance') }" name="route_distance" id="routeDistance" placeholder="Enter distance in km here">
+                          <div class="input-group-append">
+                            <span class="input-group-text">km</span>
+                          </div>
+                          <span class="invalid-feedback" v-if="has('distance')" v-text="get('distance')"></span>
+                        </div>
                       </div>
                     </div>
                   </div>
               </box>
               <!-- </div>                     -->
-
+              <div v-if="has('first_city')" class="col-12 mb-2">
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                  <h4 class="alert-heading">
+                    <i class="fas fa-bell bg-danger rounded-lg p-2 mr-2"></i>
+                  Oops!
+                  <!-- <button type="button" class="close float-right" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button> -->
+                  </h4>
+                  <!-- <p class="ml-5" v-text="get('first_city')"></p> -->
+                  <p class="ml-5">
+                    <strong> {{ routeName}} </strong> already exists or invalid!
+                  </p>
+                </div>
+                
+              </div>  
               <div class="col-12 text-center my-4">
                 <div class="button-group">
                   <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
@@ -246,6 +267,7 @@
         },
         beforeUnmount() {
             this.instanceOfScrollbar.destroy();
+            $().alert('dispose');  
             this.resetErrors();
         },
         watch: {
@@ -322,7 +344,7 @@
                 routeName: `${firstCity.name} - ${secondCity.name}` 
             }            
           },          
-          async save() {
+          save() {
             this.loading = true;
             let city = this.setCity();
             this.routeName = city.routeName;
@@ -333,9 +355,9 @@
                 distance: this.routeDistance,
             }
 
-            await this.addRoute(data);
+          this.addRoute(data);
              
-            this.loading = false;
+          // this.loading = false;
           },                      
           enableScroll() {
             this.instanceOfScrollbar = OverlayScrollbars(document.getElementsByClassName("scrollbar"),
@@ -380,16 +402,16 @@
                   },                                
               },
             })
-            .then((value) => {
+            .then(async (value) => {
               if (value) {
                 vm.loading = true;
                 vm.showAlert = false;
                 
-                this.deleteRoute(route.id);
+                await this.deleteRoute(route.id);
 
-                vm.loading = false;
                 vm.actionStatus = 'Removed';
                 vm.alertType = 'danger';
+                vm.loading = false;
                 vm.showAlert= true;
               } 
             }); 
@@ -400,6 +422,8 @@
             this.selectedDivisionForSecondCity = '';
             this.selectedDivisionForFirstCity = '';
             this.routeDistance = '';
+
+            // $('.alert').alert('close');
 
             this.resetErrors();
           },          

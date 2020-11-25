@@ -32,10 +32,14 @@ class SearchCitiesController extends Controller
       });
    }
 
-   public function routeCities(Route $route)
-   {
-     return $route->cities;
-   }
+   // public function routeCities(Route $route)
+   // {
+   //      if (!count($route->cities)) {     
+   //        DataException::dataNotFoundFor('route-cities');
+   //      }
+
+   //      return $route->cities;
+   // }
 
    public function cityTo()
    {

@@ -15,15 +15,14 @@ class CreateSeatsTable extends Migration
     {
         Schema::create('seats', function (Blueprint $table) {
             $table->bigIncrements('id');
-             $table->bigInteger('booking_id');
+             // $table->bigInteger('booking_id');
+            $table->foreignId('booking_id')
+                ->constrained()
+                ->onDelete('cascade');            
             $table->string('seat_no');
             $table->string('status')->default('booked');
             $table->boolean('special');
             $table->timestamps();
-
-            $table->foreign('booking_id')
-                  ->references('id')->on('bookings')
-                  ->onDelete('cascade');
         });
     }
 

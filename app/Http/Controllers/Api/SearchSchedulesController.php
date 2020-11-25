@@ -46,7 +46,7 @@ class SearchSchedulesController extends Controller
     {
         return tap($bus->schedules()->get(), function($schedules) {
             if (!count($schedules)) {     
-                DataException::dataNotFoundFor('bus- schedules');
+                DataException::dataNotFoundFor('bus-schedules');
             }
         });
     }

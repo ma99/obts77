@@ -27,57 +27,93 @@
             <header-icon 
               icon-inner="fa-city" 
               icon-outer="fa-circle" 
-              icon-color="hsla(202, 52%, 49%, .8)"
-              text-color="hsla(202, 52%, 52%, 1)"
+              icon-color="hsla(188, 72%, 49%, .8)"
+              text-color="hsla(188, 72%, 52%, 1)"
               :shadow="true"
             >
               Add City
             </header-icon>
           </template>
 
-          <div class="row no-gutters">
-            <div class="col-sm-8 rounded-left bg-lightyellow">
+           <!-- <div class="row no-gutters">
+            <div class="col-sm-8 rounded-left bg-lightyellow"> -->
               <form> 
-                <div class="form-row p-3 justify-content-center">
-                  <div class="col-sm-7">               
-                    <divisions v-model="selectedDivision" /> 
-                    
-                  </div>
-                  <div class="col-sm-7">
-                      <districts v-model="selectedDistrict" :division="selectedDivision" />
-                  </div>
-                  <div class="col-sm-7">
-                    <upazilas v-model="selectedUpazila" :district="selectedDistrict" />
-                  </div>              
+                <box                   
+                  background-color="hsla(188, 85%, 82%, 1)" 
+                  border-radius=".5"
+                  :margin='{top: 1, bottom: 2}'
+                  heading-background="hsla(188, 90%, 84%, 1)" 
+                  heading-border-radius="5"
+                  heading-width="11.25" 
+                  heading-show="true"
+                  :shadow="true"
+                >
+                  <template v-slot:heading>Add City</template>
+                  <div class="row no-gutters align-items-center">
+                    <div class="col-8 border-right">
+                      <div class="form-row justify-content-center mt-2">
+                        <div class="col-sm-7">               
+                          <divisions v-model="selectedDivision" />                           
+                        </div>
+                        <div class="col-sm-7">
+                            <districts v-model="selectedDistrict" :division="selectedDivision" />
+                        </div>
+                        <div class="col-sm-7">
+                          <upazilas v-model="selectedUpazila" :district="selectedDistrict" />
+                        </div>              
 
-                  <div class="col-sm-7">
-                    <div class="form-group">
-                      <label for="cityName">City Name</label>
-                      <input v-model="selectedCity.name" type="text" class="form-control" name="city_name" id="cityName" placeholder="City Name" disabled>
-                    </div>
-                  </div>
-                  <div class="col-sm-7 text-center my-2">
-                    <div class="button-group">
-                      <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
-                      Save
-                    </button>
-                      <button @click.prevent="reset()" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
+                        <div class="col-sm-7">
+                          <div class="form-group">
+                            <label for="cityName">City Name</label>
+                            <input 
+                              v-model="selectedCity.name" 
+                              type="text" 
+                              class="form-control" 
+                              :class="{ 'is-invalid': has('name') }"
+                              name="city_name" 
+                              id="cityName" 
+                              placeholder="City Name" 
+                              disabled
+                            >
+                            <span class="invalid-feedback" v-if="has('name')" v-text="get('name')"></span>
+                          </div>
+                        </div>
+                        <!-- <div class="col-sm-7 text-center my-2">
+                          <div class="button-group">
+                            <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
+                            Save
+                          </button>
+                            <button @click.prevent="reset()" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
 
-                      Cancel</button>
+                            Cancel</button>
+                          </div>
+                        </div> -->
+                      </div>                      
                     </div>
+                    <div class="col-4">
+                      <div class="text-center text-shadow">
+                        <span class="fa-stack">
+                          <i class="fas fa-circle fa-stack-2x" style="color: #228be6"></i>
+                          <i class="fas fa-city fa-stack-1x" style="color: #74C0FC"></i>
+                        </span>         
+                      </div>                       
+                    </div>
+                  </div>                  
+                </box>
+                <div class="col-12 text-center my-2">
+                  <div class="button-group">
+                    <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
+                    Save
+                  </button>
+                    <button @click.prevent="reset()" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
+
+                    Cancel</button>
                   </div>
                 </div>
               </form>      
-            </div>
-            <div class="col-sm-4 rounded-right bg-aliceblue">
-              <div class="text-center mt-5">
-                <span class="fa-stack">
-                  <i class="fas fa-circle fa-stack-2x" style="color: #228be6"></i>
-                  <i class="fas fa-city fa-stack-1x" style="color: #74C0FC"></i>
-                </span>         
-              </div>                              
-            </div>
-          </div>                
+          <!--   </div>            
+          </div>   -->
+
         </add-section>
         <error-modal modal-id="error" :error-list="errorList" />
         <loader :show="loading"></loader>
@@ -144,6 +180,7 @@
   </div>      
 </template>
 <script>
+    import Box from '../../components/Box';
     import Divisions from '../../components/city/Divisions'; 
     import Districts from '../../components/city/Districts'; 
     import Upazilas from '../../components/city/Upazilas'; 
@@ -153,6 +190,7 @@
 
     export default {
         components: {
+            Box,
             Divisions,
             Districts,
             Upazilas,
@@ -408,4 +446,7 @@
 </script>
 <style lang="scss" scoped>  
   .fa-stack { font-size: 4.5em; }
+  .border-right {
+    border-right: 2px inset hsla(188, 50%, 70%, .5) !important;
+  }
 </style>

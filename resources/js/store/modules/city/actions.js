@@ -31,7 +31,7 @@ export const getBusAvailableToCities = ({ commit, dispatch }) => {
         commit('SORT_CITIES_BY_NAME');
     })
     .catch(error => {
-       console.log(error.response.data);
+       // console.log(error.response.data);
        dispatch('setErrors', 
              error.response.data.errors,
             { root: true }

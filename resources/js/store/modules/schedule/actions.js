@@ -7,7 +7,11 @@ export const getSchedules = ({ commit, dispatch }) => {
         dispatch('sortSchedules');
     })
     .catch(error => {
-            console.log(error.response.data);
+            // console.log(error.response.data);
+            dispatch('setErrors', 
+                 error.response.data.errors,
+                { root: true }
+            );
     });
 }
 

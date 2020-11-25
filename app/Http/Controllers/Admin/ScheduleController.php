@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 use App\Schedule;
 
 class ScheduleController extends Controller
@@ -108,7 +108,6 @@ class ScheduleController extends Controller
                 Rule::unique('schedules')->where(function ($query) {
 
                     return $query
-                        ->where('departure_time', $this->request->departure_time)
                         ->where('arrival_time', $this->request->arrival_time);
                 }),
             ],

@@ -20,7 +20,7 @@ export const addRoute = ({ commit, dispatch }, data) => {
 
 export const deleteRoute = ({ commit, state }, id) => {
 
-    Route.delete(id).then(response => {
+    return Route.delete(id).then(response => {
     
         let index = state.availableRouteList.findIndex(route => route.id === id);
                     
@@ -71,6 +71,12 @@ export const getCitiesFromRoutesBy = ({ commit, dispatch }, id) => {
         commit('SET_CITIES_BY_ROUTE', response.data);
         commit('SORT_CITIES_BY_DISTANCE');
     })
+    .catch(error => {
+        dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
+    });
 }
 
 export const getRouteCityList = ({ commit, state, rootGetters }) => {
@@ -137,14 +143,20 @@ export const addRouteCity = ({ commit, dispatch }, {data, id}) => {
         });
     }
 
-    export const deleteCityFromRoute = ({ commit }, {city, route}) => {
+    export const deleteCityFromRoute = ({ commit, dispatch }, {id, route}) => {
 
-        Route.detach(city, route).then(response => {
+        return Route.detach(id, route).then(response => {
           
             commit('SET_CITIES_BY_ROUTE', response.data);
-            commit('SORT_CITIES_BY_DISTANCE');
-    
+            commit('SORT_CITIES_BY_DISTANCE');    
         })
+        .catch(error => {
+            //console.log(error.response.data.message);
+            dispatch('setErrors', 
+                 error.response.data.errors,
+                { root: true }
+            );
+        });
     }
 
     export const emptyCitiesByRoute = ({ commit }) => { 
