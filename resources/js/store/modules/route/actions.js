@@ -162,6 +162,10 @@ export const addRouteCity = ({ commit, dispatch }, {data, id}) => {
     export const emptyCitiesByRoute = ({ commit }) => { 
         commit('EMPTY_CITIES_BY_ROUTE');
     }
+    
+    export const emptyRouteCityList = ({ commit }) => { 
+            commit('EMPTY_ROUTE_CITY_LIST');
+        }
 
     export const getRoutesCities = ({ commit, dispatch }) => { 
         return Route.routescities().then(response => {

@@ -137,21 +137,23 @@ import Bus from '../../../api/bus';
     }
 
 export const getSchedulesByBus = ({ commit, dispatch }, id) => {
-    Bus.schedules(id).then(response => {
-        try {
-            commit('SET_SCHEDULES_BY_BUS', response.data);
-            dispatch('sortBusSchedulesByTime');
-        }       
-        catch(e) {
-            console.log(e);
-        } 
+    return Bus.schedules(id).then(response => {
+        // try {
+        //     commit('SET_SCHEDULES_BY_BUS', response.data);
+        //     dispatch('sortBusSchedulesByTime');
+        // }       
+        // catch(e) {
+        //     console.log(e);
+        // } 
+        commit('SET_SCHEDULES_BY_BUS', response.data);
+        dispatch('sortBusSchedulesByTime');
     })
     .catch(error => {
             // console.log(error.response.data);
-            let errors = {"schedules":[error.response.data.message]};
-            commit('EMPTY_SCHEDULES_BY_BUS');
-            dispatch('setErrors', errors,
-             //error.response.data.message,
+            // let errors = {"schedules":[error.response.data.message]};
+            // commit('EMPTY_SCHEDULES_BY_BUS');
+            dispatch('setErrors', 
+             error.response.data.errors,
                 { root: true }
             );
     });

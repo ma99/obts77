@@ -63,14 +63,20 @@
 
             <div class="form-group">
                 <label for="city">Departure City</label>
-                  <select v-model="departureCity" class="form-control custom-select"> 
+                  <select 
+                    v-model="departureCity" 
+                    class="form-control custom-select"
+                    v-bind:class="{ 'is-invalid': has('route-cities') }"
+                  > 
                       <option value="" disabled>Please select one</option>
                       <option v-for="city in routeCityList"
                            v-bind:value="city.id"
                         >
                           {{ city.name }}
-                      </option>                                             
+                      </option>                                            
                   </select>
+                  <span class="invalid-feedback" v-if="has('route-cities')" v-text="get('route-cities')">
+                </span>
             </div>
 
             <div class="form-group">
@@ -102,19 +108,17 @@
               {{ get('bus_id') }}
             </div>
 
-            <!-- <div class="form-group mt-4">              
-                <button v-on:click.prevent="save()"  type="button" class="btn btn-primary" :disabled="!isValid">Add</button>
-                <button v-on:click.prevent="reset('all')"  type="button" class="btn btn-warning">Cancel</button>              
-            </div>                -->
-            <div class="button-group mt-4">
-              <button @click.prevent="save()"  type="button" class="btn btn-primary mr-2 px-5" :disabled="!isValid">
-                <i class="far fa-save mr-2"></i>
-              Save
-              </button>                     
-              <button @click.prevent="reset('all')"  type="button" class="btn btn-warning">
-                <i class="far fa-window-close"></i>
-                Cancel
-              </button>
+            <div class="text-center mt-4">
+              <div class="button-group">
+                <button @click.prevent="save()"  type="button" class="btn btn-primary mr-2 px-5" :disabled="!isValid">
+                  <i class="far fa-save mr-2"></i>
+                Save
+                </button>                     
+                <button @click.prevent="reset('all')"  type="button" class="btn btn-warning">
+                  <i class="far fa-window-close"></i>
+                  Cancel
+                </button>
+              </div>
             </div>
           </form>
           
@@ -127,30 +131,21 @@
                 <i class="fas fa-clock fa-stack-1x" style="color: #74C0FC"></i>
               </span>         
             </div>                
-
-            <!-- <div class="text-muted text-center h4 mt-3" v-if="has('schedules')">
-              <i class="fas fa-info-circle"></i>
-                  {{ get('schedules') }}
+        
+            <!-- Errors Display -->
+            <div class="text-primary text-center h4 mt-3" v-if="has('bus-schedules')">
+            <i class="fas fa-info bg-primary rounded-lg px-3 py-2 mr-2"></i>
+              Schedules {{ get('bus-schedules') }}
             </div>
- -->
-            <!-- <div class="text-muted text-center h4 mt-3" v-if="has('schedule')">
-            <i class="fas fa-info-circle"></i>
-              {{ get('schedule') }}
-            </div>              
-
-            <div class="text-muted text-center h4 mt-3" v-if="has('bus-schedules')">
-            <i class="fas fa-info-circle"></i>
-              {{ get('bus-schedules') }}
-            </div> -->
 
             <div v-show="schedulesAvailable" class="card mt-1 w-100">
-              <div class="card-header">
+              <!-- <div class="card-header">
                 Available Schedules for the BUS
-              </div>
+              </div> -->
               <div class="card-body p-0">
                 <div class="scrollbar">
                   <table class="table table-striped table-hover">
-                      <thead>
+                      <thead class="bg-info">
                         <tr>
                           <th>SL.# </th>
                           <th>DEPARTURE CITY
@@ -183,7 +178,17 @@
                       </tbody>
                   </table>      
                 </div>
-              </div>            
+              </div>
+              <div class="card-footer">
+                <h5 class="px-1" v-show="schedulesAvailable">                   
+                  {{ schedulesByBus.length }}
+                  <small class="text-muted mr-1"> 
+                    <span v-if="schedulesByBus.length > 1"> schedules </span> 
+                    <span v-else> schedule </span>
+                    available.
+                  </small>                  
+                </h5>
+              </div>                    
             </div>
 
         </div>        
@@ -228,33 +233,38 @@ export default {
           this.setListOf(this.errors, this.errorList)
         }
         this.enableScroll();
-        this.objectToEmptyString();                    
+        this.objectToEmptyString();
     },  
     beforeUnmount() {
         this.instanceOfScrollbar.destroy();
         $().alert('dispose'); 
-        this.resetErrors();
+        this.resetErrors();        
+        this.emptySchedulesByBus();
+        this.emptyCitiesByRoute();                    
     },
     watch: {                    
       async 'bus.bus.id'(val, oldVal) {
 
           if (this.isEmpty(this.bus)) return;
-          
+          this.loading = true;
+          this.resetErrors();
+          this.emptySchedulesByBus()
+          this.emptyCitiesByRoute();
+          this.departureCity = '';
+
           await this.getCitiesFromRoutesBy(
             this.bus.bus.route_id);
 
-          this.getRouteCityList();
-
-          if (this.any) {
-            this.resetErrors();
-          }
+          this.getRouteCityList();          
           
           this.disableSorting = true;
-          this.getSchedulesByBus(val);
+          await this.getSchedulesByBus(val);
+          this.loading = false;
 
         },
         success() {
             if (this.success) {
+                this.loading = false;
                 this.actionAlert();
                 this.reset();
                 // this.resetErrors();
@@ -263,6 +273,12 @@ export default {
                 this.alertType = 'success';
                 this.showAlert = true; 
             }
+        },
+        errors: {
+           handler(value){
+            this.loading = false
+           },
+           deep: true
         }
     },            
     computed: {
@@ -357,7 +373,8 @@ export default {
         'getRoutes',
         'getCitiesFromRoutesBy',
         'getRouteCityList',
-        'emptyCitiesByRoute'
+        'emptyCitiesByRoute',
+        'emptyRouteCityList'
       ]),
 
       ...mapActions('city', {
@@ -463,6 +480,7 @@ export default {
           this.show = false;
           this.emptySchedulesByBus();
           this.emptyCitiesByRoute();
+          this.emptyRouteCityList();
           // $('.alert').alert('close');
           this.resetErrors();
           return; 
@@ -491,12 +509,9 @@ export default {
     }
 }
 </script>
-<style lang="scss" scoped>  
-  .heading {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-    color: white;
-  }
+<style lang="scss" scoped>    
   .fa-stack { font-size: 4.5em; }
-  // i { vertical-align: middle; }
+  .table thead th {
+    border-bottom: 1px solid hsl(188, 78%, 41%);
+  }
 </style>

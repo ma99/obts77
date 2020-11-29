@@ -55,6 +55,10 @@ export const EMPTY_CITIES_BY_ROUTE = (state) => {
 export const SET_ROUTE_CITY_LIST = (state, cities) => {
     state.routeCityList = cities;
 }
+export const EMPTY_ROUTE_CITY_LIST = (state) => {
+    state.routeCityList = [];
+}
+
 
 export const SET_ROUTES_CITIES = (state, routesCities) => {
     state.availableRoutesCities = routesCities ;

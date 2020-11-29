@@ -113,9 +113,9 @@
               </span>         
             </div>
             <!-- Errors Display -->
-            <div class="text-muted text-center h4 mt-3" v-if="has('route-cities')">
+            <div class="text-info text-center h4 mt-3" v-if="has('route-cities')">
             <i class="fas fa-info bg-info rounded-lg px-3 py-2 mr-2"></i>
-              {{ get('route-cities') }}
+              Citis {{ get('route-cities') }}
             </div>
 
             <div class="card mt-1" v-show="citiesAvailable">              
@@ -228,6 +228,7 @@
                     this.instanceOfScrollbar.destroy();
                     $().alert('dispose');  
                     this.resetErrors();
+                    this.emptyCitiesByRoute();
                 },
                 watch: {
                     'routeId'(val, oldVal) {
@@ -301,7 +302,7 @@
                             this.secondCity.id != '' &&
                             this.secondCity.name != '' &&
                             this.distance != '' 
-                 }
+                  }
                 },
                 methods: {  
                     ...mapActions([
@@ -445,6 +446,7 @@
                       this.firstCity = '';
                       this.secondCity = '';
                       this.route = '';
+                      this.routeId = '';
                       this.emptyCitiesByRoute();
                       this.resetErrors();
                       // $('.alert').alert('close');
@@ -464,12 +466,7 @@
         }
     }
 </script>
-<style lang="scss" scoped>  
-  // .heading {
-  //   font-size: 1rem;
-  //   margin-bottom: 0.75rem;
-  //   color: black;
-  // }
+<style lang="scss" scoped>    
   .fa-stack { font-size: 4.5em; }
   .table thead th {
     border-bottom: 1px solid hsl(188, 78%, 41%);
