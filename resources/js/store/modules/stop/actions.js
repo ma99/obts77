@@ -1,9 +1,16 @@
 import Stop from '../../../api/stop';
 
-export const getStops = ({ commit }) => {
+export const getStops = ({ commit, dispatch }) => {
     return Stop.stops().then(response => {
         commit('SET_STOPS', response.data);
         //commit('SORT_SEATPLANS_BY_ID');
+    })
+    .catch(error => {
+       // console.log(error.response.data);
+       dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
     });
 }
 
@@ -32,7 +39,8 @@ export const addStop = ({ commit, dispatch }, data) => {
     });
 }
 
-export const deleteStop = ({ commit, state }, stop) => {
+export const deleteStop = ({ commit, state }, id) => {
+
 
        return Stop.delete(id).then(response => {
         
@@ -44,22 +52,5 @@ export const deleteStop = ({ commit, state }, stop) => {
         .catch(error => {
             console.log(error.response.data);
         });
-    }
-
-export const updateSeatplan = ({ commit }, seatplan ) => {
-        // console.log('Fare=', fare);
-        const data = {
-            city_route_id: fare.city.id,
-            details: fare.details
-        }
-        
-        return Seatplan.update(data, fare.id).then(response => {            
-            
-            fare.updated_at = response.data;
-            
-            commit('UPDATE_FARE', fare);
-        })
-        .catch(error => {
-            console.log(error.response.data);
-        });
 }
+

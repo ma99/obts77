@@ -20,16 +20,17 @@
           </div>
           <div class="p-2 flex-fill bg-info">
             <my-map 
-              :stops="stopsByCity" 
-              @add-stop="addToStops" 
             />           
+              <!-- :stops="stopsByCity" 
+              @add-stop="addToStops"  -->
           </div>
         </div>
     </div>
 </template>
 
 <script>
-import MyMap from '../../components/stops/Map'; 
+// import MyMap from '../../components/stops/Map'; 
+import MyMap from "../../components/gmap/StopsMapLoader";
 import Divisions from '../../components/city/Divisions'; 
 import { mapState, mapGetters, mapActions } from 'vuex';
 

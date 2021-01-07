@@ -21,18 +21,12 @@ export const ADD_STOP = (state, stops) => {
 	stops.forEach(stop => {
 		availableStops.push(stop)
 	});
-
-
-	// data.forEach(stop => {
-	// 	console.log(stop)
-	// 	//availableStops.push(stop);
-	// });     
 	
 	console.log('la=', availableStops.length)
     
     state.availableStopList = availableStops;
 }
 
-export const DELETE_SEATPLAN = (state, index) => {
-    state.availableSeatPlanList.splice(index, 1);
+export const DELETE_STOP = (state, index) => {
+    state.availableStopList.splice(index, 1);
 }

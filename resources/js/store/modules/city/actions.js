@@ -6,9 +6,16 @@ export const getDivisions = ({ commit }) => {
     });
 }
 
-export const getDistricts = ({ commit }) => {
+export const getDistricts = ({ commit, dispatch }) => {
     return City.districts().then(response => {
         commit('SET_DISTRICTS', response.data);      
+    })
+    .catch(error => {
+       // console.log(error.response.data);
+       dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
     });
 }
 

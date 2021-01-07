@@ -9,7 +9,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item">
-                <router-link to="/dashboard">
+                <router-link :to="{ name: 'dashboard' }">
                   <i class="fa fa-tachometer nav-icon"></i> Dashboard
                 </router-link>
               </li>
@@ -102,8 +102,8 @@
                         <td>{{ getCityById(stop.city_id).name }}</td>                              
                         <!-- <td>{{ city.division }}</td> -->
                         <td> 
-                            <button v-on:click.prevent="removeStopFromStopLis(index)" type="button" class="btn btn-danger">
-                              <i class="fas fa-times fa-fw"></i>
+                            <button v-on:click.prevent="removeStopFromStopListAndMap(stop)" type="button" class="btn btn-danger">
+                              <i class="far fa-times-circle"></i>
                             </button>  
                         </td>                        
                       </tr>                            
@@ -132,16 +132,20 @@
             </div>
             <!-- errors end  -->
 
-
-            <div class="form-group mt-4">
-                <button v-on:click.prevent="addToStopList()" class="btn btn-info" :disabled="!stop.name">
-                  <i class="fas fa-plus" aria-hidden="true"></i>
+            <div class="text-center mt-4">
+              <div class="button-group">
+                <button v-on:click.prevent="addToStopList()" class="btn btn-info mr-2" :disabled="!stop.name">
+                  <i class="far fa-plus-square mr-2" aria-hidden="true"></i>Add
                 </button>                   
               
-                <button v-on:click.prevent="save()"  type="button" class="btn btn-primary" :disabled="!isValid">Save</button>
-                <button v-on:click.prevent="reset()"  type="button" class="btn btn-warning">Cancel</button>
+                <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid"> <i class="far fa-save mr-2"></i>
+                    Save
+                </button>
+                <button @click.prevent="reset('all')" class="btn btn-warning" :disabled="!isValid"><i class="far fa-window-close mr-2"></i>
+                Cancel</button>
               
-            </div>               
+            </div>
+            </div>
           </form>
         </div>
         <div class="p-3 bg-warning flex-fill">
@@ -193,7 +197,7 @@
                               <!-- <td>{{ city.division }}</td> -->
                               <td> 
                                   <button v-on:click.prevent="removeStop(stop, index)" class="btn btn-danger">
-                                    <i class="fa fa-trash fa-fw"></i>Remove
+                                    <i class="far fa-trash-alt mr-2"></i>Remove
                                   </button>  
                               </td>                        
                             </tr>                            
@@ -210,8 +214,13 @@
               <div class="p-2 flex-fill">
                 <my-map 
                   :mcenter="setMapCenter"
-                  :stops="stops" 
-                  @add-stop="addToStops" 
+                  :mreset="mapReset"
+                  :marker-color-reset="newStopAdded"
+                  :stops="mapStops" 
+                  :remove-marker="stopRemoved"
+                  @add-stop="addToStops"
+                  @stop-added="resetMarkerColor"
+                  @map-reseted="assignStops" 
                 />                           
               </div>
             </add-section> 
@@ -222,7 +231,8 @@
   </div>      
 </template>
 <script>
-import MyMap from '../../components/stops/Map'; 
+// import MyMap from '../../components/stops/Map'; 
+import MyMap from "../../components/gmap/StopsMapLoader";
 import Divisions from '../../components/city/Divisions'; 
 import { mapState, mapGetters, mapActions } from 'vuex';
 export default {
@@ -240,7 +250,10 @@ export default {
         deletedStopName: '',
         //divisionList: [],
         disableSorting: true,
-        error: '',
+        // error: '',
+        errorList: [],
+        instanceOfScrollbar: undefined,
+        instanceOfScrollbarTwo: undefined,
         loading: false,
         response: '',            
         selectedCity: {
@@ -251,9 +264,14 @@ export default {
         show: false,
         showAlert: false,
         citiesByDivisionList: [],
+        mapStops: [],
+        mapReset: false,
+        newStopAdded: false,
         stopList: [],
+        stopListSize: null,
         stopsByCity: [],
         stops: [],
+        multiStops: false,
         //stopName: '',
         stop: {
           name: '',
@@ -262,10 +280,11 @@ export default {
           latitude: '',
           longitude: ''
         },
+        stopRemoved: null,
         scrollbarInstanceOne: '',
         scrollbarInstanceTwo: ''
       }
-    },
+    },    
     async mounted() {           
        //this.fetchDivisions();   
       this.loading = true;
@@ -273,14 +292,19 @@ export default {
       await this.getDistrictList();
       await this.getAvailableCities();              
       await this.getStops();
+      this.loading = false;  
 
-      this.loading = false;           
-       this.enableScroll();
+      // if (this.any(this.errors)) {
+      //   this.setListOf(this.errors, this.errorList)
+      // }
+
+      this.enableScroll();
     },
-    // beforeDestroy() {
-    //   this.scrollbarInstanceOne.destroy();
-    //   this.scrollbarInstanceTwo.destroy();    
-    // },
+    beforeUnmount() {
+        this.instanceOfScrollbar.destroy();
+        this.instanceOfScrollbarTwo.destroy();
+        this.resetErrors();
+    },    
     watch: {
       selectedDivision(value, oldValue) {
         if (value == '' || value == null) return;
@@ -289,34 +313,51 @@ export default {
         this.citiesByDivisionList = this.citiesByDivision(value);
       },
       'selectedCity.id'(value, oldValue) {
-        // if (value !== '' || value !== null)
+          this.mapStops = [];
+          this.stop = {};
+          this.mapReset = true;
+          
           if (value == '' || value == null) return;
-          this.stopsByCity = this.availableStopsBy(value);
+
+          let stops = this.availableStopsBy(value);
+          
+          this.stopsByCity = stops; 
+
+          // // this.mapStops = _.clone(stops);
       },
       success() {
           if (this.success) {
               this.actionAlert();
               this.stopsByCity = this.availableStopsBy(this.selectedCity.id);
               this.reset();
-              this.resetErrors();
+              // this.resetErrors();
               this.setSuccess({ status: false });
               this.actionStatus = 'Added';
               this.alertType = 'success';
               this.showAlert = true; 
+
+              // this.multiStops = false;
+              this.setMultiStops(false);
+              // this.newStopAdded = true;
+              this.setNewStopAdded(true);
+
           }
-      }
-        
+      },
+      'stopList.length'(value) {
+        console.log('stpL', value);
+        if (value == 0) this.setMultiStops(false);
+      }        
     },
     computed: {
       ...mapState([
           'errors',
           'success'
       ]),      
-      // ...mapGetters([
-      //     'get',
-      //     'has',
-      //     'any'
-      // ]),
+      ...mapGetters([
+          'get',
+          'has',
+          'any'
+      ]),
       ...mapGetters('stop', [
         'availableStopsBy',
         // 'stopsByCityCount'
@@ -338,10 +379,7 @@ export default {
 
          } 
 
-          const city = this.cityBy(this.selectedCity.id)
-          // console.log('city=', city);
-           // console.log('lat/lng=', city.lat, city.lon);
-
+         const city = this.cityBy(this.selectedCity.id)
             return {
               latitude: city.lat,
               longitude: city.lon
@@ -369,7 +407,7 @@ export default {
            return true;
          }
          return false;
-      },
+      },      
     },
     methods: {
       ...mapActions([
@@ -379,6 +417,7 @@ export default {
       ...mapActions('stop', [
         'getStops',
         'addStop',
+        'deleteStop'
       ]),
       ...mapActions('city', {
             getAvailableCities: 'getBusAvailableToCities',
@@ -393,29 +432,111 @@ export default {
             closeOnClickOutside: false,
           });
       },
+      assignStops() {
+        const c = this.stopsByCity;
+        console.log('city=', c)
+        this.mapStops = _.clone(c);
+        
+        this.mapReset = false;
+      },
       getIndex(index) {
+        console.log('Indx=',index)
         let str = `${index}`;
         return parseInt(str.replace(/\D/g, ""), 10) + 1;
         parseInt("010", 10)
       },
-      addToStops(e) {
-        const lat = parseFloat(e.latLng.lat());
-        const lng = parseFloat(e.latLng.lng());
+      addToStops(payload) {
+
+        const lat = parseFloat(payload.event.latLng.lat());
+        const lng = parseFloat(payload.event.latLng.lng());
         
         this.stop.latitude = lat;
         this.stop.longitude = lng;
 
-        this.stops.push({
+        let availableStopsByCity = this.stopsByCity.length;
+        console.log('AvStps=', availableStopsByCity)
+        let stop = {
           name: 'Name',
           address: 'Address',
           phone: 88888,
           latitude: lat,
           longitude: lng
-        });
+        };
 
+        if (payload.markers.length > availableStopsByCity) {
+          
+          const index = payload.markers.length;
+          console.log('mrkrL=', index)
+
+          if ( this.multiStops === false) { 
+
+            // const index = payload.markers.length-1;       
+            this.updateMapStopsPositionAt(index-1, lat, lng);
+
+            // payload.markers[payload.markers.length-1].setPosition({
+            //   lat: lat,
+            //   lng: lng
+            // });
+            this.updateMapMarkerPosition(payload.markers, index-1, lat, lng);
+            return;
+          }
+          // this.mapStops[payload.markers.length] = item;
+          // this.multiStops = false;
+          this.addNewStopToMapStopsAt(index, stop);
+          this.setMultiStops(false);
+          return;
+        }
+
+        this.mapStops[availableStopsByCity] = stop;
       },      
+      updateMapStopsPositionAt(index, lat, lng) {
+        this.mapStops[index].latitude= lat;           
+        this.mapStops[index].longitude= lng;    
+      },
+      updateMapMarkerPosition(markers, index, lat, lng) {
+        markers[index].setPosition({
+          lat: lat,
+          lng: lng
+        });
+      },
+      addNewStopToMapStopsAt(index, stop) {
+        this.mapStops[index] = stop;
+      },
+      setMultiStops(status) {
+        this.multiStops = status;
+      },
+      setNewStopAdded(status) {
+        this.newStopAdded = status;
+      },
+      resetMarkerColor(payload) {
+
+        if (this.stopListSize > 0) {
+          let x = (this.stopsByCity.length); //11
+          let y = (x - this.stopListSize); // 9
+
+          for (let index = y; index < x; index++ ) {
+            console.log('x=', x)
+            console.log('y=', y)
+            console.log('index=', index)
+            payload.markers[index].setIcon(payload.iconSettings)
+          }
+
+          this.stopListSize = null;
+          // this.newStopAdded = false;
+          this.setNewStopAdded(false)
+          return;
+        }
+
+        let index = (payload.markers.length - 1);
+        // console.log(payload.iconSettings)
+        payload.markers[index].setIcon(payload.iconSettings);
+        // this.newStopAdded = false;
+        this.setNewStopAdded(false);
+      },
       addToStopList() {
         //var vm = this;
+        // this.multiStops = true;
+        this.setMultiStops(true);
         this.stopList.push({
           city_id: this.selectedCity.id,
           name: this.stop.name,
@@ -427,29 +548,37 @@ export default {
         this.stop= {};           
       },
       enableScroll() {      
-      this.scrollbarInstanceOne = $('.scrollbar').overlayScrollbars({ /* your options */ 
-        sizeAutoCapable: true,
-        overflowBehavior : {
-          x : "scroll",
-          y : "scroll"
-        },
-        scrollbars: {
-          autoHide: "never",
-          clickScrolling: true
-        }
-      }).overlayScrollbars(); 
+        this.instanceOfScrollbar = OverlayScrollbars(document.getElementsByClassName("scrollbar"),
+          { 
+            className: "os-theme-dark",
+            sizeAutoCapable: true,
+            scrollbars: {
+              autoHide: "never",
+              clickScrolling: true
+            } 
+          });
 
-      this.scrollbarInstanceTwo = $('.scrollbar-small').overlayScrollbars({ /* your options */ 
-        sizeAutoCapable: true,
-        overflowBehavior : {
-          x : "scroll",
-          y : "scroll"
-        },
-        scrollbars: {
-          autoHide: "never",
-          clickScrolling: true
-        }
-      }).overlayScrollbars(); 
+        this.instanceOfScrollbarTwo = OverlayScrollbars(document.getElementsByClassName("scrollbar-small"),
+          { 
+            className: "os-theme-dark",
+            sizeAutoCapable: true,
+            scrollbars: {
+              autoHide: "never",
+              clickScrolling: true
+            } 
+          });
+
+      // this.scrollbarInstanceTwo = $('.scrollbar-small').overlayScrollbars({ /* your options */ 
+      //   sizeAutoCapable: true,
+      //   overflowBehavior : {
+      //     x : "scroll",
+      //     y : "scroll"
+      //   },
+      //   scrollbars: {
+      //     autoHide: "never",
+      //     clickScrolling: true
+      //   }
+      // }).overlayScrollbars(); 
 
       //console.log(instances);
 
@@ -467,8 +596,8 @@ export default {
         this.SortByCityCodeAvailableStopList(this.availableStopList);
         this.disableSorting = false;
       },
-
-      removeStop(stop, index) {  // role id of user/staff in roles table
+     
+     removeStop(stop, index) {  // role id of user/staff in roles table
         var vm = this;
         this.deletedStopName = stop.name; 
         swal({
@@ -484,83 +613,79 @@ export default {
               },                                
           },
         })
-        .then((value) => {
+        .then(async (value) => {
           if (value) {
-
-            vm.remove(stop, index);
-
             vm.loading = true;
             vm.response = '';
             vm.showAlert = false;
-            axios.post('/delete/stop', {                            
-                stop_id: stop.id, 
-            })          
-            .then(function (response) {                           
-                response.data.error ? vm.error = response.data.error : vm.response = response.data;
+            
+            // vm.remove(stop, index);
+            await vm.deleteStop(stop.id);
+            vm.removeStopFrom(vm.stopsByCity, index);
+            vm.removeStopFromMap(stop);
 
-                if (vm.response) {                                
-                    vm.removeStopFromAvailableStopList(index); // update the array after removing                                
-                    vm.loading = false;
-                    vm.actionStatus = 'Removed';
-                    vm.alertType = 'danger';
-                    vm.showAlert= true;
-                    return;                                                      
-                }                            
-                vm.loading = false;
-
-            });  
+            vm.actionStatus = 'Removed';
+            vm.alertType = 'danger';
+            vm.loading = false;
+            vm.showAlert= true;
           } 
         }); 
-      },
-     async remove(stop, index) {
-        this.loading = true;
-        await this.deleteStop({
-            id: stop.id,
-            index: index
-        });
-        this.removeFromAvailableStopsByCity(index);
-        this.loading = false;
-     },
-      removeFromAvailableStopsByCity(index) {      
-        this.availableStopsBy.splice(index, 1);            
-        //return;
-      },
+      }, 
+     // async remove(stop, index) {
+     //    this.loading = true;
+     //    await this.deleteStop({
+     //        id: stop.id,
+     //        index: index
+     //    });
+     //    this.removeFrom(index);
+     //    this.loading = false;
+     // },
+      // removeFrom(index) {      
+      //   this.stopsByCity.splice(index, 1);            
+      //   //return;
+      // },
       
-      removeStopFromStopLis(index) {
-        this.stopList.splice(index, 1);
+      removeStopFromStopListAndMap(stop) {        
+        this.removeStopFromMap(stop);
+        this.removeStopFromStopList(stop, this.stopList);
+      },
+
+      removeStopFromMap(stop) {
+        const i = this.getIndexOfStopFrom(this.mapStops, stop);
+        this.removeStopFrom(this.mapStops, i);
+        this.setStopToBeRemoved(i);
+      },
+      getIndexOfStopFrom(mapStops, stop) {
+        return mapStops.findIndex(element => {
+          return (element.latitude == stop.latitude) &&
+          (element.longitude == stop.longitude)
+        })
+      },
+
+      removeStopFrom(arr, index) {
+        arr.splice(index, 1);
+      },
+
+      setStopToBeRemoved(value) {
+        this.stopRemoved = value;
+      },
+
+      removeStopFromStopList(stop, stopList) {
+        this.stopList = stopList.filter(element => element !== stop)
       },
 
       async save() {
 
         this.loading = true;
+        this.stopListSize = this.stopList.length;
+        // this.newStopAdded = false;
+        this.setNewStopAdded(false);
         //const stops = {stop_list: this.stopList};
 
         //console.log('sD=', stops)
         //this.stops =  stops.stop_list;
         await this.addStop({stop_list: this.stopList});        
-       this.loading = false;
-        // this.stopList = [];        
-        // //this.reset();
-        // //this.loading = true;            
-        // axios.post('/stops', {
-        //     city_id: this.selectedCity.id,                
-        //     stop_list: this.stopList
-        // })          
-        // .then(function (response) {                
-        //     response.data.error ? vm.error = response.data.error : vm.response = response.data;
-        //     if (vm.response) {                   
-        //        vm.fetchAvailableStopList();
-        //        vm.SortByStopNameAvailableStopList(vm.availableStopList);
-        //        vm.stopList = [],
-        //        vm.loading = false;
-        //        vm.disableSaveButton = true;
-        //        vm.cityAddedAlert(vm.selectedCity.name);
-        //        vm.reset();
-        //        return;                   
-        //     }
-        //     vm.loading = false;
-        //     vm.disableSaveButton = true;
-        // });
+        this.loading = false;       
       },
       // addStopsTo(stopsByCity, stops) {
       //   stops.forEach(stop => {
@@ -573,11 +698,26 @@ export default {
           this.selectedDivision = '';
           this.stop= {};        
           this.stopList = [];
+          this.resetErrors();
           return;
         }
         this.stopList = [];
         this.stop = {};
       },
+      // setListOf(errors, list) {
+      //   Object.keys(errors).forEach(key => {
+      //     list.push({
+      //       key: key.toUpperCase(),
+      //       value: errors[key][0]
+      //     })
+      //   });
+      //   this.showTheModal('error');
+      // },
+      // showTheModal(modalId) {                  
+      //   $(`#${modalId}`).modal({
+      //     backdrop: 'static'
+      //   })
+      // },
       sortByCityName(arr) {
         arr.sort((a, b) => {
               return a.city_id - b.city_id;

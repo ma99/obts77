@@ -37,13 +37,9 @@ class StopController extends Controller
 
     public function destroy(Stop $stop)
     {
-        $error = ['error' => 'No results found'];
         
-        if($stop) {
-            $stop->delete();
-            return 'success';            
-        }
-        return $error;
+        $stop->delete();
+        return 'deleted';            
     }
 
     protected function validateRequest()
