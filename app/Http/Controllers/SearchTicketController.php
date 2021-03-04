@@ -26,10 +26,10 @@ class SearchTicketController extends Controller
 	}
     public function index()
     {
-    	//dd('test');
-    	$cities = City::all();
-    	//dd($cities);
-    	return view('pages.home', compact('cities'));
+    	// //dd('test');
+    	// $cities = City::all();
+    	// //dd($cities);
+    	// return view('pages.home', compact('cities'));
     }
 
     public function searchTicket() 

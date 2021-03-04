@@ -12,91 +12,15 @@
     </div>
      {{--  <seat cities= "{{ $cities }}" ></seat>        --}}
     <div class="col-12 mt-3">
-      <seat-display inline-template>
-          <div>              
-              <div v-show="!isSeatBooked" class="card border-0 bg-transparent">
-                {{-- <div class="card-heading">Search Schedule</div> --}}
-                <div class="card-body">                  
-                  <form>
-                    <div class="row align-items-center">
-                      <div class="col-5 search-form shadow">
-                        @include('includes.search')                       
-                      </div>
-                      <div class="col-7">                        
-                      </div>
-                    </div>                    
-                  </form> 
-                </div>
-              </div>
-              {{-- SCHEDULE --}}    
-              <div v-show="showSchedule" class="info-table">              
-                <div class="card">
-                  <div class="card-body p-0">
-                    {{-- <div id="scrollbar"> --}}
-                      <table class="table table-striped table-hover">
-                       <!-- Table Headings -->
-                        <thead>
-                            <th>SL No.</th>                                
-                            <th>Dept. Time</th>            
-                            <th>Arr. Time</th>             
-                            <th>Type</th>                                
-                            <th>Available Seats</th>
-                            <th>Fare</th>                                
-                            <th>View</th>
-                            {{-- <th>&nbsp;</th> --}}
-                        </thead>
-                        <!-- Table Body -->
-                        <tbody>
-                            <tr v-for="(bus, index) in buses">
-                                <td class="table-text">
-                                  <div> @{{ index + 1 }} </div>
-                                </td>
-
-                                <td class="table-text">
-                                  <div> @{{ bus.departure_time }} </div>
-                                </td>
-                                <td class="table-text">
-                                  <div> @{{ bus.arrival_time }} </div>
-                                </td>
-                                <td class="table-text">
-                                  <div> @{{ bus.bus_type }} </div>
-                                </td>
-                                <td class="table-text">
-                                  <div> @{{ bus.available_seats }} </div>
-                                </td>
-                                <td class="table-text">
-                                  <div> @{{ bus.fare }} </div>
-                                </td>
-                                <td class="table-text">
-                                  {{-- <div>  --}}
-                                   {{--  <button v-on:click.prevent="viewSeats(bus.schedule_id, bus.bus_id, bus.fare)" class="btn btn-success">View</button>  --}}
-                                  {{-- </div> --}}
-                                  <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#staticBackdrop" v-on:click.prevent="viewSeatsOf(bus)">    
-                                      <i class="button-icon fas fa-eye"></i>View
-                                  </button>   
-                                </td>
-                            </tr>                                                            
-                        </tbody>
-                      </table>                        
-                    {{-- </div> --}}
-                  </div>            
-                </div>
-              </div>  
-
-              <loader :show="loading"></loader>
-
-              {{-- <div class="col-sm-6 col-sm-offset-2"> --}}
-                  {{-- Booked Seat Info --}}
-                  @include('includes.booking')
-              {{-- </div>                     --}}
-
-              <!-- Modal / unit in rem -->
-              <modal :show.sync="modal" width="45" padding="0.5">
-                @include('includes.seatselection')
-              </modal>              
-              {{-- @include('includes.modal') --}}
-          </div>      
-      </seat-display>              
+      {{-- <seat-display :user= "{{auth()->user()}}" /> --}}
+      <seat-display
+        user=@json($user) 
+        phone-verification-route="{{ route('phoneverification.notice') }}" 
+        cash-payment-route="{{ route('make.payment.cash') }}" 
+        card-payment-route="{{ route('make.payment.card') }}" 
+      />
+      {{-- {{ $user }} --}}
+      {{-- @json($user) --}}
     </div>      
   </div>
 </div>

@@ -7,9 +7,9 @@
 	    	</div>
 	  		<div class="p-2 flex-fill info-r">
 	  			<h5 class="mx-2">Ticket!</h6>
-	  			<form method="POST" action="/seatbooking" v-on:submit.prevent="seatBookingByUser()">			
+	  			<form method="POST" action="/seatbooking" v-on:submit.prevent="vm.seatBookingByUser(), vm.showTheModal('seatSelection', false)">			
 					<p class="mt-2 mx-2"> Book The Ticket(s) 
-						<button :disabled="!isValid" class="mt-2 btn btn-primary btn-block">Continue</button>
+						<button :disabled="!vm.isValid" class="mt-2 btn btn-primary btn-block">Continue</button>
 					</p>
 				</form>
 	  		</div>    		

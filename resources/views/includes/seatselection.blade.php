@@ -7,32 +7,22 @@
           <button class="btn btn-outline-secondary" :disabled="true">Driver</button>
         </div>
         <div class="row justify-content-center" style="margin-left: -5px;">
-              <!-- <button
-                class="btn btn-outline-primary col-xs-2"
-                v-bind:class="{
-                  empty: seat.status=='n/a'? true : false,                                    
-                  'col-xs-offset-2': emptySpace(index, seat.no) }"
-                v-for="(seat, index) in seatList"
-                v-on:click.prevent=""
-                :disabled="buttonIsDisabled(seat.status)"
-              >               
-                {{-- {{ seat.no }} --}}
-              </button>  -->
+             
               <button
                 class="btn btn-outline-primary col-xs-2"
                 v-bind:class="{ 
                   'is-active': seat.checked, 
                   booked: seat.status=='booked'? true : false,
-                  buying: isSeatBuying(seat.status),                 
+                  buying: vm.isSeatBuying(seat.status),                 
                   confirmed: seat.status=='confirmed'? true : false, 
                   empty: seat.status=='n/a'? true : false,             
-                  'col-xs-offset-2': emptySpace(index, seat.seat_no) }"
-                v-for="(seat, index) in seatList"          
-                @click="toggle(seat)"           
-                :disabled="isDisabledSeatSelection(seat.status)"                   
+                  'col-xs-offset-2': vm.emptySpace(index, seat.seat_no) }"
+                v-for="(seat, index) in vm.seatList"          
+                @click="vm.toggle(seat)"           
+                :disabled="vm.isDisabledSeatSelection(seat.status)"                   
               >               
-                <span v-show="!isSeatBuying(seat.status)" > @{{ seat.seat_no }} </span>
-                <span v-show="isSeatBuying(seat.status)" class="fa fa-refresh fa-spin text-danger"></span>  
+                <span v-show="!vm.isSeatBuying(seat.status)" > @{{ seat.seat_no }} </span>
+                <span v-show="vm.isSeatBuying(seat.status)" class="fa fa-refresh fa-spin text-danger"></span>  
                
               </button> 
         </div>
@@ -40,14 +30,14 @@
       <!-- {{-- card-footer --}} -->           
       <div class="card-footer">
         {{-- <show-alert :show="showAlert" :type="alertType" @cancel="showAlert=false">  --}}
-        <show-alert :show.sync="showAlert" :type="alertType"> 
+        <show-alert :show.sync="vm.showAlert" :type="vm.alertType"> 
         <!-- altert type can be info/warning/danger -->
-          <strong>@{{ seatNo }} </strong> has been <strong>@{{ seatStatus }} </strong>
+          <strong>@{{ vm.seatNo }} </strong> has been <strong>@{{ vm.seatStatus }} </strong>
         </show-alert>
       </div>  
     </div>
   </div>
-  <div v-show="isSeatSelected" class="mb-4">
+  <div v-show="vm.isSeatSelected" class="mb-4">
     {{-- <div v-show="isSeatSelected" class="mb-4"> --}}
     <div class="card border-info border-top-0">      
       <div class="card-header bg-info border-info text-white">Selected Seat Info</div>
@@ -61,7 +51,7 @@
             <!-- <th>&nbsp;</th> -->
           </thead>
           <tbody>
-            <tr v-for="(seat, index) in selectedSeat">
+            <tr v-for="(seat, index) in vm.selectedSeat">
               <td class="table-text">
                 <div> @{{ index + 1 }} </div>
               </td>
@@ -70,23 +60,22 @@
               </td>
               <td class="table-text text-primary">
                  {{-- <div> @{{ seat.fare }} </div> --}}
-                 <div> @{{ getFareFor(seat) }} </div>
+                 <div> @{{ vm.getFareFor(seat) }} </div>
               </td>
               <td class="table-text">
                  <div>
-                    <button @click.prevent="removeSeat(seat.seat_no, seat)" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <button @click.prevent="vm.removeSeat(seat.seat_no, seat)" type="button" class="close" data-dismiss="alert" aria-label="Close">
                      <i class="fa fa-times text-danger" aria-hidden="true"></i>
                     </button>
                   </div>
-                </td>                                          
-            </tr>                                      
-            @{{ totalFareForSelectedSeats }}      
+                </td>                                    
+            </tr>    
           </tbody>
         </table>       
       </div>
       <div class="card-footer total">
         {{-- <strong>Total Amount:</strong> @{{ totalFare }}  --}}
-        <strong>Total Amount:</strong> @{{ totalFare }} 
+        <strong>Total Amount:</strong> @{{ vm.totalFare }} 
       </div>        
     </div>
     {{-- </div>     --}}

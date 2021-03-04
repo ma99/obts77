@@ -16,8 +16,7 @@ class CreateBookingsTable extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('creator_id');            
-            $table->unsignedBigInteger('bus_id');
-            $table->unsignedBigInteger('schedule_id');
+            $table->unsignedBigInteger('bus_schedule_id');
             $table->tinyInteger('total_seats');
             $table->float('amount', 8, 2); 
             $table->date('date');
@@ -29,13 +28,9 @@ class CreateBookingsTable extends Migration
                   ->references('id')->on('users')
                   ->onDelete('cascade');
 
-            $table->foreign('bus_id')
-                  ->references('id')->on('buses')
-                  ->onDelete('cascade');
-
-            $table->foreign('schedule_id')
-                  ->references('id')->on('schedules')
-                  ->onDelete('cascade');
+            $table->foreign('bus_schedule_id')
+                  ->references('id')->on('bus_schedule')
+                  ->onDelete('cascade');            
         });
     }
 

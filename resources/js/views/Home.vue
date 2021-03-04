@@ -36,6 +36,9 @@
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Card title</h5>
+                  
+                   <input type="checkbox" id="checkbox" v-model="checked" />
+                  <label for="checkbox">{{ checked }}</label> 
 
                   <p class="card-text">
                     Some quick example text to build on the card title and make up the bulk of the card's
@@ -74,6 +77,11 @@
     export default {
         mounted() {
             console.log('Component mounted.')
+        },
+        data() {
+          return {
+            checked: false
+          }
         }
     }
 </script>

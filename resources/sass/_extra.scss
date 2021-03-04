@@ -5,19 +5,6 @@ section.content {
   padding-left: 30px;
   padding-right: 30px;
 }
-
-// #scrollbar {
-//     height: 25rem; /*400px;*/
-//     span {
-//             cursor: pointer;
-//             margin-left: 5px;
-//         }
-//         span[disabled] {
-//             cursor: not-allowed;
-//             opacity: 0.65;
-//         }
-//   }
-
   .scrollbar {
     height: 25rem; /*400px;*/
     span {
@@ -45,17 +32,23 @@ i.button-icon {
 
 
 .card-columns {
-  @include media-breakpoint-only(xs) {
-    column-count: 1;
-  }
+  // @include media-breakpoint-only(xs) {
+  //   column-count: 1;
+  // }
 
   @include media-breakpoint-only(sm) {
     column-count: 1;
   }
   @include media-breakpoint-only(md) {
+    column-count: 1;
+  }
+  // @media (min-width: 800px) and (max-width: 991.98px) {
+  //   column-count: 2;
+  // }
+  @include media-breakpoint-only(lg) {
     column-count: 2;
   }
-  @include media-breakpoint-only(lg) {
+  @include media-breakpoint-only(xl) {
     column-count: 2;
   }
 }
@@ -127,7 +120,7 @@ i.button-icon {
   /** TABLE **/
 
   .table thead th {
-    border-bottom: 1px solid hsl(208%, 7%, 46%);
+    border-bottom: 1px solid hsl(208, 7%, 46%);
     border-top: none;
     // color: hsla(208, 7%, 46%, 1);
     text-transform: uppercase;

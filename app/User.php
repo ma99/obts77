@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 class User extends Authenticatable
 {
     use Notifiable;
@@ -68,6 +69,25 @@ class User extends Authenticatable
           ]
       );
     }
+
+    public function getUserInfo()
+    {
+      return $arr = [
+        'name' => $this->name,
+        'email' => $this->email,
+        'role' => $this->roleType(),  //regular or staff
+        'phone_verified' => $this->hasVerifiedPhone(),
+      ];
+    }
+
+    public function roleType()
+    {
+      if ($this->hasAnyRole(['super_admin', 'admin', 'operator'])) {
+        return 'staff';
+      }
+      return 'regular';
+    }
+
 
     public function getPhoneForPasswordReset()
     {

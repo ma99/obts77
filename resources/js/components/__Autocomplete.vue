@@ -1,19 +1,13 @@
 <template>
   <div class="dropdown">
-      <label v-text="inputLabel" />  
+      <label> {{inputLabel}} </label>  
       <div class="input-group">
         <span class="input-group-prepend">
           <div class="input-group-text bg-white">
             <i class="fas fa-map-marker-alt"></i>
           </div>
         </span>
-          <!-- @input="$emit('update:city', $event.target.value)" -->
-        <input 
-          type="text" 
-          placeholder="Enter City" 
-          class="form-control pl-0 border-left-0" 
-          :value="city" 
-          @input="updateValue"
+        <input placeholder="Enter City" class="form-control border-left-0" type="text" :value="value" @input="updateValue($event.target.value)"
           @keydown.enter = 'enter'
           @keydown.down = 'down'
           @keydown.up = 'up'
@@ -38,9 +32,9 @@
 <script>
     export default {        
         props: {
-          city: {
+          value: {
             type: String,
-            // required: true
+            required: true
           },
           suggestions: {
             type: Array,
@@ -51,7 +45,6 @@
             required: true
           },
         },
-        emits: ['update:city'],
         data() {
             return {
               open: false,
@@ -63,7 +56,7 @@
           window.addEventListener("click", this.close);
         },
 
-        beforeUnmount() {
+        beforeDestroy() {
           window.removeEventListener("click", this.close);
         },
 
@@ -77,7 +70,7 @@
               //   return obj.name.indexOf(this.value) >= 0
               // })
               return this.suggestions.filter( ( suggestion, index ) => {
-                const regex = new RegExp( this.city, 'gi' );
+                const regex = new RegExp( this.value, 'gi' );
                 return suggestion.name.match( regex );
                 });
             },
@@ -95,21 +88,17 @@
             },
             // Triggered the input event to cascade the updates to 
             // parent component
-            updateValue (e) {
-              let value = e.target.value
-              
+            updateValue (value) {
               if (this.open === false) {
                 this.open = true
                 this.current = 0
               }
-              console.log('val=', value)
-              this.$emit('update:city', value)
+              this.$emit('input', value)
             },
 
             // When enter key pressed on the input
             enter () {
-              console.log('entr=', this.matches[this.current].name)
-              this.$emit('update:city', this.matches[this.current].name)
+              this.$emit('input', this.matches[this.current].name)
               this.open = false
             },
 
@@ -134,7 +123,7 @@
 
             // When one of the suggestion is clicked
             suggestionClick (index) {
-              this.$emit('update:city', this.matches[index].name)
+              this.$emit('input', this.matches[index].name)
               this.open = false
             }
 

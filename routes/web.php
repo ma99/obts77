@@ -84,10 +84,12 @@ Route::group(['middleware' => ['auth']], function () {
 	// booking
 	Route::post('/bookings', 'BookingController@store');
 	Route::delete('/bookings/{booking}', 'BookingController@destroy');    
+	Route::post('/discount', 'DiscountController@index');
 });
 
 
-Route::get('/home', 'SearchTicketController@index')->name('home');//->middleware('verifiedphone'); 
+Route::get('/home', 'SeatDisplayController@index')->name('home');//->middleware('verifiedphone'); 
+// Route::get('/home', 'SearchTicketController@index')->name('home');//->middleware('verifiedphone'); 
 Route::get('/search', 'SearchTicketController@searchTicket');
 Route::get('/viewseats/buses/{bus}', 'SearchTicketController@viewSeats');
 
@@ -124,6 +126,20 @@ Route::get('/lara-home', 'HomeController@index')->name('lara-home');
 
 Route::get('/map', function() {
 	return view('map-stops');
+});
+
+Route::get('/broadcast', function() {
+	// return view('inline-test');
+	// $seat ='A3';
+	// $bus_schedule_id = 4; 
+	// $date= '2021-04-21';
+	// broadcast(new \App\Events\SeatStatusUpdated($seat, $bus_schedule_id, $date));//->toOthers();
+	broadcast(new \App\Events\ExampleEvent('mmmmmmm'));
+	return 'event fired';
+});
+
+Route::get('/test', function() {
+	return view('inline-test');
 });
 
 Auth::routes();

@@ -140,7 +140,7 @@
           <img :src="'./storage/images/bus-icon.png'" class="img-bus mx-auto d-block">
         </div>
 
-        <!-- {{-- DATE NAVIGATION --}} -->
+        {{-- DATE NAVIGATION --}}
         <div class="px-sm-2 mb-3 mb-md-0 d-flex flex-fill justify-content-center align-items-center">
             <div class="pr-1 w-100">                    
               <button type="button" @click.prevent="handleSearch('prev')" class="px-sm-4 btn btn-info form-control rounded-pill" :disabled="isValidDate">
@@ -179,9 +179,9 @@
               v-for="(bus, index) in busTypes"
               :key="bus.bus_id"
             >
-              <input type="checkbox" class="custom-control-input" :id="setBusTypeCheckId(index)" :value="bus.type" v-model="busCheckedTypes" />
+              <!-- {{-- <input type="checkbox" class="custom-control-input" :id="setBusTypeCheckId(index)" :value="bus.type" v-model="bus.checkedTypes" /> --}} -->
               
-              <!-- <input type="checkbox" class="custom-control-input" :value="bus.type" v-model="busCheckedTypes" /> -->
+              <input type="checkbox" class="custom-control-input" :value="bus.type" v-model="bus.checkedTypes" />
               <label class="custom-control-label" :for="setBusTypeCheckId(index)">
                 {{ bus.type }}
               </label>
@@ -191,11 +191,11 @@
       </div>
 
       <div class="p-2 mb-2 flex-fill">
-        <div class="pb-2" v-if="busCheckedTypes.length > 0">
+        <div class="pb-2" v-if="bus.checkedTypes.length > 0">
           <button 
             type="button" 
             class="btn btn-outline-info btn-sm rounded-pill mr-1"
-            v-for="(type, index) in busCheckedTypes"
+            v-for="(type, index) in bus.checkedTypes"
             @click.prevent="removeFilter(type)"
           >
             {{ type }} 
@@ -210,12 +210,12 @@
                 <thead style="background-color:hsla(75, 58%, 64%, 1);">
                     <th>SL No.</th>                                
                     <th>Dept. Time</th>            
-                 <!--    {{-- <th>Arr. Time</th>              --}} -->
+                    {{-- <th>Arr. Time</th>              --}}
                     <th>Type</th>                                
                     <th>Available Seats</th>
                     <th>Fare</th>                                
                     <th>View</th>
-                    <!-- {{-- <th>&nbsp;</th> --}} -->
+                    {{-- <th>&nbsp;</th> --}}
                 </thead>
                 <!-- Table Body -->
                 <tbody>
@@ -272,56 +272,57 @@
               <p class="text-muted text-center">Your Booking Request has been completed.</p>
             
               <div class="row mx-0">         
-                <div class="col-7 p-2 shadow">
+                <div class="col-7 p-2">left OD
                   <div class="row mx-0">
 
-                    <div class="col-12 mb-3 border-bottom">
-                      <h4 class="card-title text-success">Booking Details</h4>
-                    </div>          
+                  <div class="col-12 mb-3 border-bottom">
+                    <h4 class="card-title text-success text-center">Booking Details</h4>
+                  </div>          
 
-                    <div class="col-12 mb-3">
-                      Booking Ref: <strong>{{ bookedSeatInfo.booking_ref }}</strong>
-                    </div>
+                  <div class="col-12 mb-3">
+                    Booking Ref: <strong>{{ bookedSeatInfo.booking_ref }}</strong>
+                  </div>
                 
-                   <!--  @auth
-                    @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
-                      <div class="col-6 mb-2">
-                        Name: <strong>{{ userInfo.name }}</strong>
-                      </div>
-                      <div class="col-6 mb-2">
-                        Phone: <strong>{{ userInfo.phone }}</strong>
-                      </div>
-                    @else 
-                      <div class="col-6 mb-2">
-                        Name: <strong>{{ auth()->user()->name }}</strong>
-                      </div>
-                      <div class="col-6 mb-2">
-                        Phone: <strong>{{ auth()->user()->phone }}</strong>
-                      </div>
-                    @endif
-                    @endauth -->
+                 <!--  @auth
+                  @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
+                    <div class="col-6 mb-2">
+                      Name: <strong>{{ userInfo.name }}</strong>
+                    </div>
+                    <div class="col-6 mb-2">
+                      Phone: <strong>{{ userInfo.phone }}</strong>
+                    </div>
+                  @else 
+                    <div class="col-6 mb-2">
+                      Name: <strong>{{ auth()->user()->name }}</strong>
+                    </div>
+                    <div class="col-6 mb-2">
+                      Phone: <strong>{{ auth()->user()->phone }}</strong>
+                    </div>
+                  @endif
+                  @endauth -->
 
-                    <div class="col-7 mb-2">
-                      Seat No(s): <strong>{{ bookedSeatInfo.seats}}</strong>
-                    </div>
-                    <div class="col-7 mb-2">
-                      Amount: <strong>{{ bookedSeatInfo.amount }} </strong> Tk
-                    </div>
-                    <div class="col-6 mb-2">
-                      Date: <strong>{{ bookedSeatInfo.date }}</strong>
-                    </div>
-                    <div class="col-6 mb-2">
-                      Time: <strong>{{ selectedBus.departure_time }}</strong>
-                    </div>
-                    <div class="col-6 mb-2">
-                      Pickup Point: {{ bookedSeatInfo.pickup_point }} 
-                    </div>
-                    <div class="col-6 mb-2">
-                      Dropping Point: {{ bookedSeatInfo.dropping_point }} 
-                    </div>
-                    <div class="col-6 mb-2">
-                      Coach: {{ selectedBus.bus_number_plate }} 
-                    </div>                           
+                  <div class="col-7 mb-2">
+                    Seat No(s): <strong>{{ bookedSeatInfo.seats}}</strong>
+                  </div>
+                  <div class="col-7 mb-2">
+                    Amount: <strong>{{ bookedSeatInfo.amount }} </strong> Tk
+                  </div>
+                  <div class="col-6 mb-2">
+                    Date: <strong>{{ bookedSeatInfo.date }}</strong>
+                  </div>
+                  <div class="col-6 mb-2">
+                    Time: <strong>{{ selectedBus.departure_time }}</strong>
+                  </div>
+                  <div class="col-6 mb-2">
+                    Pickup Point: {{ bookedSeatInfo.pickup_point }} 
+                  </div>
+                  <div class="col-6 mb-2">
+                    Dropping Point: {{ bookedSeatInfo.dropping_point }} 
+                  </div>
+                  <div class="col-6 mb-2">
+                    Coach: {{ selectedBus.bus_number_plate }} 
+                  </div>         
+                  
                   </div>
                 </div>
 
@@ -344,71 +345,6 @@
                             </form>
                           @endif
                   @endauth  -->
-                    <div v-if="!userRole.isGuest">
-                      <div v-if="userRole.isStaff">
-                        <form method="post" :action="cashPaymentRoute">
-                                    
-                        </form>                    
-                      </div>
-                      <div v-else>
-                        <form method="post" :action="cardPaymentRoute">
-                          <!-- <input type="hidden" name="_token" :value="csrf"> -->
-                          <csrf-token />
-                          <!-- card payment -->
-                          <input id="booking_id" name="booking_id" type="hidden" :value="bookedSeatInfo.booking_ref">
-                          <div class="row">
-                            <div class="col-7 py-1">
-                              Subtotal ({{bookedSeatInfo.total_seats}} seat)
-                            </div>
-                            <div class="col-5 py-1">
-                              <span class="float-right">
-                                ৳ {{bookedSeatInfo.amount}}
-                              </span> 
-                            </div>
-                            <div class="col-12 py-1">  
-                              <div v-if="!isDiscountAvailable" class="form-row">
-                                <div class="form-group mb-1 col-8">       
-                                  <input type="text" class="form-control px-1" id="discountCode" placeholder="Enter Discount Code" v-model="discount.code" /> 
-                                </div>
-                                
-                                <div class="form-group mb-1 col-4">
-                                  <button type="button" class="btn btn-info px-2 float-right"
-                                  @click.prevent="applyDiscount()"
-                                  :disabled="discount.code ==''"
-                                  >
-                                  Apply
-                                  </button>
-                                </div>
-                                <span class="help text-danger px-2" v-if="has('discount')" v-text="get('discount')"></span>
-                              </div>
-                              <div v-if="isDiscountAvailable" class="form-row">
-                                <div class="col-8"> Discount <small @click="removeDiscount()" class="px-2 text-danger" style="cursor: pointer;">remove</small></div>
-                                <div class="col-4">
-                                  <span class="px-2 px-2 float-right">
-                                  ৳ {{ discount.amount}} </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-7 py-1">
-                              Total
-                            </div>
-                            <div class="col-5 py-1">
-                              <span class="float-right">
-                                ৳ {{totalAmount}}
-                              </span> 
-                            </div>
-                            
-                          </div>
-
-                          <div class="form-group my-3">
-                            <button type="submit" class="btn btn-success btn-block" :disabled="disablePayButton">Pay Now</button>
-                          </div>
-                          <!-- // -->
-                        </form>                    
-                      </div>
-                    </div>
-
                   </div>
                 </div>
               </div>
@@ -566,117 +502,6 @@
                 @guest
                   @include('includes.guest')
                 @endguest -->
-                <div v-if="!userRole.isGuest">
-                  
-                  <div v-if="userRole.isStaff">
-                    <h2>STAFF</h2>
-                    <div class="card border-secondary border-top-0">
-                      <div class="card-header bg-secondary border-secondary text-white">Admin/ Operator</div>
-                      <div class="card-body">
-                        <form v-on:submit.prevent="seatBookingByStaff()" @keydown="form.errors.clear($event.target.name)">
-                          <div v-show="form.phone!=''" class="text-center">
-                            <div v-show="userExist" class="alert alert-success" role="alert">                          
-                              <span class="fa-stack fa-2x mr-2">
-                                <i class="fas fa-circle fa-stack-2x"></i>
-                                <i class="fas fa-user-check fa-stack-1x fa-inverse"></i>
-                              </span>       
-                              User already exist!
-                            </div>
-                            <div v-show="!userExist" class="alert alert-warning" role="alert">
-                              <span class="fa-stack fa-2x mr-2">
-                                <i class="fas fa-user fa-stack-1x"></i>
-                                <i class="fas fa-ban fa-stack-2x" style="color:Tomato"></i>
-                              </span>
-                              User doesn't exist!
-                            </div>
-                          </div>
-
-                          <div class="m-1">                                 
-                            <input type="hidden" name="userId" id="userId1" v-model="userInfo.id" disabled>
-                          </div>
-                          <div class="form-group">
-                          <label for="phone" class="control-label">Mobile No.</label>
-                          <div class="input-group">
-                            <span class="input-group-prepend">
-                              <div class="input-group-text bg-white">
-                                <i class="fas fa-mobile-alt"></i>
-                              </div>
-                            </span>
-                            <input id="phone" type="text" class="form-control border-left-0" name="phone" v-model.lazy="form.phone">
-                          </div>
-                          <span class="help text-danger" v-if="form.errors.has('phone')" v-text="form.errors.get('phone')"></span>
-                          <span class="text-mute text-danger" v-if="userInfo.hasOwnProperty('error')" v-text="userInfo.error"></span>
-                          </div>
-
-                          <div class="form-group">
-                          <label for="name" class="control-label">Name</label>
-                          <div class="input-group">
-                            <span class="input-group-prepend">
-                              <div class="input-group-text bg-white">
-                                <i class="fas fa-user"></i>
-                              </div>
-                            </span>
-                            <input id="name" type="text" class="form-control border-left-0" name="name" v-model="form.name">
-                          </div>
-                          <span class="help text-danger" v-if="form.errors.has('name')" v-text="form.errors.get('name')"></span>
-                          </div>            
-
-                          <div class="form-group">
-                          <label for="email" class="control-label">E-Mail</label>
-                          <div class="input-group">
-                            <span class="input-group-prepend">
-                              <div class="input-group-text bg-white">
-                                <i class="fas fa-envelope"></i>
-                              </div>
-                            </span>
-                            <input id="email" type="email" class="form-control border-left-0" name="email" v-model="form.email">
-                          </div>
-                          <span class="help text-danger" v-if="form.errors.has('email')" v-text="form.errors.get('email')"></span>
-                          </div>                        
-                          
-                          <button v-show="isValid" class="btn btn-primary btn-block" :disabled="form.errors.any()">Continue</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>  
-
-                  <div v-else-if="userRole.isVerified"> 
-                    <div class="d-flex">
-                      <div class="p-2 flex-fill info-l">
-                        <i class="mt-3 fas fa-user-clock fa-2x"></i>
-                      </div>
-                      <div class="p-2 flex-fill info-r">
-                        <h5 class="mx-2">Ticket!</h5>
-                        <form v-on:submit.prevent="seatBookingByUser(), showTheModal('seatSelection', false)">      
-                        <p class="mt-2 mx-2"> Book The Ticket(s) 
-                          <button :disabled="!isValid" class="mt-2 btn btn-primary btn-block">Continue</button>
-                        </p>
-                        </form>
-                      </div>        
-                    </div>      
-                  </div>
-
-                  <div v-else>
-                    <h3>Unverified User</h3>
-
-                    <div class="d-flex">          
-                      <div class="p-2 flex-fill warning-l">
-                        <i class="mt-2 fas fa-exclamation-triangle fa-2x"></i>
-                      </div>
-                      <div class="p-2 flex-fill warning-r">
-                        <h4 class="mx-2">Oops!</h4>
-                        <p class="mx-2">Phone Verification Pending.<br>             
-                          <a class="mt-2 btn btn-secondary btn-block" :href="phoneVerificationRoute" role="button">Verify Your Phone Please</a>    
-                        </p>           
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-                
-                <div v-else>
-                    <h3>GUEST</h3>
-                </div>
               </div>
             </div>
            <!-- // -->
@@ -697,12 +522,7 @@
     // import Modal from './AppModal'; 
     // const URL = './storage/images/bus-icon.png';
     export default {
-      props: [
-        'user',
-        'phoneVerificationRoute',
-        'cashPaymentRoute',
-        'cardPaymentRoute'
-      ],
+      props: ['cities'],
 
        // components: {          
        //      'mymodal': Modal,          
@@ -721,9 +541,7 @@
               busTypes: [],
               bus: {
                 checkedTypes: [],
-              },    
-              busCheckedTypes: [],
-              // csrf: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),        
+              },            
               cityList:[],
               cityToList:[],
               dataErrors: [],
@@ -739,7 +557,6 @@
                 pickupPoint: false,
                 droppingPoint: false
               },
-              errors: {},
               loading: false,
               message: '',
               modal: false,
@@ -789,11 +606,6 @@
                 email:'',
                 error: '',
               },
-              userRole: {
-                isGuest: undefined,
-                isStaff: undefined,
-                isVerified: undefined,
-              },
               userExist: false,
               form: new Form({  //data as object
                 name: '',
@@ -821,14 +633,7 @@
            this.fetchCities();
            this.fetchStops();
            this.showDate();                      
-           this.showDateMiniSearch();           
-           //console.log(this.user);            
-          if (this.user == 'guest') {
-            this.userRole.isGuest = true;
-            console.log('guest')
-            // return;
-          } else
-          this.getRoleOf(JSON.parse(this.user));          
+           this.showDateMiniSearch();                      
            // this.enableScroll();         
             // Echo.channel('mychannel.1')
             //   .listen('SeatStatusUpdatedEvent', this.updateSeatStatus);             
@@ -892,36 +697,8 @@
         //     )
         //    ? true : false;
         // },
-        // self() { return { ...this } },
-        // userIsGuest() {
-        //   return (this.user === 'guest') ? true : false;
-        // },
-        // userIsStaff() {
-        //   // if (this->user !='guest') {
-        //   //   console.log('STAFF', this.user);
-        //   //   return (this.user.role === 'staff') ? true : false;            
-        //   // // }
-        //   // return false;
-        //   if (this.user.role == 'staff') {
-        //     console.log('STAFF', this.user);
-        //     return true;
-        //   } 
-        //   return false;
-        // },
-        // isVerifiedRegularUser() {
-        //   console.log(this.user.phone_verified);
-        //   console.log(this.user.name);
-        //   if (this.user.phone_verified == true) {
-        //     console.log('VUUUSR', this.user);
-        //     return true;
-        //   } 
-        //   console.log('UNSR', this.user);
-        //   return false;
-        // },        
-        isDiscountAvailable() {
-          if (this.discount.amount !==0) return true;
-          return false;
-        },
+        self() { return { ...this } },
+
         styles() {
           return {
            'background-image': `url(${URL})`,
@@ -931,7 +708,7 @@
         },
 
         totalAmount() {
-          let netTotal = this.bookedSeatInfo.amount - this.discount.amount;
+          let netTotal = this.bookedSeatInfo.amount + this.discount.amount;
           return netTotal;
         },
         isValidDate() {
@@ -969,13 +746,13 @@
           return false;
         },
         busesByType() {
-          const length = this.busCheckedTypes.length;
+          const length = this.bus.checkedTypes.length;
           if (length === 0) {
             return this.buses;
           }
           return this.buses.filter(bus => { //1
             for (let i = 0; i < length; i++) {
-              if (bus.bus_type == this.busCheckedTypes[i]) {
+              if (bus.bus_type == this.bus.checkedTypes[i]) {
                 return bus;
               }
             }
@@ -1048,28 +825,13 @@
         },
       },
       methods: {
-        removeDiscount() {
-          this.discount.amount = 0;
-        },
-        has(field) {
-          
-          if (Object.keys(this.errors).length > 0) 
-            return this.errors.hasOwnProperty(field);
-          return false;
-        },
-        get(field) {
-            if (this.errors[field]) {
-                return this.errors[field][0];
-            }
+        hello() {
+          console.log('hhhhhhhhhhhhhhhh')
         },
         applyDiscount() {
           //bookedSeatInfo
           console.log('discount')
           let code = this.discount.code.toUpperCase();
-          this.discount.amount = 0;
-          this.errors = {};
-
-          var vm = this;
 
           // this.loading = true;
           axios.post('/discount', {
@@ -1078,29 +840,11 @@
           })
           .then(response => {
             console.log(response)
-            vm.discount.amount = response.data;
-            vm.loading = false;
           })
           .catch(error => {
-            console.log('err=',error.response.data)
-            vm.errors = error.response.data.errors;
-            console.log(error.response.data)
-            vm.loading = false;
+            console.log(error)
           })
 
-        },
-        getRoleOf(user) {
-         if (user.role === 'staff') {
-          this.userRole.isStaff = true;
-          // console.log('staff');
-          return;
-         }
-
-         if (user.phone_verified === true) {          
-          this.userRole.isVerified = true; 
-          // console.log('VVVVUUUU')
-          return;
-         }
         },
         handleSearch(day) {
           const days = 86400000;                    
@@ -1188,8 +932,8 @@
           console.log('total fare=', this.totalFare)
         },
         removeFilter(name) {
-          let i = this.busCheckedTypes.indexOf(name);
-          this.busCheckedTypes.splice(i, 1); 
+          let i = this.bus.checkedTypes.indexOf(name);
+          this.bus.checkedTypes.splice(i, 1); 
         },
         removeFareFromTotal(seat) {
           let fare = parseInt(this.getFareFor(seat), 10);
@@ -1223,14 +967,14 @@
           var vm = this;                
           axios.get(`/users/${phone}`)
               .then(function (response) {                  
-                response.data.error ? vm.error = response.data.error : vm.userInfo = response.data;
-                if( !vm.isEmpty(vm.userInfo) ){                  
-                  vm.userExist = true;
-                  vm.userInfo.error = '';
-                  vm.fillupUserForm(vm.userInfo);
+                response.data.error ? error = response.data.error : userInfo = response.data;
+                if( !isEmpty(userInfo) ){                  
+                  userExist = true;
+                  userInfo.error = '';
+                  fillupUserForm(userInfo);
                   //console.log('not empty');                 
                 }       
-                vm.loading = false;
+                loading = false;
           });
         },
         fillupUserForm(userInfo) {          
@@ -1258,9 +1002,9 @@
         sortBusByDepartureTime() {
           var vm = this;
           this.buses.sort(function(a, b) {
-            var timeA = vm.convertTime12to24(a.departure_time);
+            var timeA = convertTime12to24(a.departure_time);
              // ignore upper and lowercase
-            var timeB = vm.convertTime12to24(b.departure_time );// ignore upper and lowercase
+            var timeB = convertTime12to24(b.departure_time );// ignore upper and lowercase
             if (timeA < timeB) {
               return -1;
             }
@@ -1404,19 +1148,19 @@
         //     .then(function (response) {             
         //        console.log(response.data);
                
-        //        response.data.error ? vm.busError = response.data.error : vm.buses = response.data;
-        //        vm.loading = false;
-        //        if (vm.busError) {
-        //           vm.seatNotAvailableAlert('SCHEDULE', 'warning');
+        //        response.data.error ? busError = response.data.error : buses = response.data;
+        //        loading = false;
+        //        if (busError) {
+        //           seatNotAvailableAlert('SCHEDULE', 'warning');
         //           return;
         //        }
-        //        vm.sortBusByDepartureTime(); 
-        //        vm.setBusTypes();
-        //        if (vm.showSearch == true) {
-        //         vm.showSearch = false;
+        //        sortBusByDepartureTime(); 
+        //        setBusTypes();
+        //        if (showSearch == true) {
+        //         showSearch = false;
         //        }
-        //        if (vm.searchMini == true) {
-        //         vm.searchMini = false;
+        //        if (searchMini == true) {
+        //         searchMini = false;
         //        }               
         //     });
         //     //888888
@@ -1447,25 +1191,25 @@
           await this.getBusData().then(response => {
             // console.log(response.data);
 
-            response.data.error ? vm.busError = response.data.error : vm.buses = response.data;
+            response.data.error ? busError = response.data.error : buses = response.data;
              
-             vm.loading = false;
+             loading = false;
 
              console.log('sMMMMEEEE1111')
-             if (vm.busError) {
-                vm.seatNotAvailableAlert('SCHEDULE', 'warning');
+             if (busError) {
+                seatNotAvailableAlert('SCHEDULE', 'warning');
                 return;
              }
-             vm.sortBusByDepartureTime(); 
-             vm.setBusTypes();
-             if (vm.showSearch == true) {
-              vm.showSearch = false;
+             sortBusByDepartureTime(); 
+             setBusTypes();
+             if (showSearch == true) {
+              showSearch = false;
              }
-             if (vm.searchMini == true) {
-              vm.searchMini = false;
+             if (searchMini == true) {
+              searchMini = false;
              }               
-             if (vm.showSchedule == false) {
-              vm.showSchedule = true;
+             if (showSchedule == false) {
+              showSchedule = true;
              }               
 
           })
@@ -1482,19 +1226,19 @@
           //   .then(function (response) {             
           //      console.log(response.data);
                
-          //      response.data.error ? vm.busError = response.data.error : vm.buses = response.data;
-          //      /*vm.loading = false;
-          //      if (vm.busError) {
-          //         vm.seatNotAvailableAlert('SCHEDULE', 'warning');
+          //      response.data.error ? busError = response.data.error : buses = response.data;
+          //      /*loading = false;
+          //      if (busError) {
+          //         seatNotAvailableAlert('SCHEDULE', 'warning');
           //         return;
           //      }
-          //      vm.sortBusByDepartureTime(); 
-          //      vm.setBusTypes();
-          //      if (vm.showSearch == true) {
-          //       vm.showSearch = false;
+          //      sortBusByDepartureTime(); 
+          //      setBusTypes();
+          //      if (showSearch == true) {
+          //       showSearch = false;
           //      }
-          //      if (vm.searchMini == true) {
-          //       vm.searchMini = false;
+          //      if (searchMini == true) {
+          //       searchMini = false;
           //      }*/               
           //   });
         },
@@ -1559,19 +1303,19 @@
                 bus_schedule_id: bus.bus_schedule_id,
                 bus_id: bus.bus_id,
                 bus_fare: bus.fare,
-                date: vm.startDate,
+                date: startDate,
               }  
             })          
             .then(function (response) {             
                 console.log(response.data);
-                response.data.error ? vm.seatError = response.data.error : vm.seatList = response.data;
-                vm.loading = false;
-                if (vm.seatError) {
-                  vm.seatNotAvailableAlert('SEAT PLAN', 'error');
+                response.data.error ? seatError = response.data.error : seatList = response.data;
+                loading = false;
+                if (seatError) {
+                  seatNotAvailableAlert('SEAT PLAN', 'error');
                   return;
                 }
-                // vm.modal = true;
-                vm.showTheModal('seatSelection', true);
+                // modal = true;
+                showTheModal('seatSelection', true);
             });
         },
 
@@ -1620,34 +1364,34 @@
           .then((value) => {
             if (value) {
 
-              vm.loading = true;
-              vm.buses = []; // hide table
-              vm.changeStatusOfSelectedSeat(vm.selectedSeat); 
+              loading = true;
+              buses = []; // hide table
+              changeStatusOfSelectedSeat(selectedSeat); 
               // // non form data  
-              vm.form.bus_id = vm.busId;
-              vm.form.date = vm.startDate;
-              //vm.form.schedule_id = vm.scheduleId;
-              vm.form.bus_schedule_id = vm.busScheduleId;
-              vm.form.selected_seats = vm.selectedSeat;
-              vm.form.total_seats = vm.totalSeats;
-              vm.form.amount = vm.totalFare; 
-              vm.form.pickup_point = vm.stops.selectedPickupPoint; 
-              vm.form.dropping_point = vm.stops.selectedDroppingPoint; 
+              form.bus_id = busId;
+              form.date = startDate;
+              //form.schedule_id = scheduleId;
+              form.bus_schedule_id = busScheduleId;
+              form.selected_seats = selectedSeat;
+              form.total_seats = totalSeats;
+              form.amount = totalFare; 
+              form.pickup_point = stops.selectedPickupPoint; 
+              form.dropping_point = stops.selectedDroppingPoint; 
 
 
-              vm.form.post(vm.url)
+              form.post(url)
                   //.then(response => alert('Wahoo!'));
               .then(function (response) {
                  //console.log(response.data)
-                 vm.selectedSeat= [];                                  
-                 vm.bookedSeatInfo = response;
-                 vm.modal = false;
-                 vm.loading = false;
+                 selectedSeat= [];                                  
+                 bookedSeatInfo = response;
+                 modal = false;
+                 loading = false;
                  //console.log('res=', response);
               })
               .catch(function (error) {
                 console.log(error);
-                vm.loading = false;
+                loading = false;
               });
               
             } 
@@ -1672,35 +1416,35 @@
           .then((value) => {
             if (value) {
 
-              vm.loading = true;
-              vm.buses = []; // hide table
-              vm.changeStatusOfSelectedSeat(vm.selectedSeat);               
+              loading = true;
+              buses = []; // hide table
+              changeStatusOfSelectedSeat(selectedSeat);               
 
-              axios.post(vm.url, {
-                //bus_id: vm.busId,
-                date: vm.startDate,
-                //schedule_id: vm.scheduleId,
-                bus_schedule_id: vm.busScheduleId,
-                selected_seats:vm.selectedSeat,
-                total_seats: vm.totalSeats,
-                amount: vm.totalFare,
-                pickup_point:  vm.stops.selectedPickupPoint,
-                dropping_point: vm.stops.selectedDroppingPoint 
+              axios.post(url, {
+                //bus_id: busId,
+                date: startDate,
+                //schedule_id: scheduleId,
+                bus_schedule_id: busScheduleId,
+                selected_seats:selectedSeat,
+                total_seats: totalSeats,
+                amount: totalFare,
+                pickup_point:  stops.selectedPickupPoint,
+                dropping_point: stops.selectedDroppingPoint 
               })                           
               .then(function (response) {
                  //console.log(response.data)
-                 vm.selectedSeat= [];
-                 vm.bookedSeatInfo = response.data;
-                 vm.loading = false;
-                 vm.modal = false;
-                 // response.data.error ? vm.busError = response.data.error : vm.buses = response.data;
+                 selectedSeat= [];
+                 bookedSeatInfo = response.data;
+                 loading = false;
+                 modal = false;
+                 // response.data.error ? busError = response.data.error : buses = response.data;
               })
               .catch(function (error) {
                 //console.log('error='+ error);
                 console.log(error.response.data.errors);
-                vm.dataErrors = Object.values(error.response.data.errors);
-                console.log(vm.dataErrors);
-                vm.loading = false;
+                dataErrors = Object.values(error.response.data.errors);
+                console.log(dataErrors);
+                loading = false;
               });              
             } //if            
           }); 
@@ -1711,7 +1455,7 @@
         changeStatusOfSelectedSeat(selectedSeat) {
           var vm = this;
           selectedSeat.forEach( function(seat){
-            seat.status = (vm.url == 'bookings') ? 'booked' : 'buying';
+            seat.status = (url == 'bookings') ? 'booked' : 'buying';
             //seat.status = 'buying';
           });
         },
@@ -1721,8 +1465,8 @@
           var vm = this;                
           axios.get('/api/cities')  
               .then(function (response) {
-                 response.data.error ? vm.error = response.data.error : vm.availableCityList = response.data;
-                 vm.loading = false;
+                 response.data.error ? error = response.data.error : availableCityList = response.data;
+                 loading = false;
           });
         },
         fetchStops() {
@@ -1731,8 +1475,8 @@
           var vm = this;                
           axios.get('/api/stops')  
               .then(function (response) {
-                 response.data.error ? vm.error = response.data.error : vm.availableStopList = response.data;
-                 vm.loading = false;
+                 response.data.error ? error = response.data.error : availableStopList = response.data;
+                 loading = false;
           });
         },        
         // getCityIdBy(cityName) {
@@ -1766,7 +1510,7 @@
               startDate: '0d',
               todayHighlight: true,
               autoclose: true
-          }).on("changeDate", () => {vm.startDate = $('#sandbox-container #startDate').val()});
+          }).on("changeDate", () => {startDate = $('#sandbox-container #startDate').val()});
 
         },
         showDateMiniSearch() {
@@ -1776,7 +1520,7 @@
               startDate: '0d',
               todayHighlight: true,
               autoclose: true
-          }).on("changeDate", () => {vm.startDate = $('#sandbox-container-mini #startDateMini').val()});
+          }).on("changeDate", () => {startDate = $('#sandbox-container-mini #startDateMini').val()});
 
         },
         testDate() {
