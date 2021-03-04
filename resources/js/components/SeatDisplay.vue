@@ -347,7 +347,25 @@
                     <div v-if="!userRole.isGuest">
                       <div v-if="userRole.isStaff">
                         <form method="post" :action="cashPaymentRoute">
-                                    
+                          <csrf-token />
+                          <div class="payment-options p-2 my-2">
+                            <div class="radio">
+                              <label class="radio-inline">
+                                <input type="radio" name="paymentMethod" id="optionsRadios1" value="cash" v-model="payment.method">
+                                Cash
+                              </label>    
+                            </div>
+                            <div class="radio">
+                              <label class="radio-inline">
+                                <input type="radio" name="paymentMethod" id="optionsRadios2" value="pos" v-model="payment.method">
+                                POS
+                              </label>
+                            </div>
+                            <div class="form-group" v-show="payment.method=='pos'">
+                              <label for="transacton">Transaction:</label>  
+                              <input type="text" class="form-control" name="transaction" id="transaction" v-model="payment.transaction" placeholder="Enter transaction number">
+                            </div>
+                          </div>                                    
                         </form>                    
                       </div>
                       <div v-else>
@@ -390,10 +408,10 @@
                               </div>
                             </div>
 
-                            <div class="col-7 py-1">
+                            <div class="col-7 py-1 font125">
                               Total
                             </div>
-                            <div class="col-5 py-1">
+                            <div class="col-5 py-1 font125">
                               <span class="float-right">
                                 ৳ {{totalAmount}}
                               </span> 
@@ -602,7 +620,9 @@
                                 <i class="fas fa-mobile-alt"></i>
                               </div>
                             </span>
-                            <input id="phone" type="text" class="form-control border-left-0" name="phone" v-model.lazy="form.phone">
+                            <input id="phone" type="text" class="form-control border-left-0" name="phone" v-model.lazy="form.phone"
+                              placeholder="Enter mobile number here" 
+                            >
                           </div>
                           <span class="help text-danger" v-if="form.errors.has('phone')" v-text="form.errors.get('phone')"></span>
                           <span class="text-mute text-danger" v-if="userInfo.hasOwnProperty('error')" v-text="userInfo.error"></span>
@@ -616,7 +636,9 @@
                                 <i class="fas fa-user"></i>
                               </div>
                             </span>
-                            <input id="name" type="text" class="form-control border-left-0" name="name" v-model="form.name">
+                            <input id="name" type="text" class="form-control border-left-0" name="name" v-model="form.name"
+                              placeholder="Enter name here" 
+                            >
                           </div>
                           <span class="help text-danger" v-if="form.errors.has('name')" v-text="form.errors.get('name')"></span>
                           </div>            
@@ -629,12 +651,14 @@
                                 <i class="fas fa-envelope"></i>
                               </div>
                             </span>
-                            <input id="email" type="email" class="form-control border-left-0" name="email" v-model="form.email">
+                            <input id="email" type="email" class="form-control border-left-0" name="email" v-model="form.email"
+                              placeholder="Enter email here" 
+                            >
                           </div>
                           <span class="help text-danger" v-if="form.errors.has('email')" v-text="form.errors.get('email')"></span>
                           </div>                        
                           
-                          <button v-show="isValid" class="btn btn-primary btn-block" :disabled="form.errors.any()">Continue</button>
+                          <button class="btn btn-primary btn-block rounded-pill" :disabled="!isValid || form.errors.any()">Continue</button>
                         </form>
                       </div>
                     </div>
@@ -649,7 +673,7 @@
                         <h5 class="mx-2">Ticket!</h5>
                         <form v-on:submit.prevent="seatBookingByUser(), showTheModal('seatSelection', false)">      
                         <p class="mt-2 mx-2"> Book The Ticket(s) 
-                          <button :disabled="!isValid" class="mt-2 btn btn-primary btn-block">Continue</button>
+                          <button :disabled="!isValid" class="mt-2 btn btn-primary btn-block rounded-pill">Continue</button>
                         </p>
                         </form>
                       </div>        
@@ -696,6 +720,11 @@
 <script>
     // import Modal from './AppModal'; 
     // const URL = './storage/images/bus-icon.png';
+    const Url = {
+      BOOKING_BY_STAFF_URL: 'bookings/byStaff'
+    };
+      const BOOKING_BY_STAFF_URL = 'bookings/byStaff';
+
     export default {
       props: [
         'user',
@@ -794,7 +823,8 @@
                 isStaff: undefined,
                 isVerified: undefined,
               },
-              userExist: false,
+              // userExist: false,
+              userExist: '',
               form: new Form({  //data as object
                 name: '',
                 email:'',
@@ -813,6 +843,9 @@
           }
       },
       
+      // created() {
+      //   this.Url = Url;
+      // }, 
       mounted() {
            console.log('Seat search Component ready.');
            //this.createIndexList();            
@@ -838,8 +871,8 @@
         this.instanceOfScrollbarInfoTable.destroy();
       },
       watch: {
-       'form.phone'(val, oldVal) {
-        this.getUserInfoIfExist(this.form.phone);
+       'form.phone'(value, oldValue) {
+        this.getUserInfoIfExist(value);
        },
        'selectedSeat.length'(value) { 
         this.totalSeats = value;
@@ -1597,9 +1630,12 @@
           //   this.userInfo.name = this.form.name;
           // }
           if (this.userExist) {
-            this.url = `bookings/byStaff/${this.userInfo.id}`;
+            // this.url = `bookings/byStaff/${this.userInfo.id}`;
+            // this.url = `${this.Url.BOOKING_BY_STAFF_URL}/${this.userInfo.id}`;
+            this.url = `${BOOKING_BY_STAFF_URL}/${this.userInfo.id}`;
           } else {
-            this.url = 'bookings/byStaff';
+            // this.url = 'bookings/byStaff';
+            this.url = BOOKING_BY_STAFF_URL;
             this.userInfo.phone = this.form.phone;
             this.userInfo.name = this.form.name;
           }
@@ -2059,7 +2095,9 @@
       max-width: 760px;
     }
   }
-
+  .font125 {
+    font-size: 1.125rem;
+  }
   .info-table {
     background-color: hsla(60, 56%, 91%, 1);
     // max-height: 350px;
