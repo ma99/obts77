@@ -19,7 +19,6 @@ class DiscountRelatedException extends Exception
         $this->error = $error;
         $this->code = $code;
         $this->message = $message;
-        // $this->trace= $exception->getTrace();
     }
     public function report()
     {

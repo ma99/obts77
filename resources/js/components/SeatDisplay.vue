@@ -329,7 +329,7 @@
                   style="hsl(134deg 76% 88%) !important;" 
                 >
                   <h4>
-                    Order Summary
+                    Payment Summary
                   </h4>
                   <div class="mt-2">
                   <!-- @auth
@@ -348,7 +348,7 @@
                       <div v-if="userRole.isStaff">
                         <form method="post" :action="cashPaymentRoute">
                           <csrf-token />
-                          <div class="payment-options p-2 my-2">
+                          <!-- <div class="payment-options p-2 my-2">
                             <div class="radio">
                               <label class="radio-inline">
                                 <input type="radio" name="paymentMethod" id="optionsRadios1" value="cash" v-model="payment.method">
@@ -365,7 +365,79 @@
                               <label for="transacton">Transaction:</label>  
                               <input type="text" class="form-control" name="transaction" id="transaction" v-model="payment.transaction" placeholder="Enter transaction number">
                             </div>
-                          </div>                                    
+                          </div> -->
+                          <!-- Payment Summary    -->
+                          <input id="booking_id" name="booking_id" type="hidden" :value="bookedSeatInfo.booking_ref">
+
+                          <input id="cash_discount_id" name="cash_discount_amount" type="hidden" :value="discount.amount">
+                          <div class="row">
+                            <div class="col-7 py-1">
+                              Subtotal ({{bookedSeatInfo.total_seats}} seat)
+                            </div>
+                            <div class="col-5 py-1">
+                              <span class="float-right">
+                                ৳ {{bookedSeatInfo.amount}}
+                              </span> 
+                            </div>
+                            <div class="col-12 py-1">  
+                              <div v-if="!isDiscountAvailable" class="form-row">
+                                <div class="form-group mb-1 col-8">       
+                                  <input type="text" class="form-control px-1" id="discountCode" placeholder="Enter Discount Code" v-model="discount.code" /> 
+                                </div>
+                                
+                                <div class="form-group mb-1 col-4">
+                                  <button type="button" class="btn btn-info px-2 float-right"
+                                  @click.prevent="applyDiscount()"
+                                  :disabled="discount.code ==''"
+                                  >
+                                  Apply
+                                  </button>
+                                </div>
+                                <span class="help text-danger px-2" v-if="has('discount')" v-text="get('discount')"></span>
+                              </div>
+                              <div v-if="isDiscountAvailable" class="form-row">
+                                <div class="col-8"> Discount <small @click="removeDiscount()" class="px-2 text-danger" style="cursor: pointer;">remove</small></div>
+                                <div class="col-4">
+                                  <span class="px-2 px-2 float-right">
+                                  ৳ {{ discount.amount}} </span>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="col-7 py-1 font125">
+                              Total
+                            </div>
+                            <div class="col-5 py-1 font125">
+                              <span class="float-right">
+                                ৳ {{totalAmount}}
+                              </span> 
+                            </div>
+                            
+                          </div>
+                          <!-- // -->
+                          <!-- Payment Options -->
+                            <div class="payment-options p-2 my-2 bg-light rounded">
+                            <div class="radio">
+                              <label class="radio-inline">
+                                <input type="radio" name="paymentMethod" id="optionsRadios1" value="cash" v-model="payment.method">
+                                Cash
+                              </label>    
+                            </div>
+                            <div class="radio">
+                              <label class="radio-inline">
+                                <input type="radio" name="paymentMethod" id="optionsRadios2" value="pos" v-model="payment.method">
+                                POS
+                              </label>
+                            </div>
+                            <div class="form-group" v-show="payment.method=='pos'">
+                              <label for="transacton">Transaction:</label>  
+                              <input type="text" class="form-control" name="transaction" id="transaction" v-model="payment.transaction" placeholder="Enter transaction number">
+                            </div>
+                          </div>
+                          <!-- / -->
+                          <div class="form-group my-3">
+                            <button type="submit" class="btn btn-success btn-block rounded-pill" :disabled="disablePayButton">Pay Now</button>
+                          </div>                                 
                         </form>                    
                       </div>
                       <div v-else>
@@ -374,6 +446,7 @@
                           <csrf-token />
                           <!-- card payment -->
                           <input id="booking_id" name="booking_id" type="hidden" :value="bookedSeatInfo.booking_ref">
+                          <input id="card_discount_id" name="card_discount_amount" type="hidden" :value="discount.amount">
                           <div class="row">
                             <div class="col-7 py-1">
                               Subtotal ({{bookedSeatInfo.total_seats}} seat)
@@ -420,7 +493,7 @@
                           </div>
 
                           <div class="form-group my-3">
-                            <button type="submit" class="btn btn-success btn-block" :disabled="disablePayButton">Pay Now</button>
+                            <button type="submit" class="btn btn-success btn-block rounded-pill" :disabled="disablePayButton">Pay Now</button>
                           </div>
                           <!-- // -->
                         </form>                    
@@ -479,7 +552,7 @@
                             :disabled="isDisabledSeatSelection(seat.status)"                   
                           >               
                             <span v-show="!isSeatBuying(seat.status)" > {{ seat.seat_no }} </span>
-                            <span v-show="isSeatBuying(seat.status)" class="fa fa-refresh fa-spin text-danger"></span>  
+                            <span v-show="isSeatBuying(seat.status)" class="fas fa-sync fa-spin text-danger"></span>  
                            
                           </button> 
                     </div>
@@ -493,11 +566,15 @@
                   </div>  
                 </div>
               </div>
-              <div v-show="isSeatSelected" class="mb-4">
+              <!-- <div v-show="isSeatSelected" class="mb-4"> -->
+              <div class="mb-4">
                 <div class="card border-info border-top-0">      
                   <div class="card-header bg-info border-info text-white">Selected Seat Info</div>
                   <div class="card-body p-0">
-                    <table class="table table-striped">
+                    <h5 v-show="!isSeatSelected" class="py-2 text-center">
+                      Seat's not selected yet!
+                    </h5>
+                    <table v-show="isSeatSelected" class="table table-striped">
                       <thead>
                         <th>Sl.#</th>
                         <th>Selected Seat</th>
@@ -527,7 +604,7 @@
                       </tbody>
                     </table>       
                   </div>
-                  <div class="card-footer total">
+                  <div v-show="isSeatSelected" class="card-footer total">
                     <strong>Total Amount:</strong> {{ totalFare }} 
                   </div>        
                 </div>
@@ -591,7 +668,7 @@
                     <div class="card border-secondary border-top-0">
                       <div class="card-header bg-secondary border-secondary text-white">Admin/ Operator</div>
                       <div class="card-body">
-                        <form v-on:submit.prevent="seatBookingByStaff()" @keydown="form.errors.clear($event.target.name)">
+                        <form v-on:submit.prevent="seatBookingByStaff(), showTheModal('seatSelection', false)" @keydown="form.errors.clear($event.target.name)">
                           <div v-show="form.phone!=''" class="text-center">
                             <div v-show="userExist" class="alert alert-success" role="alert">                          
                               <span class="fa-stack fa-2x mr-2">
@@ -699,16 +776,30 @@
                 </div>
                 
                 <div v-else>
-                    <h3>GUEST</h3>
+                    <!-- <h3>GUEST</h3> -->
+                    <div class="d-flex">          
+                      <div class="p-2 flex-fill warning-l">
+                        <i class="mt-3 fas fa-user-times fa-3x"></i>
+                      </div>
+                      <div class="p-2 flex-fill warning-r">
+                        <h4 class="mx-2 pb-2 border-bottom">Oops!</h4>
+                        <div class="mx-2 my-2 text-center">
+                          You are not logged in!   
+                          <a class="mt-3 mb-2 px-2 btn btn-warning btn-block rounded-pill" :href="loginRoute" role="button">Login</a>    
+
+                          <a class="mb-2" :href="registerRoute">New User?
+                          </a>    
+                        </div>                        
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
            <!-- // -->
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary rounded-pill px-5" data-dismiss="modal">Close</button>
-            <!-- <button type="button" class="btn btn-primary">Understood</button> -->
-          </div>
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-primary rounded-pill px-5" data-dismiss="modal">Close</button>            
+          </div> -->
         </div>
       </div>
   </div>    
@@ -730,7 +821,9 @@
         'user',
         'phoneVerificationRoute',
         'cashPaymentRoute',
-        'cardPaymentRoute'
+        'cardPaymentRoute',
+        'loginRoute',
+        'registerRoute'
       ],
 
        // components: {          
@@ -865,7 +958,7 @@
            // this.enableScroll();         
             // Echo.channel('mychannel.1')
             //   .listen('SeatStatusUpdatedEvent', this.updateSeatStatus);             
-          // this.eventListenThroughBroadcastChannel();
+          this.eventListenThroughBroadcastChannel();
       },
       beforeUnmount() {
         this.instanceOfScrollbarInfoTable.destroy();

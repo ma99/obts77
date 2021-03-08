@@ -30,6 +30,7 @@ class PaymentController extends Controller
     {
     	$data = [];
         $bookingId = $request->input('booking_id');
+        $discountAmount = $request->input('card_discount_amount');
         $booking = $this->booking->getBookingBy($bookingId);   
 
         if($booking == null) {return;}             
@@ -38,6 +39,9 @@ class PaymentController extends Controller
         //$booking->setSession();
 
         $data = $this->getDataBy($booking); // get booking information 
+        if ($discountAmount > 0) {
+            $data['total_amount'] = $data['total_amount'] - $discountAmount;
+        }
         
         if ($request->has(['paymentMethod', 'transaction'])) {
             
@@ -69,6 +73,7 @@ class PaymentController extends Controller
     {
         //$data = [];
         $bookingId = $request->input('booking_id');
+        $discountAmount = $request->input('cash_discount_amount');
         $booking = $this->booking->getBookingBy($bookingId);   
 
         if($booking == null) {return;}             
@@ -77,10 +82,15 @@ class PaymentController extends Controller
         //$booking->setSession();
 
         $data = $this->getDataBy($booking); // get booking information 
+        if ($discountAmount > 0) {
+            $data['total_amount'] = $data['total_amount'] - $discountAmount;
+        }
         
+
         $name = auth()->user()->name;
         $id = auth()->user()->id;
-        $data['received_by'] = "$name'_'$id";
+        // $data['received_by'] = "$name'_'$id";
+        $data['received_by'] = "{$name}_{$id}";
         
         if ($request->has('paymentMethod')) {
 

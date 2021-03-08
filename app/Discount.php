@@ -88,7 +88,7 @@ class Discount extends Model
                 return true;
             } 
 
-            $this->error = "Offer or Promotion is not strated yet!";
+            $this->error = "Offer/ Promotion is not strated yet!";
             return false;
     	}
 
@@ -99,7 +99,7 @@ class Discount extends Model
             return true;
         } 
 
-        $this->error = 'Sorry! Offer or Promotion is over.';
+        $this->error = 'Sorry! Offer/ Promotion is over.';
         return false;
     }
 }
