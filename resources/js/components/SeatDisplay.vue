@@ -1,816 +1,823 @@
 <template>
-<div>
-
-  <div v-if="!isSeatBooked && showSearch" class="card border-0 bg-transparent">
-            
-    <div class="card-body">                  
-      <form>
-        <div class="row align-items-center">
-          <div class="col-md-5 search-form shadow">
-            <!-- @include('includes.search') -->
-            <!-- ///// SEARCH BIG -->
-            <div class="form-row justify-content-center">
-              <div class="form-group col-8">
-             <!--  {{-- <autocomplete 
-                input-label="From"
-                :suggestions="availableCityList" 
-                v-model:city="selectedCityFrom" 
-              >
-              </autocomplete>   --}} -->
-                <autocomplete 
-                  :suggestions="availableCityList" 
-                  :city="selectedCityFrom" 
-                  @update:city="handleCityFromInputEvent"  
-                  input-label="From"
-                >
-                </autocomplete>  
-              </div>
-              <div class="form-group col-8">
-                <!-- {{-- <autocomplete :suggestions="availableCityList" v-model="selectedTo" input-label="To">
-                </autocomplete> --}} -->
-                <autocomplete 
-                  :suggestions="availableCityList" 
-                  :city="selectedTo"       
-                  @update:city="handleCityToInputEvent"  
-                  input-label="To"
-                >
-                </autocomplete>
-              </div>
-              <div class="form-group col-8">  
-                  <label for="startDate">Date of Journey</label> 
-                  <div id="sandbox-container">
-                    <div class="input-group date">
-                      <input name="date" id="startDate" class="form-control border-right-0" type="text" v-model="startDate" placeholder="Select Date">
-                      <span class="input-group-append">
-                          <div class="input-group-text bg-white"><i class="fas fa-calendar-alt" style="color: hsl(86, 51%, 54%);"></i></div>
-                      </span>
-                    </div>
-                  </div>
-              </div>
-              <div class="col-8">
-                <button type="button" @click.prevent="searchBus" class="btn btn-warning btn-search form-control" :disabled="isDisabled">Search &nbsp;
-                  <i class="fa fa-search"></i>
-                </button>   
-              </div>                          
-            </div> 
-            <!-- ///// -->                       
-          </div>
-          <div class="col-7">                        
-          </div>
-        </div>                    
-      </form> 
-    </div>
-  </div>
-
-  <!-- // SCHEDULE -->
-  <div v-show="isValidSearchMini" class="bg-lightlemonyellow rounded">
-    <div class="bg-success info-table-top"></div>
-    <button type="button" class="close float-right mr-2" aria-label="Close" @click.prevent="setSearchMini('false')">
-      <span aria-hidden="true">&times;</span>
-    </button>
-    <div class="d-md-flex justify-content-around p-3 my-2">
-      <!-- @include('includes.search-mini') -->
-      <!-- SEARCH MINI -->
-      <div class="form-row justify-content-center">
-        <div class="form-group col-sm-3 col-md-3">  
-          <autocomplete 
-            :suggestions="availableCityList" 
-            :city="selectedCityFrom"       
-            @update:city="handleCityFromInputEvent" 
-            input-label="From"
-          >
-          </autocomplete>  
-        </div>
-        <div class="form-group col-sm-3 col-md-3">    
-          <autocomplete 
-            :suggestions="availableCityList" 
-            :city="selectedTo"       
-            @update:city="handleCityToInputEvent"  
-            input-label="To"
-          >
-          </autocomplete>
-        </div>
-        <div class="form-group col-sm-4 col-md-4">  
-            <label for="startDateMini">Date of Journey</label> 
-            <div id="sandbox-container-mini">
-              <div class="input-group date">
-                <input name="date" id="startDateMini" class="form-control border-right-0" type="text" v-model="startDate" placeholder="Select Date">
-                <span class="input-group-append">
-                    <div class="input-group-text bg-white"><i class="fas fa-calendar-alt" style="color: hsl(86, 51%, 54%);"></i></div>
-                </span>
-              </div>
-            </div>
-        </div>
-        <div class="col-sm-10 col-md-2 align-self-center">
-          <button type="button" v-on:click.prevent="searchBus" class="btn btn-warning btn-search form-control px-md-1 mb-sm-2 mb-md-0 mt-md-3" :disabled="isDisabled">Search
-            <i class="fa fa-search ml-1"></i>
-          </button>
-        </div>                          
-      </div> 
-      <!-- / -->
-    </div>
-  </div>
-  <!-- // -->
-
-  <!-- NAVIGATION -->
-  <div v-if="showSchedule && !searchMini && !isSeatBooked" class="bg-lightlemonyellow rounded">
-    <div class="bg-success info-table-top"></div>  
-    
-    <div class="card mb-3 bg-lightlemonyellow">
-      <div class="card-header">
-        <span class="rounded-circle ml-n2 ml-sm-0 mr-2" 
-          style="
-              background-color: hsl(45deg 70% 77%);
-              padding: 0.6rem 0.75rem;
-              /*margin-left: -0.5rem;*/
-              /*margin-right: 0.5rem;*/
-          "
-        >
-          <i class="fas fa-route"></i>
-        </span>
-        <span style="letter-spacing: 1px">
-          {{ selectedCityFrom}} to {{ selectedTo}} 
-        </span>
-        <span class="h5 d-block ml-4 ml-sm-0 mt-1 px-3 text-success d-sm-inline" style="letter-spacing: 2px">
-          {{convertToDate(startDate)}}
-        </span>
-      </div>
-      <div class="card-body mt-n3 mb-md-n3 p-3 px-sm-4 d-md-flex justify-content-center align-items-center">
-        <div class="px-2"> 
-          <img :src="'./storage/images/bus-icon.png'" class="img-bus mx-auto d-block">
-        </div>
-
-        <!-- {{-- DATE NAVIGATION --}} -->
-        <div class="px-sm-2 mb-3 mb-md-0 d-flex flex-fill justify-content-center align-items-center">
-            <div class="pr-1 w-100">                    
-              <button type="button" @click.prevent="handleSearch('prev')" class="px-sm-4 btn btn-info form-control rounded-pill" :disabled="isValidDate">
-              <i class="fas fa-angle-double-left mr-1"></i>
-              Prev Day                  
-              </button>
-            </div>
-            <div class="pl-1 w-100">                    
-              <button type="button" @click.prevent="handleSearch('next')" class="px-sm-4 btn btn-info form-control rounded-pill">
-              Next Day                  
-              <i class="fas fa-angle-double-right ml-1"></i>
-              </button>
-            </div>
-        </div>
-      
-        <div class="px-sm-2 mb-1 mb-md-0 flex-fill">
-          <button type="button" @click.prevent="handleSearchMini()" class="px-4 btn btn-warning form-control rounded-pill">
-          Search <i class="fas fa-undo ml-2"></i>
-          </button>
-        </div>
-
-      </div>                    
-    </div>
-  </div>
-  <!-- // -->
-  <!-- SCHEDULE TABLE  -->
-  <div v-show="showSchedule && !isSeatBooked" class="info-table mb-3 rounded shadow">
-    <div class="bg-warning info-table-top"></div>
-    <div class="d-md-flex p-2 mb-3 rounded">
-      <div class="p-2 info-table-left flex-shrink-1">
-        <div class="filter-title">Fillter</div>
-        <div class="filter-element">                      
-          <form>
-            <span 
-              class="d-inline-block d-md-block ml-3 ml-md-4 px-2 px-md-0 custom-control custom-checkbox mb-1"
-              v-for="(bus, index) in busTypes"
-              :key="bus.bus_id"
-            >
-              <input type="checkbox" class="custom-control-input" :id="setBusTypeCheckId(index)" :value="bus.type" v-model="busCheckedTypes" />
+  <div>    
+    <stepper 
+      :search="steps.search" 
+      :select="steps.select" 
+      :buy="steps.buy"  
+    />
+    <div v-if="!isSeatBooked && showSearch" class="card border-0 bg-transparent">
               
-              <!-- <input type="checkbox" class="custom-control-input" :value="bus.type" v-model="busCheckedTypes" /> -->
-              <label class="custom-control-label" :for="setBusTypeCheckId(index)">
-                {{ bus.type }}
-              </label>
-            </span>                                       
-          </form>                    
-        </div>
-      </div>
-
-      <div class="p-2 mb-2 flex-fill">
-        <div class="pb-2" v-if="busCheckedTypes.length > 0">
-          <button 
-            type="button" 
-            class="btn btn-outline-info btn-sm rounded-pill mr-1"
-            v-for="(type, index) in busCheckedTypes"
-            @click.prevent="removeFilter(type)"
-          >
-            {{ type }} 
-            <i class="fas fa-times-circle"></i>
-          </button>                      
-        </div>
-        <div class="card info-scroll">
-          <div class="card-body p-0">
-            <!-- {{-- <div id="scrollbar"> --}} -->
-            <table class="table table-striped table-hover">
-               <!-- Table Headings -->
-                <thead style="background-color:hsla(75, 58%, 64%, 1);">
-                    <th>SL No.</th>                                
-                    <th>Dept. Time</th>            
-                 <!--    {{-- <th>Arr. Time</th>              --}} -->
-                    <th>Type</th>                                
-                    <th>Available Seats</th>
-                    <th>Fare</th>                                
-                    <th>View</th>
-                    <!-- {{-- <th>&nbsp;</th> --}} -->
-                </thead>
-                <!-- Table Body -->
-                <tbody>
-                    <tr v-for="(bus, index) in busesByType">
-                        <td class="table-text">
-                          <div> {{ index + 1 }} </div>
-                        </td>
-
-                        <td class="table-text">
-                          <div> {{ bus.departure_time }} </div>
-                        </td>
-                        <!-- <td class="table-text">
-                          <div> {{ bus.arrival_time }} </div>
-                        </td>  -->
-                        <td class="table-text">
-                          <div> {{ bus.bus_type }} </div>
-                        </td>
-                        <td class="table-text">
-                          <div> {{ bus.available_seats }} </div>
-                        </td>
-                        <td class="table-text">
-                          <div> {{ bus.fare }} </div>
-                        </td>
-                        <td class="table-text">                          
-                          <button type="button" class="btn btn-outline-primary" @click.prevent="viewSeatsOf(bus)">    
-                              <i class="button-icon fas fa-eye"></i>View
-                          </button>   
-                        </td>
-                    </tr>                                                            
-                </tbody>
-            </table>                        
-            <!-- {{-- </div> --}} -->
-          </div>            
-        </div>
-      </div>                  
-    </div>                              
-  </div>
-  <!-- // -->
-
-  <loader :show="loading"></loader>
-
-  <!-- @include('includes.booking') -->
-  <!-- BOOKING -->
-    <!-- {{-- <div v-show="isSeatBooked" class="row justify-content-center"> --}} -->
-  <div v-show="isSeatBooked" class="row justify-content-center mt-4">
-    <div class="col-12">
-      <div class="card">
-        <div class="icon-box success">        
-          <i class="fas fa-file-invoice"></i>
-        </div>  
-        <div class="card-body">        
-          <div class="row booking-info p-3">
-            <div class="col-12 mt-2">
-              <p class="text-muted text-center">Your Booking Request has been completed.</p>
-            
-              <div class="row mx-0">         
-                <div class="col-7 p-2 shadow">
-                  <div class="row mx-0">
-
-                    <div class="col-12 mb-3 border-bottom">
-                      <h4 class="card-title text-success">Booking Details</h4>
-                    </div>          
-
-                    <div class="col-12 mb-3">
-                      Booking Ref: <strong>{{ bookedSeatInfo.booking_ref }}</strong>
-                    </div>
-                
-                   <!--  @auth
-                    @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
-                      <div class="col-6 mb-2">
-                        Name: <strong>{{ userInfo.name }}</strong>
-                      </div>
-                      <div class="col-6 mb-2">
-                        Phone: <strong>{{ userInfo.phone }}</strong>
-                      </div>
-                    @else 
-                      <div class="col-6 mb-2">
-                        Name: <strong>{{ auth()->user()->name }}</strong>
-                      </div>
-                      <div class="col-6 mb-2">
-                        Phone: <strong>{{ auth()->user()->phone }}</strong>
-                      </div>
-                    @endif
-                    @endauth -->
-
-                    <div class="col-7 mb-2">
-                      Seat No(s): <strong>{{ bookedSeatInfo.seats}}</strong>
-                    </div>
-                    <div class="col-7 mb-2">
-                      Amount: <strong>{{ bookedSeatInfo.amount }} </strong> Tk
-                    </div>
-                    <div class="col-6 mb-2">
-                      Date: <strong>{{ bookedSeatInfo.date }}</strong>
-                    </div>
-                    <div class="col-6 mb-2">
-                      Time: <strong>{{ selectedBus.departure_time }}</strong>
-                    </div>
-                    <div class="col-6 mb-2">
-                      Pickup Point: {{ bookedSeatInfo.pickup_point }} 
-                    </div>
-                    <div class="col-6 mb-2">
-                      Dropping Point: {{ bookedSeatInfo.dropping_point }} 
-                    </div>
-                    <div class="col-6 mb-2">
-                      Coach: {{ selectedBus.bus_number_plate }} 
-                    </div>                           
-                  </div>
-                </div>
-
-                <div class="col-5 p-3"
-                  style="hsl(134deg 76% 88%) !important;" 
+      <div class="card-body">                  
+        <form>
+          <div class="row align-items-center">
+            <div class="col-12 col-md-4 mt-md-n5 search-form shadow order-2 order-md-1">
+              <!-- @include('includes.search') -->
+              <!-- ///// SEARCH BIG -->
+              <div class="form-row justify-content-center">
+                <div class="form-group col-8">
+               <!--  {{-- <autocomplete 
+                  input-label="From"
+                  :suggestions="availableCityList" 
+                  v-model:city="selectedCityFrom" 
                 >
-                  <h4>
-                    Payment Summary
-                  </h4>
-                  <div class="mt-2">
-                  <!-- @auth
-                          @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
-                            <form method="post" action="{{ route('make.payment.cash')}}">
-                              @include('includes.paymentoptions')
-                              @include('includes.paymentsubmit')                        
-                            </form>                    
-                          @else
-                            <form method="post" action="{{ route('make.payment.card')}}">            
-                              @include('includes.paymentsubmit')                        
-                            </form>
-                          @endif
-                  @endauth  -->
-                    <div v-if="!userRole.isGuest">
-                      <div v-if="userRole.isStaff">
-                        <form method="post" :action="cashPaymentRoute">
-                          <csrf-token />
-                          <!-- <div class="payment-options p-2 my-2">
-                            <div class="radio">
-                              <label class="radio-inline">
-                                <input type="radio" name="paymentMethod" id="optionsRadios1" value="cash" v-model="payment.method">
-                                Cash
-                              </label>    
-                            </div>
-                            <div class="radio">
-                              <label class="radio-inline">
-                                <input type="radio" name="paymentMethod" id="optionsRadios2" value="pos" v-model="payment.method">
-                                POS
-                              </label>
-                            </div>
-                            <div class="form-group" v-show="payment.method=='pos'">
-                              <label for="transacton">Transaction:</label>  
-                              <input type="text" class="form-control" name="transaction" id="transaction" v-model="payment.transaction" placeholder="Enter transaction number">
-                            </div>
-                          </div> -->
-                          <!-- Payment Summary    -->
-                          <input id="booking_id" name="booking_id" type="hidden" :value="bookedSeatInfo.booking_ref">
-
-                          <input id="cash_discount_id" name="cash_discount_amount" type="hidden" :value="discount.amount">
-                          <div class="row">
-                            <div class="col-7 py-1">
-                              Subtotal ({{bookedSeatInfo.total_seats}} seat)
-                            </div>
-                            <div class="col-5 py-1">
-                              <span class="float-right">
-                                ৳ {{bookedSeatInfo.amount}}
-                              </span> 
-                            </div>
-                            <div class="col-12 py-1">  
-                              <div v-if="!isDiscountAvailable" class="form-row">
-                                <div class="form-group mb-1 col-8">       
-                                  <input type="text" class="form-control px-1" id="discountCode" placeholder="Enter Discount Code" v-model="discount.code" /> 
-                                </div>
-                                
-                                <div class="form-group mb-1 col-4">
-                                  <button type="button" class="btn btn-info px-2 float-right"
-                                  @click.prevent="applyDiscount()"
-                                  :disabled="discount.code ==''"
-                                  >
-                                  Apply
-                                  </button>
-                                </div>
-                                <span class="help text-danger px-2" v-if="has('discount')" v-text="get('discount')"></span>
-                              </div>
-                              <div v-if="isDiscountAvailable" class="form-row">
-                                <div class="col-8"> Discount <small @click="removeDiscount()" class="px-2 text-danger" style="cursor: pointer;">remove</small></div>
-                                <div class="col-4">
-                                  <span class="px-2 px-2 float-right">
-                                  ৳ {{ discount.amount}} </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-7 py-1 font125">
-                              Total
-                            </div>
-                            <div class="col-5 py-1 font125">
-                              <span class="float-right">
-                                ৳ {{totalAmount}}
-                              </span> 
-                            </div>
-                            
-                          </div>
-                          <!-- // -->
-                          <!-- Payment Options -->
-                            <div class="payment-options p-2 my-2 bg-light rounded">
-                            <div class="radio">
-                              <label class="radio-inline">
-                                <input type="radio" name="paymentMethod" id="optionsRadios1" value="cash" v-model="payment.method">
-                                Cash
-                              </label>    
-                            </div>
-                            <div class="radio">
-                              <label class="radio-inline">
-                                <input type="radio" name="paymentMethod" id="optionsRadios2" value="pos" v-model="payment.method">
-                                POS
-                              </label>
-                            </div>
-                            <div class="form-group" v-show="payment.method=='pos'">
-                              <label for="transacton">Transaction:</label>  
-                              <input type="text" class="form-control" name="transaction" id="transaction" v-model="payment.transaction" placeholder="Enter transaction number">
-                            </div>
-                          </div>
-                          <!-- / -->
-                          <div class="form-group my-3">
-                            <button type="submit" class="btn btn-success btn-block rounded-pill" :disabled="disablePayButton">Pay Now</button>
-                          </div>                                 
-                        </form>                    
-                      </div>
-                      <div v-else>
-                        <form method="post" :action="cardPaymentRoute">
-                          <!-- <input type="hidden" name="_token" :value="csrf"> -->
-                          <csrf-token />
-                          <!-- card payment -->
-                          <input id="booking_id" name="booking_id" type="hidden" :value="bookedSeatInfo.booking_ref">
-                          <input id="card_discount_id" name="card_discount_amount" type="hidden" :value="discount.amount">
-                          <div class="row">
-                            <div class="col-7 py-1">
-                              Subtotal ({{bookedSeatInfo.total_seats}} seat)
-                            </div>
-                            <div class="col-5 py-1">
-                              <span class="float-right">
-                                ৳ {{bookedSeatInfo.amount}}
-                              </span> 
-                            </div>
-                            <div class="col-12 py-1">  
-                              <div v-if="!isDiscountAvailable" class="form-row">
-                                <div class="form-group mb-1 col-8">       
-                                  <input type="text" class="form-control px-1" id="discountCode" placeholder="Enter Discount Code" v-model="discount.code" /> 
-                                </div>
-                                
-                                <div class="form-group mb-1 col-4">
-                                  <button type="button" class="btn btn-info px-2 float-right"
-                                  @click.prevent="applyDiscount()"
-                                  :disabled="discount.code ==''"
-                                  >
-                                  Apply
-                                  </button>
-                                </div>
-                                <span class="help text-danger px-2" v-if="has('discount')" v-text="get('discount')"></span>
-                              </div>
-                              <div v-if="isDiscountAvailable" class="form-row">
-                                <div class="col-8"> Discount <small @click="removeDiscount()" class="px-2 text-danger" style="cursor: pointer;">remove</small></div>
-                                <div class="col-4">
-                                  <span class="px-2 px-2 float-right">
-                                  ৳ {{ discount.amount}} </span>
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="col-7 py-1 font125">
-                              Total
-                            </div>
-                            <div class="col-5 py-1 font125">
-                              <span class="float-right">
-                                ৳ {{totalAmount}}
-                              </span> 
-                            </div>
-                            
-                          </div>
-
-                          <div class="form-group my-3">
-                            <button type="submit" class="btn btn-success btn-block rounded-pill" :disabled="disablePayButton">Pay Now</button>
-                          </div>
-                          <!-- // -->
-                        </form>                    
+                </autocomplete>   --}} -->
+                  <autocomplete 
+                    :suggestions="availableCityList" 
+                    :city="selectedCityFrom" 
+                    @update:city="handleCityFromInputEvent"  
+                    input-label="From"
+                  >
+                  </autocomplete>  
+                </div>
+                <div class="form-group col-8">
+                  <!-- {{-- <autocomplete :suggestions="availableCityList" v-model="selectedTo" input-label="To">
+                  </autocomplete> --}} -->
+                  <autocomplete 
+                    :suggestions="availableCityList" 
+                    :city="selectedTo"       
+                    @update:city="handleCityToInputEvent"  
+                    input-label="To"
+                  >
+                  </autocomplete>
+                </div>
+                <div class="form-group col-8">  
+                    <label for="startDate">Date of Journey</label> 
+                    <div id="sandbox-container">
+                      <div class="input-group date">
+                        <input name="date" id="startDate" class="form-control border-right-0" type="text" v-model="startDate" placeholder="Select Date">
+                        <span class="input-group-append">
+                            <div class="input-group-text bg-white"><i class="fas fa-calendar-alt" style="color: hsl(86, 51%, 54%);"></i></div>
+                        </span>
                       </div>
                     </div>
-
-                  </div>
                 </div>
-              </div>
-
-            </div>            
-          </div>
-        </div>
+                <div class="col-8">
+                  <button type="button" @click.prevent="searchBus" class="btn btn-warning btn-search form-control" :disabled="isDisabled">Search &nbsp;
+                    <i class="fa fa-search"></i>
+                  </button>   
+                </div>                          
+              </div> 
+              <!-- ///// -->                       
+            </div>
+            <div class="col-12 px-0 pl-md-4 col-md-7 order-1 order-md-2">                        
+              <slider />
+            </div>
+          </div>                    
+        </form> 
       </div>
     </div>
-  </div>
-  <!-- // -->
 
-  <!-- Modal -->
-  <div class="modal fade" id="seatSelection" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-width  modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">
-              Seat Selection
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
+    <!-- // SCHEDULE -->
+    <div v-show="isValidSearchMini" class="bg-lightlemonyellow rounded">
+      <div class="bg-success info-table-top"></div>
+      <button type="button" class="close float-right mr-2" aria-label="Close" @click.prevent="setSearchMini('false')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="d-md-flex justify-content-around p-3 my-2">
+        <!-- @include('includes.search-mini') -->
+        <!-- SEARCH MINI -->
+        <div class="form-row justify-content-center">
+          <div class="form-group col-sm-3 col-md-3">  
+            <autocomplete 
+              :suggestions="availableCityList" 
+              :city="selectedCityFrom"       
+              @update:city="handleCityFromInputEvent" 
+              input-label="From"
+            >
+            </autocomplete>  
+          </div>
+          <div class="form-group col-sm-3 col-md-3">    
+            <autocomplete 
+              :suggestions="availableCityList" 
+              :city="selectedTo"       
+              @update:city="handleCityToInputEvent"  
+              input-label="To"
+            >
+            </autocomplete>
+          </div>
+          <div class="form-group col-sm-4 col-md-4">  
+              <label for="startDateMini">Date of Journey</label> 
+              <div id="sandbox-container-mini">
+                <div class="input-group date">
+                  <input name="date" id="startDateMini" class="form-control border-right-0" type="text" v-model="startDate" placeholder="Select Date">
+                  <span class="input-group-append">
+                      <div class="input-group-text bg-white"><i class="fas fa-calendar-alt" style="color: hsl(86, 51%, 54%);"></i></div>
+                  </span>
+                </div>
+              </div>
+          </div>
+          <div class="col-sm-10 col-md-2 align-self-center">
+            <button type="button" v-on:click.prevent="searchBus" class="btn btn-warning btn-search form-control px-md-1 mb-sm-2 mb-md-0 mt-md-3" :disabled="isDisabled">Search
+              <i class="fa fa-search ml-1"></i>
+            </button>
+          </div>                          
+        </div> 
+        <!-- / -->
+      </div>
+    </div>
+    <!-- // -->
+
+    <!-- NAVIGATION -->
+    <div v-if="showSchedule && !searchMini && !isSeatBooked" class="bg-lightlemonyellow rounded">
+      <div class="bg-success info-table-top"></div>  
+      
+      <div class="card mb-3 bg-lightlemonyellow">
+        <div class="card-header">
+          <span class="rounded-circle ml-n2 ml-sm-0 mr-2" 
+            style="
+                background-color: hsl(45deg 70% 77%);
+                padding: 0.6rem 0.75rem;
+                /*margin-left: -0.5rem;*/
+                /*margin-right: 0.5rem;*/
+            "
+          >
+            <i class="fas fa-route"></i>
+          </span>
+          <span style="letter-spacing: 1px">
+            {{ selectedCityFrom}} to {{ selectedTo}} 
+          </span>
+          <span class="h5 d-block ml-4 ml-sm-0 mt-1 px-3 text-success d-sm-inline" style="letter-spacing: 2px">
+            {{convertToDate(startDate)}}
+          </span>
+        </div>
+        <div class="card-body mt-n3 mb-md-n3 p-3 px-sm-4 d-md-flex justify-content-center align-items-center">
+          <div class="px-2"> 
+            <img :src="'./storage/images/bus-icon.png'" class="img-bus mx-auto d-block">
+          </div>
+
+          <!-- {{-- DATE NAVIGATION --}} -->
+          <div class="px-sm-2 mb-3 mb-md-0 d-flex flex-fill justify-content-center align-items-center">
+              <div class="pr-1 w-100">                    
+                <button type="button" @click.prevent="handleSearch('prev')" class="px-sm-4 btn btn-info form-control rounded-pill" :disabled="isValidDate">
+                <i class="fas fa-angle-double-left mr-1"></i>
+                Prev Day                  
+                </button>
+              </div>
+              <div class="pl-1 w-100">                    
+                <button type="button" @click.prevent="handleSearch('next')" class="px-sm-4 btn btn-info form-control rounded-pill">
+                Next Day                  
+                <i class="fas fa-angle-double-right ml-1"></i>
+                </button>
+              </div>
+          </div>
+        
+          <div class="px-sm-2 mb-1 mb-md-0 flex-fill">
+            <button type="button" @click.prevent="handleSearchMini()" class="px-4 btn btn-warning form-control rounded-pill">
+            Search <i class="fas fa-undo ml-2"></i>
             </button>
           </div>
-          <!-- <div class="modal-body scrollbar-modal"> -->
-          <div class="modal-body">
-            <!-- @include('includes.seatselection')    -->
-           <!-- SEAT SELECTION  -->
-            <div class="card-columns">
-              <div class="seat-layout mb-4">
-                <div class="card border-primary border-top-0">
-                  <div class="card-header bg-primary border-primary text-white">Seat Plan</div>      
-                  <div class="card-body">
-                    <div class="row driver-seat">                      
-                      <button class="btn btn-outline-secondary" :disabled="true">Driver</button>
-                    </div>
-                    <div class="row justify-content-center" style="margin-left: -5px;">
-                         
-                          <button
-                            class="btn btn-outline-primary col-xs-2"
-                            v-bind:class="{ 
-                              'is-active': seat.checked, 
-                              booked: seat.status=='booked'? true : false,
-                              buying: isSeatBuying(seat.status),                 
-                              confirmed: seat.status=='confirmed'? true : false, 
-                              empty: seat.status=='n/a'? true : false,             
-                              'col-xs-offset-2': emptySpace(index, seat.seat_no) }"
-                            v-for="(seat, index) in seatList"          
-                            @click="toggle(seat)"           
-                            :disabled="isDisabledSeatSelection(seat.status)"                   
-                          >               
-                            <span v-show="!isSeatBuying(seat.status)" > {{ seat.seat_no }} </span>
-                            <span v-show="isSeatBuying(seat.status)" class="fas fa-sync fa-spin text-danger"></span>  
-                           
-                          </button> 
-                    </div>
-                  </div>
-                  <!-- {{-- card-footer --}} -->           
-                  <div class="card-footer">
-                    <show-alert :show.sync="showAlert" :type="alertType"> 
-                    <!-- altert type can be info/warning/danger -->
-                      <strong>{{ seatNo }} </strong> has been <strong>{{ seatStatus }} </strong>
-                    </show-alert>
-                  </div>  
-                </div>
-              </div>
-              <!-- <div v-show="isSeatSelected" class="mb-4"> -->
-              <div class="mb-4">
-                <div class="card border-info border-top-0">      
-                  <div class="card-header bg-info border-info text-white">Selected Seat Info</div>
-                  <div class="card-body p-0">
-                    <h5 v-show="!isSeatSelected" class="py-2 text-center">
-                      Seat's not selected yet!
-                    </h5>
-                    <table v-show="isSeatSelected" class="table table-striped">
-                      <thead>
-                        <th>Sl.#</th>
-                        <th>Selected Seat</th>
-                        <th>Fare</th>
-                        <th>Remove</th>
-                        <!-- <th>&nbsp;</th> -->
-                      </thead>
-                      <tbody>
-                        <tr v-for="(seat, index) in selectedSeat">
+
+        </div>                    
+      </div>
+    </div>
+    <!-- // -->
+    <!-- SCHEDULE TABLE  -->
+    <div v-show="showSchedule && !isSeatBooked" class="info-table mb-3 rounded shadow">
+      <div class="bg-warning info-table-top"></div>
+      <div class="d-md-flex p-2 mb-3 rounded">
+        <div class="p-2 info-table-left flex-shrink-1">
+          <div class="filter-title">Fillter</div>
+          <div class="filter-element">                      
+            <form>
+              <span 
+                class="d-inline-block d-md-block ml-3 ml-md-4 px-2 px-md-0 custom-control custom-checkbox mb-1"
+                v-for="(bus, index) in busTypes"
+                :key="bus.bus_id"
+              >
+                <input type="checkbox" class="custom-control-input" :id="setBusTypeCheckId(index)" :value="bus.type" v-model="busCheckedTypes" />
+                
+                <!-- <input type="checkbox" class="custom-control-input" :value="bus.type" v-model="busCheckedTypes" /> -->
+                <label class="custom-control-label" :for="setBusTypeCheckId(index)">
+                  {{ bus.type }}
+                </label>
+              </span>                                       
+            </form>                    
+          </div>
+        </div>
+
+        <div class="p-2 mb-2 flex-fill">
+          <div class="pb-2" v-if="busCheckedTypes.length > 0">
+            <button 
+              type="button" 
+              class="btn btn-outline-info btn-sm rounded-pill mr-1"
+              v-for="(type, index) in busCheckedTypes"
+              @click.prevent="removeFilter(type)"
+            >
+              {{ type }} 
+              <i class="fas fa-times-circle"></i>
+            </button>                      
+          </div>
+          <div class="card info-scroll">
+            <div class="card-body p-0">
+              <!-- {{-- <div id="scrollbar"> --}} -->
+              <table class="table table-striped table-hover">
+                 <!-- Table Headings -->
+                  <thead style="background-color:hsla(75, 58%, 64%, 1);">
+                      <th>SL No.</th>                                
+                      <th>Dept. Time</th>            
+                   <!--    {{-- <th>Arr. Time</th>              --}} -->
+                      <th>Type</th>                                
+                      <th>Available Seats</th>
+                      <th>Fare</th>                                
+                      <th>View</th>
+                      <!-- {{-- <th>&nbsp;</th> --}} -->
+                  </thead>
+                  <!-- Table Body -->
+                  <tbody>
+                      <tr v-for="(bus, index) in busesByType">
                           <td class="table-text">
                             <div> {{ index + 1 }} </div>
                           </td>
+
                           <td class="table-text">
-                            <div> {{ seat.seat_no }} </div>
+                            <div> {{ bus.departure_time }} </div>
                           </td>
-                          <td class="table-text text-primary">
-                             <div> {{ getFareFor(seat) }} </div>
+                          <!-- <td class="table-text">
+                            <div> {{ bus.arrival_time }} </div>
+                          </td>  -->
+                          <td class="table-text">
+                            <div> {{ bus.bus_type }} </div>
                           </td>
                           <td class="table-text">
-                             <div>
-                                <button @click.prevent="removeSeat(seat.seat_no, seat)" type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                 <i class="fa fa-times text-danger" aria-hidden="true"></i>
-                                </button>
-                              </div>
-                            </td>                                    
-                        </tr>    
-                      </tbody>
-                    </table>       
-                  </div>
-                  <div v-show="isSeatSelected" class="card-footer total">
-                    <strong>Total Amount:</strong> {{ totalFare }} 
-                  </div>        
-                </div>
-              </div>
-
-              <div class="mb-4">
-                <!-- Pickup & Dropping Selection -->
-                <div class="card border-success border-top-0">
-                  <div class="card-header bg-success border-success text-white">Pickup & Dropping</div>
-                  <div class="card-body">
-                    <!-- @include('includes.stops') -->
-                    <!-- STOPS -->
-                    <div class="form-group">
-                      <label for="pickupPoint"> Pickup </label>
-                      <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" -->
-                      <select v-model="stops.selectedPickupPoint" class="form-control" id="pickupPoint">
-                        <!-- <option disabled value="">Please select one</option> -->
-                        <option v-if="!error.pickupPoint" disabled value="">Please select one</option>
-                        <option v-if="error.pickupPoint" disabled value="">{{error.pickupPoint }}</option>    
-                        <option v-for="pickup in pickupStops">
-                          {{ pickup.name }}
-                        </option>                           
-                      </select>
-                    </div>
-
-                    <div class="form-group">
-                      <label for="droppingPoint"> Dropping </label>
-                      <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" -->
-                      <select v-model="stops.selectedDroppingPoint" class="form-control" id="droppingPoint">
-                        <!-- <option disabled value="">Please select one</option> -->
-                        <option v-if="!error.droppingPoint" disabled value="">Please select one</option>
-                        <option v-if="error.droppingPoint" disabled value="">{{ error.droppingPoint }}</option>
-                        <option v-for="dropping in droppingStops">
-                          {{ dropping.name }}
-                        </option>                           
-                      </select>
-                    </div>
-                    <!-- // -->
-                  </div>
-                </div>         
-              </div>
-
-              <div class="mb-4">
-                <!-- @include('includes.errors')
-                @auth
-                  @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
-                    @include('includes.operator')
-                  @elseif ( auth()->user()->hasVerifiedPhone() )       
-                      @include('includes.user')        
-                  @else
-                      @include('includes.unverified.user')                
-                  @endif
-                @endauth
-                @guest
-                  @include('includes.guest')
-                @endguest -->
-                <div v-if="!userRole.isGuest">
-                  
-                  <div v-if="userRole.isStaff">
-                    <h2>STAFF</h2>
-                    <div class="card border-secondary border-top-0">
-                      <div class="card-header bg-secondary border-secondary text-white">Admin/ Operator</div>
-                      <div class="card-body">
-                        <form v-on:submit.prevent="seatBookingByStaff(), showTheModal('seatSelection', false)" @keydown="form.errors.clear($event.target.name)">
-                          <div v-show="form.phone!=''" class="text-center">
-                            <div v-show="userExist" class="alert alert-success" role="alert">                          
-                              <span class="fa-stack fa-2x mr-2">
-                                <i class="fas fa-circle fa-stack-2x"></i>
-                                <i class="fas fa-user-check fa-stack-1x fa-inverse"></i>
-                              </span>       
-                              User already exist!
-                            </div>
-                            <div v-show="!userExist" class="alert alert-warning" role="alert">
-                              <span class="fa-stack fa-2x mr-2">
-                                <i class="fas fa-user fa-stack-1x"></i>
-                                <i class="fas fa-ban fa-stack-2x" style="color:Tomato"></i>
-                              </span>
-                              User doesn't exist!
-                            </div>
-                          </div>
-
-                          <div class="m-1">                                 
-                            <input type="hidden" name="userId" id="userId1" v-model="userInfo.id" disabled>
-                          </div>
-                          <div class="form-group">
-                          <label for="phone" class="control-label">Mobile No.</label>
-                          <div class="input-group">
-                            <span class="input-group-prepend">
-                              <div class="input-group-text bg-white">
-                                <i class="fas fa-mobile-alt"></i>
-                              </div>
-                            </span>
-                            <input id="phone" type="text" class="form-control border-left-0" name="phone" v-model.lazy="form.phone"
-                              placeholder="Enter mobile number here" 
-                            >
-                          </div>
-                          <span class="help text-danger" v-if="form.errors.has('phone')" v-text="form.errors.get('phone')"></span>
-                          <span class="text-mute text-danger" v-if="userInfo.hasOwnProperty('error')" v-text="userInfo.error"></span>
-                          </div>
-
-                          <div class="form-group">
-                          <label for="name" class="control-label">Name</label>
-                          <div class="input-group">
-                            <span class="input-group-prepend">
-                              <div class="input-group-text bg-white">
-                                <i class="fas fa-user"></i>
-                              </div>
-                            </span>
-                            <input id="name" type="text" class="form-control border-left-0" name="name" v-model="form.name"
-                              placeholder="Enter name here" 
-                            >
-                          </div>
-                          <span class="help text-danger" v-if="form.errors.has('name')" v-text="form.errors.get('name')"></span>
-                          </div>            
-
-                          <div class="form-group">
-                          <label for="email" class="control-label">E-Mail</label>
-                          <div class="input-group">
-                            <span class="input-group-prepend">
-                              <div class="input-group-text bg-white">
-                                <i class="fas fa-envelope"></i>
-                              </div>
-                            </span>
-                            <input id="email" type="email" class="form-control border-left-0" name="email" v-model="form.email"
-                              placeholder="Enter email here" 
-                            >
-                          </div>
-                          <span class="help text-danger" v-if="form.errors.has('email')" v-text="form.errors.get('email')"></span>
-                          </div>                        
-                          
-                          <button class="btn btn-primary btn-block rounded-pill" :disabled="!isValid || form.errors.any()">Continue</button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>  
-
-                  <div v-else-if="userRole.isVerified"> 
-                    <div class="d-flex">
-                      <div class="p-2 flex-fill info-l">
-                        <i class="mt-3 fas fa-user-clock fa-2x"></i>
-                      </div>
-                      <div class="p-2 flex-fill info-r">
-                        <h5 class="mx-2">Ticket!</h5>
-                        <form v-on:submit.prevent="seatBookingByUser(), showTheModal('seatSelection', false)">      
-                        <p class="mt-2 mx-2"> Book The Ticket(s) 
-                          <button :disabled="!isValid" class="mt-2 btn btn-primary btn-block rounded-pill">Continue</button>
-                        </p>
-                        </form>
-                      </div>        
-                    </div>      
-                  </div>
-
-                  <div v-else>
-                    <h3>Unverified User</h3>
-
-                    <div class="d-flex">          
-                      <div class="p-2 flex-fill warning-l">
-                        <i class="mt-2 fas fa-exclamation-triangle fa-2x"></i>
-                      </div>
-                      <div class="p-2 flex-fill warning-r">
-                        <h4 class="mx-2">Oops!</h4>
-                        <p class="mx-2">Phone Verification Pending.<br>             
-                          <a class="mt-2 btn btn-secondary btn-block" :href="phoneVerificationRoute" role="button">Verify Your Phone Please</a>    
-                        </p>           
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-                
-                <div v-else>
-                    <!-- <h3>GUEST</h3> -->
-                    <div class="d-flex">          
-                      <div class="p-2 flex-fill warning-l">
-                        <i class="mt-3 fas fa-user-times fa-3x"></i>
-                      </div>
-                      <div class="p-2 flex-fill warning-r">
-                        <h4 class="mx-2 pb-2 border-bottom">Oops!</h4>
-                        <div class="mx-2 my-2 text-center">
-                          You are not logged in!   
-                          <a class="mt-3 mb-2 px-2 btn btn-warning btn-block rounded-pill" :href="loginRoute" role="button">Login</a>    
-
-                          <a class="mb-2" :href="registerRoute">New User?
-                          </a>    
-                        </div>                        
-                      </div>
-                    </div>
-                </div>
-              </div>
-            </div>
-           <!-- // -->
+                            <div> {{ bus.available_seats }} </div>
+                          </td>
+                          <td class="table-text">
+                            <div> {{ bus.fare }} </div>
+                          </td>
+                          <td class="table-text">                          
+                            <button type="button" class="btn btn-outline-primary" @click.prevent="viewSeatsOf(bus)">    
+                                <i class="button-icon fas fa-eye"></i>View
+                            </button>   
+                          </td>
+                      </tr>                                                            
+                  </tbody>
+              </table>                        
+              <!-- {{-- </div> --}} -->
+            </div>            
           </div>
-          <!-- <div class="modal-footer">
-            <button type="button" class="btn btn-primary rounded-pill px-5" data-dismiss="modal">Close</button>            
-          </div> -->
+        </div>                  
+      </div>                              
+    </div>
+    <!-- // -->
+
+    <loader :show="loading"></loader>
+
+    <!-- @include('includes.booking') -->
+    <!-- BOOKING -->      
+    <div v-show="isSeatBooked" class="row justify-content-center mt-5">
+      <div class="col-12">
+        <div class="card">
+          <div class="icon-box success">        
+            <i class="fas fa-file-invoice"></i>
+          </div>  
+          <div class="card-body">        
+            <div class="row booking-info p-3">
+              <div class="col-12 mt-2">
+                <p class="text-muted text-center">Your Booking Request has been completed.</p>
+              
+                <div class="row mx-0">         
+                  <div class="col-7 p-2 shadow">
+                    <div class="row mx-0">
+
+                      <div class="col-12 mb-3 border-bottom">
+                        <h4 class="card-title text-success">Booking Details</h4>
+                      </div>          
+
+                      <div class="col-12 mb-3">
+                        Booking Ref: <strong>{{ bookedSeatInfo.booking_ref }}</strong>
+                      </div>
+                  
+                     <!--  @auth
+                      @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
+                        <div class="col-6 mb-2">
+                          Name: <strong>{{ userInfo.name }}</strong>
+                        </div>
+                        <div class="col-6 mb-2">
+                          Phone: <strong>{{ userInfo.phone }}</strong>
+                        </div>
+                      @else 
+                        <div class="col-6 mb-2">
+                          Name: <strong>{{ auth()->user()->name }}</strong>
+                        </div>
+                        <div class="col-6 mb-2">
+                          Phone: <strong>{{ auth()->user()->phone }}</strong>
+                        </div>
+                      @endif
+                      @endauth -->
+
+                      <div class="col-7 mb-2">
+                        Seat No(s): <strong>{{ bookedSeatInfo.seats}}</strong>
+                      </div>
+                      <div class="col-7 mb-2">
+                        Amount: <strong>{{ bookedSeatInfo.amount }} </strong> Tk
+                      </div>
+                      <div class="col-6 mb-2">
+                        Date: <strong>{{ bookedSeatInfo.date }}</strong>
+                      </div>
+                      <div class="col-6 mb-2">
+                        Time: <strong>{{ selectedBus.departure_time }}</strong>
+                      </div>
+                      <div class="col-6 mb-2">
+                        Pickup Point: {{ bookedSeatInfo.pickup_point }} 
+                      </div>
+                      <div class="col-6 mb-2">
+                        Dropping Point: {{ bookedSeatInfo.dropping_point }} 
+                      </div>
+                      <div class="col-6 mb-2">
+                        Coach: {{ selectedBus.bus_number_plate }} 
+                      </div>                           
+                    </div>
+                  </div>
+
+                  <div class="col-5 p-3"
+                    style="hsl(134deg 76% 88%) !important;" 
+                  >
+                    <h4>
+                      Payment Summary
+                    </h4>
+                    <div class="mt-2">
+                    <!-- @auth
+                            @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
+                              <form method="post" action="{{ route('make.payment.cash')}}">
+                                @include('includes.paymentoptions')
+                                @include('includes.paymentsubmit')                        
+                              </form>                    
+                            @else
+                              <form method="post" action="{{ route('make.payment.card')}}">            
+                                @include('includes.paymentsubmit')                        
+                              </form>
+                            @endif
+                    @endauth  -->
+                      <div v-if="!userRole.isGuest">
+                        <div v-if="userRole.isStaff">
+                          <form method="post" :action="cashPaymentRoute">
+                            <csrf-token />
+                            <!-- <div class="payment-options p-2 my-2">
+                              <div class="radio">
+                                <label class="radio-inline">
+                                  <input type="radio" name="paymentMethod" id="optionsRadios1" value="cash" v-model="payment.method">
+                                  Cash
+                                </label>    
+                              </div>
+                              <div class="radio">
+                                <label class="radio-inline">
+                                  <input type="radio" name="paymentMethod" id="optionsRadios2" value="pos" v-model="payment.method">
+                                  POS
+                                </label>
+                              </div>
+                              <div class="form-group" v-show="payment.method=='pos'">
+                                <label for="transacton">Transaction:</label>  
+                                <input type="text" class="form-control" name="transaction" id="transaction" v-model="payment.transaction" placeholder="Enter transaction number">
+                              </div>
+                            </div> -->
+                            <!-- Payment Summary    -->
+                            <input id="booking_id" name="booking_id" type="hidden" :value="bookedSeatInfo.booking_ref">
+
+                            <input id="cash_discount_id" name="cash_discount_amount" type="hidden" :value="discount.amount">
+                            <div class="row">
+                              <div class="col-7 py-1">
+                                Subtotal ({{bookedSeatInfo.total_seats}} seat)
+                              </div>
+                              <div class="col-5 py-1">
+                                <span class="float-right">
+                                  ৳ {{bookedSeatInfo.amount}}
+                                </span> 
+                              </div>
+                              <div class="col-12 py-1">  
+                                <div v-if="!isDiscountAvailable" class="form-row">
+                                  <div class="form-group mb-1 col-8">       
+                                    <input type="text" class="form-control px-1" id="discountCode" placeholder="Enter Discount Code" v-model="discount.code" /> 
+                                  </div>
+                                  
+                                  <div class="form-group mb-1 col-4">
+                                    <button type="button" class="btn btn-info px-2 float-right"
+                                    @click.prevent="applyDiscount()"
+                                    :disabled="discount.code ==''"
+                                    >
+                                    Apply
+                                    </button>
+                                  </div>
+                                  <span class="help text-danger px-2" v-if="has('discount')" v-text="get('discount')"></span>
+                                </div>
+                                <div v-if="isDiscountAvailable" class="form-row">
+                                  <div class="col-8"> Discount <small @click="removeDiscount()" class="px-2 text-danger" style="cursor: pointer;">remove</small></div>
+                                  <div class="col-4">
+                                    <span class="px-2 px-2 float-right">
+                                    ৳ {{ discount.amount}} </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-7 py-1 font125">
+                                Total
+                              </div>
+                              <div class="col-5 py-1 font125">
+                                <span class="float-right">
+                                  ৳ {{totalAmount}}
+                                </span> 
+                              </div>
+                              
+                            </div>
+                            <!-- // -->
+                            <!-- Payment Options -->
+                              <div class="payment-options p-2 my-2 bg-light rounded">
+                              <div class="radio">
+                                <label class="radio-inline">
+                                  <input type="radio" class="mr-1" name="paymentMethod" id="optionsRadios1" value="cash" v-model="payment.method">
+                                  Cash
+                                </label>    
+                              </div>
+                              <div class="radio">
+                                <label class="radio-inline">
+                                  <input type="radio" class="mr-1" name="paymentMethod" id="optionsRadios2" value="pos" v-model="payment.method">
+                                  POS
+                                </label>
+                              </div>
+                              <div class="form-group" v-show="payment.method=='pos'">
+                                <label for="transacton">Transaction:</label>  
+                                <input type="text" class="form-control" name="transaction" id="transaction" v-model="payment.transaction" placeholder="Enter transaction number">
+                              </div>
+                            </div>
+                            <!-- / -->
+                            <div class="form-group my-3">
+                              <button type="submit" class="btn btn-success btn-block rounded-pill" :disabled="disablePayButton">Pay Now</button>
+                            </div>                                 
+                          </form>                    
+                        </div>
+                        <div v-else>
+                          <form method="post" :action="cardPaymentRoute">
+                            <!-- <input type="hidden" name="_token" :value="csrf"> -->
+                            <csrf-token />
+                            <!-- card payment -->
+                            <input id="booking_id" name="booking_id" type="hidden" :value="bookedSeatInfo.booking_ref">
+                            <input id="card_discount_id" name="card_discount_amount" type="hidden" :value="discount.amount">
+                            <div class="row">
+                              <div class="col-7 py-1">
+                                Subtotal ({{bookedSeatInfo.total_seats}} seat)
+                              </div>
+                              <div class="col-5 py-1">
+                                <span class="float-right">
+                                  ৳ {{bookedSeatInfo.amount}}
+                                </span> 
+                              </div>
+                              <div class="col-12 py-1">  
+                                <div v-if="!isDiscountAvailable" class="form-row">
+                                  <div class="form-group mb-1 col-8">       
+                                    <input type="text" class="form-control px-1" id="discountCode" placeholder="Enter Discount Code" v-model="discount.code" /> 
+                                  </div>
+                                  
+                                  <div class="form-group mb-1 col-4">
+                                    <button type="button" class="btn btn-info px-2 float-right"
+                                    @click.prevent="applyDiscount()"
+                                    :disabled="discount.code ==''"
+                                    >
+                                    Apply
+                                    </button>
+                                  </div>
+                                  <span class="help text-danger px-2" v-if="has('discount')" v-text="get('discount')"></span>
+                                </div>
+                                <div v-if="isDiscountAvailable" class="form-row">
+                                  <div class="col-8"> Discount <small @click="removeDiscount()" class="px-2 text-danger" style="cursor: pointer;">remove</small></div>
+                                  <div class="col-4">
+                                    <span class="px-2 px-2 float-right">
+                                    ৳ {{ discount.amount}} </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="col-7 py-1 font125">
+                                Total
+                              </div>
+                              <div class="col-5 py-1 font125">
+                                <span class="float-right">
+                                  ৳ {{totalAmount}}
+                                </span> 
+                              </div>
+                              
+                            </div>
+
+                            <div class="form-group my-3">
+                              <button type="submit" class="btn btn-success btn-block rounded-pill" :disabled="disablePayButton">Pay Now</button>
+                            </div>
+                            <!-- // -->
+                          </form>                    
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+              </div>            
+            </div>
+          </div>
         </div>
       </div>
-  </div>    
-  <!-- // -->
+    </div>
+    <!-- // -->
 
-</div>
+    <!-- Modal -->
+    <div class="modal fade" id="seatSelection" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-width  modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">
+                Seat Selection
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click.prevent="close()">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <!-- <div class="modal-body scrollbar-modal"> -->
+            <div class="modal-body">
+              <!-- @include('includes.seatselection')    -->
+             <!-- SEAT SELECTION  -->
+              <div class="card-columns">
+                <div class="seat-layout mb-4">
+                  <div class="card border-primary border-top-0">
+                    <div class="card-header bg-primary border-primary text-white">Seat Plan</div>      
+                    <div class="card-body">
+                      <div class="row driver-seat">                      
+                        <button class="btn btn-outline-secondary" :disabled="true">Driver</button>
+                      </div>
+                      <div class="row justify-content-center" style="margin-left: -5px;">
+                           
+                            <button
+                              class="btn btn-outline-primary col-xs-2"
+                              v-bind:class="{ 
+                                'is-active': seat.checked, 
+                                booked: seat.status=='booked'? true : false,
+                                buying: isSeatBuying(seat.status),                 
+                                confirmed: seat.status=='confirmed'? true : false, 
+                                empty: seat.status=='n/a'? true : false,             
+                                'col-xs-offset-2': emptySpace(index, seat.seat_no) }"
+                              v-for="(seat, index) in seatList"          
+                              @click="toggle(seat)"           
+                              :disabled="isDisabledSeatSelection(seat.status)"                   
+                            >               
+                              <span v-show="!isSeatBuying(seat.status)" > {{ seat.seat_no }} </span>
+                              <span v-show="isSeatBuying(seat.status)" class="fas fa-sync fa-spin text-danger"></span>  
+                             
+                            </button> 
+                      </div>
+                    </div>
+                    <!-- {{-- card-footer --}} -->           
+                    <div class="card-footer">
+                      <show-alert :show.sync="showAlert" :type="alertType"> 
+                      <!-- altert type can be info/warning/danger -->
+                        <strong>{{ seatNo }} </strong> has been <strong>{{ seatStatus }} </strong>
+                      </show-alert>
+                    </div>  
+                  </div>
+                </div>
+                <!-- <div v-show="isSeatSelected" class="mb-4"> -->
+                <div class="mb-4">
+                  <div class="card border-info border-top-0">      
+                    <div class="card-header bg-info border-info text-white">Selected Seat Info</div>
+                    <div class="card-body p-0">
+                      <h5 v-show="!isSeatSelected" class="py-2 text-center">
+                        Seat's not selected yet!
+                      </h5>
+                      <table v-show="isSeatSelected" class="table table-striped">
+                        <thead>
+                          <th>Sl.#</th>
+                          <th>Selected Seat</th>
+                          <th>Fare</th>
+                          <th>Remove</th>
+                          <!-- <th>&nbsp;</th> -->
+                        </thead>
+                        <tbody>
+                          <tr v-for="(seat, index) in selectedSeat">
+                            <td class="table-text">
+                              <div> {{ index + 1 }} </div>
+                            </td>
+                            <td class="table-text">
+                              <div> {{ seat.seat_no }} </div>
+                            </td>
+                            <td class="table-text text-primary">
+                               <div> {{ getFareFor(seat) }} </div>
+                            </td>
+                            <td class="table-text">
+                               <div>
+                                  <button @click.prevent="removeSeat(seat.seat_no, seat)" type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                   <i class="fa fa-times text-danger" aria-hidden="true"></i>
+                                  </button>
+                                </div>
+                              </td>                                    
+                          </tr>    
+                        </tbody>
+                      </table>       
+                    </div>
+                    <div v-show="isSeatSelected" class="card-footer total">
+                      <strong>Total Amount:</strong> {{ totalFare }} 
+                    </div>        
+                  </div>
+                </div>
+
+                <div class="mb-4">
+                  <!-- Pickup & Dropping Selection -->
+                  <div class="card border-success border-top-0">
+                    <div class="card-header bg-success border-success text-white">Pickup & Dropping</div>
+                    <div class="card-body">
+                      <!-- @include('includes.stops') -->
+                      <!-- STOPS -->
+                      <div class="form-group">
+                        <label for="pickupPoint"> Pickup </label>
+                        <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" -->
+                        <select v-model="stops.selectedPickupPoint" class="form-control" id="pickupPoint">
+                          <!-- <option disabled value="">Please select one</option> -->
+                          <option v-if="!error.pickupPoint" disabled value="">Please select one</option>
+                          <option v-if="error.pickupPoint" disabled value="">{{error.pickupPoint }}</option>    
+                          <option v-for="pickup in pickupStops">
+                            {{ pickup.name }}
+                          </option>                           
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="droppingPoint"> Dropping </label>
+                        <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" -->
+                        <select v-model="stops.selectedDroppingPoint" class="form-control" id="droppingPoint">
+                          <!-- <option disabled value="">Please select one</option> -->
+                          <option v-if="!error.droppingPoint" disabled value="">Please select one</option>
+                          <option v-if="error.droppingPoint" disabled value="">{{ error.droppingPoint }}</option>
+                          <option v-for="dropping in droppingStops">
+                            {{ dropping.name }}
+                          </option>                           
+                        </select>
+                      </div>
+                      <!-- // -->
+                    </div>
+                  </div>         
+                </div>
+
+                <div class="mb-4">
+                  <!-- @include('includes.errors')
+                  @auth
+                    @if ( auth()->user()->hasAnyRole(['admin', 'super_admin', 'operator']) )
+                      @include('includes.operator')
+                    @elseif ( auth()->user()->hasVerifiedPhone() )       
+                        @include('includes.user')        
+                    @else
+                        @include('includes.unverified.user')                
+                    @endif
+                  @endauth
+                  @guest
+                    @include('includes.guest')
+                  @endguest -->
+                  <div v-if="!userRole.isGuest">
+                    
+                    <div v-if="userRole.isStaff">
+                      <h2>STAFF</h2>
+                      <div class="card border-secondary border-top-0">
+                        <div class="card-header bg-secondary border-secondary text-white">Admin/ Operator</div>
+                        <div class="card-body">
+                          <form v-on:submit.prevent="seatBookingByStaff(), showTheModal('seatSelection', false)" @keydown="form.errors.clear($event.target.name)">
+                            <div v-show="form.phone!=''" class="text-center">
+                              <div v-show="userExist" class="alert alert-success" role="alert">                          
+                                <span class="fa-stack fa-2x mr-2">
+                                  <i class="fas fa-circle fa-stack-2x"></i>
+                                  <i class="fas fa-user-check fa-stack-1x fa-inverse"></i>
+                                </span>       
+                                User already exist!
+                              </div>
+                              <div v-show="!userExist" class="alert alert-warning" role="alert">
+                                <span class="fa-stack fa-2x mr-2">
+                                  <i class="fas fa-user fa-stack-1x"></i>
+                                  <i class="fas fa-ban fa-stack-2x" style="color:Tomato"></i>
+                                </span>
+                                User doesn't exist!
+                              </div>
+                            </div>
+
+                            <div class="m-1">                                 
+                              <input type="hidden" name="userId" id="userId1" v-model="userInfo.id" disabled>
+                            </div>
+                            <div class="form-group">
+                            <label for="phone" class="control-label">Mobile No.</label>
+                            <div class="input-group">
+                              <span class="input-group-prepend">
+                                <div class="input-group-text bg-white">
+                                  <i class="fas fa-mobile-alt"></i>
+                                </div>
+                              </span>
+                              <input id="phone" type="text" class="form-control border-left-0" name="phone" v-model.lazy="form.phone"
+                                placeholder="Enter mobile number here" 
+                              >
+                            </div>
+                            <span class="help text-danger" v-if="form.errors.has('phone')" v-text="form.errors.get('phone')"></span>
+                            <span class="text-mute text-danger" v-if="userInfo.hasOwnProperty('error')" v-text="userInfo.error"></span>
+                            </div>
+
+                            <div class="form-group">
+                            <label for="name" class="control-label">Name</label>
+                            <div class="input-group">
+                              <span class="input-group-prepend">
+                                <div class="input-group-text bg-white">
+                                  <i class="fas fa-user"></i>
+                                </div>
+                              </span>
+                              <input id="name" type="text" class="form-control border-left-0" name="name" v-model="form.name"
+                                placeholder="Enter name here" 
+                              >
+                            </div>
+                            <span class="help text-danger" v-if="form.errors.has('name')" v-text="form.errors.get('name')"></span>
+                            </div>            
+
+                            <div class="form-group">
+                            <label for="email" class="control-label">E-Mail</label>
+                            <div class="input-group">
+                              <span class="input-group-prepend">
+                                <div class="input-group-text bg-white">
+                                  <i class="fas fa-envelope"></i>
+                                </div>
+                              </span>
+                              <input id="email" type="email" class="form-control border-left-0" name="email" v-model="form.email"
+                                placeholder="Enter email here" 
+                              >
+                            </div>
+                            <span class="help text-danger" v-if="form.errors.has('email')" v-text="form.errors.get('email')"></span>
+                            </div>                        
+                            
+                            <button class="btn btn-primary btn-block rounded-pill" :disabled="!isValid || form.errors.any()">Continue</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>  
+
+                    <div v-else-if="userRole.isVerified"> 
+                      <div class="d-flex">
+                        <div class="p-2 flex-fill info-l">
+                          <i class="mt-3 fas fa-user-clock fa-2x"></i>
+                        </div>
+                        <div class="p-2 flex-fill info-r">
+                          <h5 class="mx-2">Ticket!</h5>
+                          <form v-on:submit.prevent="seatBookingByUser(), showTheModal('seatSelection', false)">      
+                          <p class="mt-2 mx-2"> Book The Ticket(s) 
+                            <button :disabled="!isValid" class="mt-2 btn btn-primary btn-block rounded-pill">Continue</button>
+                          </p>
+                          </form>
+                        </div>        
+                      </div>      
+                    </div>
+
+                    <div v-else>
+                      <h3>Unverified User</h3>
+
+                      <div class="d-flex">          
+                        <div class="p-2 flex-fill warning-l">
+                          <i class="mt-2 fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                        <div class="p-2 flex-fill warning-r">
+                          <h4 class="mx-2">Oops!</h4>
+                          <p class="mx-2">Phone Verification Pending.<br>             
+                            <a class="mt-2 btn btn-secondary btn-block" :href="phoneVerificationRoute" role="button">Verify Your Phone Please</a>    
+                          </p>           
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                  
+                  <div v-else>
+                      <!-- <h3>GUEST</h3> -->
+                      <div class="d-flex">          
+                        <div class="p-2 flex-fill warning-l">
+                          <i class="mt-3 fas fa-user-times fa-3x"></i>
+                        </div>
+                        <div class="p-2 flex-fill warning-r">
+                          <h4 class="mx-2 pb-2 border-bottom">Oops!</h4>
+                          <div class="mx-2 my-2 text-center">
+                            You are not logged in!   
+                            <a class="mt-3 mb-2 px-2 btn btn-warning btn-block rounded-pill" :href="loginRoute" role="button">Login</a>    
+
+                            <a class="mb-2" :href="registerRoute">New User?
+                            </a>    
+                          </div>                        
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+             <!-- // -->
+            </div>
+            <!-- <div class="modal-footer">
+              <button type="button" class="btn btn-primary rounded-pill px-5" data-dismiss="modal">Close</button>            
+            </div> -->
+          </div>
+        </div>
+    </div>    
+    <!-- // -->
+
+  </div>
    
 </template>
 <script>
     // import Modal from './AppModal'; 
     // const URL = './storage/images/bus-icon.png';
+    import Stepper from './Stepper';
+    import Slider from './Slider';
+
     const Url = {
       BOOKING_BY_STAFF_URL: 'bookings/byStaff'
     };
@@ -826,9 +833,11 @@
         'registerRoute'
       ],
 
-       // components: {          
-       //      'mymodal': Modal,          
-       //  },     
+       components: {          
+            // 'mymodal': Modal,          
+            Stepper,
+            Slider,
+        },     
       
       data() {
           return {            
@@ -892,6 +901,23 @@
               seatError: false,                                 
               selectedSeat: [],
               seatList: [],              
+              steps: {
+                search: {
+                  default: true,
+                  isDoing: false,
+                  isDone: false
+                },
+                select: {
+                  default: true,
+                  isDoing: false,
+                  isDone: false
+                },
+                buy: {
+                  default: true,
+                  isDoing: false,
+                  isDone: false
+                },
+              },
               instanceOfScrollbarInfoTable: undefined,
               indexList: [],
               index: 2, // space starting from this index then 2+4, 6+4
@@ -1168,12 +1194,36 @@
           //return ( len >0 ) ? true : false;
           if (len >0) {
             this.showSearch = false;
+            this.stepsAction('buy', 'isDoing');
             return true;
           } 
           return false;
         },
       },
       methods: {
+        stepsAction(name, action) {
+
+          let isDoing = this.steps.[name].isDoing; 
+          let isDone = this.steps.[name].isDone;
+          console.log('Doing', isDoing);
+          console.log('Done', isDone);
+          
+
+          if (action === 'default') {
+            this.steps.[name].default = true;
+            this.steps.[name].isDoing = false;
+            return;
+          }
+
+          if (action === 'isDoing') {
+            this.steps.[name].default = false;
+            this.steps.[name].isDoing = true;
+            return;
+          }
+
+          this.steps.[name].isDoing = false;          
+          this.steps.[name].isDone = true;
+        },
         removeDiscount() {
           this.discount.amount = 0;
         },
@@ -1458,6 +1508,7 @@
                 if(this.form.errors) {
                   this.form.errors.clear();                
                 }
+                this.stepsAction('select', 'default');
         },
         // isBusAvailable() {
         //   let len = this.buses.length;
@@ -1563,7 +1614,8 @@
         // },
         async searchBus() {         
           // console.log(this.startDate);
-
+          // this.steps.search.isDoing = true;
+          this.stepsAction('search', 'isDoing');
           this.busError = false;
           this.loading = true;
           console.log('sMMMM')           
@@ -1576,6 +1628,13 @@
             response.data.error ? vm.busError = response.data.error : vm.buses = response.data;
              
              vm.loading = false;
+             // vm.steps.search.isDoing = false;
+             // vm.steps.search.isDone = true;
+             vm.stepsAction('search', 'isDone');
+             
+             // vm.steps.select.isDoing = true;
+             // vm.stepsAction('select', 'isDoing');
+             
 
              console.log('sMMMMEEEE1111')
              if (vm.busError) {
@@ -1595,34 +1654,7 @@
              }               
 
           })
-          console.log('sMMMM222222222')
-          // axios.get('/search', {
-          //     params: {                
-          //       // from: this.selectedCityFrom,
-          //       // to: this.selectedTo,
-          //       from: this.getIdOfCity(this.selectedCityFrom),
-          //       to: this.getIdOfCity(this.selectedTo),
-          //       date: this.startDate,              
-          //     }  
-          //   })          
-          //   .then(function (response) {             
-          //      console.log(response.data);
-               
-          //      response.data.error ? vm.busError = response.data.error : vm.buses = response.data;
-          //      /*vm.loading = false;
-          //      if (vm.busError) {
-          //         vm.seatNotAvailableAlert('SCHEDULE', 'warning');
-          //         return;
-          //      }
-          //      vm.sortBusByDepartureTime(); 
-          //      vm.setBusTypes();
-          //      if (vm.showSearch == true) {
-          //       vm.showSearch = false;
-          //      }
-          //      if (vm.searchMini == true) {
-          //       vm.searchMini = false;
-          //      }*/               
-          //   });
+          console.log('sMMMM222222222')          
         },
         async getBusData() {
           try {
@@ -1663,6 +1695,9 @@
         viewSeatsOf(bus) {
           // console.log('busSchId=', scheduleId);
           // console.log('busId=', busId);
+          // this.steps.select.isDoing = true;
+          this.stepsAction('select', 'isDoing');
+
           this.selectedBus = bus;
           this.seatError = false;
           this.selectedSeat = [];
@@ -1772,6 +1807,10 @@
                  vm.bookedSeatInfo = response;
                  vm.modal = false;
                  vm.loading = false;
+                 // vm.select.isDoing = false;
+                 // vm.select.isDone = true;
+                 vm.stepsAction('select', 'isDone');
+                 
                  //console.log('res=', response);
               })
               .catch(function (error) {
@@ -1822,6 +1861,7 @@
                  vm.bookedSeatInfo = response.data;
                  vm.loading = false;
                  vm.modal = false;
+                 vm.stepsAction('select', 'isDone');
                  // response.data.error ? vm.busError = response.data.error : vm.buses = response.data;
               })
               .catch(function (error) {
@@ -2158,14 +2198,93 @@
   overflow-y: auto;
 }
 
+// // progressbar
+// .shape-outer {
+//     display: flex;
+//     flex-shrink: 0;
+//     height: calc(70px + 4vw);
+//     width: calc(70px + 4vw);
+//     margin: 0 auto;
+//     // background-image: linear-gradient(to bottom right, #ff3cac, #562b7c, #2b86c5);
+//     background-image: linear-gradient(to bottom right, var(--warning), hsl(162deg 87% 74%), hsl(205deg 64% 47%));    
+//   }
+
+//   .rhombus {
+//     -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+//         clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+//   }
+
+
+
+//   .progressbar {
+//     // ul li { 
+//     //   display: inline-block;
+//     //   width: 12.5rem;
+//     //   position: relative;
+
+//       i.progress-icon {
+//         // color: green;
+//         margin: auto;
+//       }
+      
+//       i.action {
+//         background-color: #ccc;
+//         border-radius: 50%;
+//         color: #fff;
+//         font-size: small;
+//         padding: 0.375rem;
+//         height: 1.5rem;
+//         width: 1.5rem;
+//       }
+
+//       i.action::after {
+//         background-color: #ccc;
+//         content: '';
+//         height: 0.3125rem;
+//         width: 100%; //12.5rem;
+//         display: block;
+//         position: absolute;
+//         left: 0;
+//         top: calc(58% + 1vh); //110px; //4.6875rem;
+//         z-index: -1;
+//       }
+
+//       i.doing {
+//         background-color: #148e14;
+//       }   
+//       i.doing::after {
+//         background-color: #148e14;
+//       }
+
+//       i.done {
+//         background-color: hsla(45, 100%, 51%, 1);
+//       }   
+//       i.done::after {
+//         background-color: hsla(45, 100%, 51%, 1);
+//       }
+
+//       .first::after {
+//         left: 50% !important; //6.35rem
+//         width: 100% !important;
+//       }
+//       .last::after {
+//         width: 50% !important;
+//       }
+
+//     // }
+//   }
+// //
+
   // Small devices (landscape phones, 576px and up)
   @media (min-width: 576px) { 
     .modal-width {
       max-width: 400px;
     }    
-    // .info-scroll {
-    //   max-height: 350px;
+    
+    // i.action::after {        
+    //   top: calc(61% + 1vh) !important; //110px; //4.6875rem;
     // }
+
   }
 
   // Medium devices (tablets, 768px and up)
@@ -2173,6 +2292,10 @@
     .modal-width {
       max-width: 500px;
     }    
+    // i.action::after {        
+    //   top: calc(62% + 1vh) !important; //110px; //4.6875rem;
+    // }
+
   } 
   
   // Large devices (desktops, 992px and up)
@@ -2180,6 +2303,10 @@
     .modal-width {
       max-width: 660px;
     }
+    // i.action::after {        
+    //   top: calc(63% + 1vh) !important; //110px; //4.6875rem;
+    // }
+
   }
 
   // Extra large devices (large desktops, 1200px and up)
@@ -2187,7 +2314,86 @@
     .modal-width {
       max-width: 760px;
     }
+    // i.action::after {        
+    //   top: calc(64% + 1vh) !important; //110px; //4.6875rem;
+    // }
+
   }
+  // .shape-outer {
+  //   display: flex;
+  //   flex-shrink: 0;
+  //   height: calc(70px + 4vw);
+  //   width: calc(70px + 4vw);
+  //   margin: 0 auto;
+  //   // background-image: linear-gradient(to bottom right, #ff3cac, #562b7c, #2b86c5);
+  //   background-image: linear-gradient(to bottom right, var(--warning), hsl(162deg 87% 74%), hsl(205deg 64% 47%));    
+  // }
+
+  // .rhombus {
+  //   -webkit-clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  //       clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  // }
+
+
+
+  // .progressbar {
+  //   // ul li { 
+  //   //   display: inline-block;
+  //   //   width: 12.5rem;
+  //   //   position: relative;
+
+  //     i.progress-icon {
+  //       // color: green;
+  //       margin: auto;
+  //     }
+      
+  //     i.action {
+  //       background-color: #ccc;
+  //       border-radius: 50%;
+  //       color: #fff;
+  //       font-size: small;
+  //       padding: 0.375rem;
+  //       height: 1.5rem;
+  //       width: 1.5rem;
+  //     }
+
+  //     i.action::after {
+  //       background-color: #ccc;
+  //       content: '';
+  //       height: 0.3125rem;
+  //       width: 100%; //12.5rem;
+  //       display: block;
+  //       position: absolute;
+  //       left: 0;
+  //       top: calc(58% + 1vh); //110px; //4.6875rem;
+  //       z-index: -1;
+  //     }
+
+  //     i.doing {
+  //       background-color: #148e14;
+  //     }   
+  //     i.doing::after {
+  //       background-color: #148e14;
+  //     }
+
+  //     i.done {
+  //       background-color: hsla(45, 100%, 51%, 1);
+  //     }   
+  //     i.done::after {
+  //       background-color: hsla(45, 100%, 51%, 1);
+  //     }
+
+  //     .first::after {
+  //       left: 50% !important; //6.35rem
+  //       width: 100% !important;
+  //     }
+  //     .last::after {
+  //       width: 50% !important;
+  //     }
+
+  //   // }
+  // }
+  
   .font125 {
     font-size: 1.125rem;
   }

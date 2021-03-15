@@ -4,6 +4,9 @@ import { createApp } from 'vue';
 import { router } from './router';
 import { store } from './store/index';
 
+// import { tns } from "./node_modules/tiny-slider/src/tiny-slider";
+// import { tns } from 'tiny-slider/src/tiny-slider';
+
 // const app = createApp(App).use(router)
 // app.mount('#app')
 

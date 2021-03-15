@@ -11,8 +11,13 @@
 
 @import '~bootstrap-datepicker/dist/css/bootstrap-datepicker.css';
 
+@import '~tiny-slider/src/tiny-slider';
+
+
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+@import 'slider';
 
 //  AdminLTE (includes bootstrap)
 // @import '~admin-lte/build/scss/AdminLTE';
