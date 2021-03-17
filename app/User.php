@@ -73,13 +73,21 @@ class User extends Authenticatable
     public function getUserInfo()
     {
       return $arr = [
-        'name' => $this->name,
+        'name' => $this->isNameWithMultipleParts($this->name)?? $this->name,
         'email' => $this->email,
         'role' => $this->roleType(),  //regular or staff
         'phone_verified' => $this->hasVerifiedPhone(),
       ];
     }
 
+    public function isNameWithMultipleParts($name) {
+      $nameParts = explode(' ', $name);
+      $namePartsLength = count($nameParts);
+      if ($namePartsLength > 0) {
+        return $nameParts[$namePartsLength - 1];
+      }
+      return null;
+    }
     public function roleType()
     {
       if ($this->hasAnyRole(['super_admin', 'admin', 'operator'])) {
@@ -143,6 +151,7 @@ class User extends Authenticatable
     {
       return null !== $this->roles()->where('name', $role)->first();
     }
+
 
     /** phone verfication */
 

@@ -139,7 +139,38 @@ Route::get('/broadcast', function() {
 });
 
 Route::get('/test', function() {
-	return view('inline-test');
+	/*// return view('inline-test');
+	// $role = 'super_admin';
+	$role = 'admin';
+
+	// return App\User::isAdminAvailable('super_admin');
+
+	// return 
+	$users = App\User::with(['roles' => function ($query) use($role){
+	    $query->where('name', $role);
+	}])->get();
+
+	// return $users->useroles;
+
+	if ($users->count()) {
+		echo "true count 1.0";
+		foreach ($users as $user) {			
+			if (count($user->roles)) {
+				// echo $user->roles[0]->name;
+				echo "true 1.1";
+				if ($user->roles[0]->name == $role) {
+					echo "true 1.2";
+					return true;
+				}				
+				echo "false role name";
+			}
+			echo "false role";			
+		}
+		echo "end for";
+		return false;
+	}
+	echo "false count";
+	return false;*/
 });
 
 Auth::routes();

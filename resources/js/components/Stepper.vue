@@ -143,18 +143,18 @@
       }
 
       i.doing {
-        background-color: #148e14;
+        background-color: hsla(45, 100%, 51%, 1);
       }   
       i.doing::after {
-        background-color: #148e14;
+        background-color: hsla(45, 100%, 51%, 1);
       }
 
       i.done {
-        background-color: hsla(45, 100%, 51%, 1);
+        background-color: #148e14;
       }   
       i.done::after {
-        background-color: hsla(45, 100%, 51%, 1);
-      }
+        background-color: #148e14;
+      }      
 
       .first::after {
         left: 50% !important; //6.35rem

@@ -2292,6 +2292,12 @@
     .modal-width {
       max-width: 500px;
     }    
+
+    .info-table-left {
+      // background-color: hsla(60, 68%, 88%, 1); 
+      // border-right: 1px solid hsla(210, 23%, 89%, 1) !important;
+      border-right: 1px solid hsla(66, 45%, 80%, 1) !important;
+    }
     // i.action::after {        
     //   top: calc(62% + 1vh) !important; //110px; //4.6875rem;
     // }
@@ -2408,7 +2414,7 @@
     :deep(.info-table-left) {
       background-color: hsla(60, 68%, 88%, 1); 
       // border-right: 1px solid hsla(210, 23%, 89%, 1) !important;
-      border-right: 1px solid hsla(66, 45%, 80%, 1) !important;
+      // border-right: 1px solid hsla(66, 45%, 80%, 1) !important;
     }
     :deep(.filter-title) {
     // color: var(--dark);
@@ -2514,10 +2520,10 @@
 {
   border-radius: 10px;
   background-image: -webkit-gradient(linear,
-                     left bottom,
-                     left top,
-                     color-stop(0.44, rgb(122,153,217)),
-                     color-stop(0.72, rgb(73,125,189)),
-                     color-stop(0.86, rgb(28,58,148)));
+   left bottom,
+   left top,
+   color-stop(0.44, rgb(122,153,217)),
+   color-stop(0.72, rgb(73,125,189)),
+   color-stop(0.86, rgb(28,58,148)));
 }
 </style>
