@@ -12,13 +12,14 @@ class UserController extends Controller
     {
         $user = User::where('phone', $phone)->first();
         if ($user) {            
-        return [
-            'id' => $user->id,
-            'phone' => $user->phone,
-            'name'  => $user->name,
-            'email' => $user->email,
-            'error' => ''
-        ];
+            return [
+                'id' => $user->id,
+                'phone' => $user->phone,
+                'name'  => $user->name,
+                'email' => $user->email,
+                'error' => '',
+                'role' => $user->roleType(),
+            ];
         }
         return [
             //'id' => '',

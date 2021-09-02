@@ -5,7 +5,8 @@
       :style="mapStyle"
       ref="googleMap"
     ></div>
-    <template v-if="Boolean(this.google) && Boolean(this.map)">
+    <!-- <template v-if="Boolean(this.google) && Boolean(this.map)"> -->
+    <template>
       <slot
         :google="google"
         :map="map"
@@ -15,7 +16,8 @@
 </template>
 
 <script>
-import GoogleMapsApiLoader from "google-maps-api-loader";
+
+import { Loader } from "@googlemaps/js-api-loader";
 
 export default {
   props: {
@@ -39,15 +41,42 @@ export default {
     };
   },
 
-  async mounted() {
-    const googleMapApi = await GoogleMapsApiLoader({
+  // async mounted() {
+  //   const googleMapApi = await Loader({
+  //     apiKey: this.apiKey,
+  //     libraries: ['places'],
+  //   });
+
+  //   let google = await googleMapApi.load();
+  //   this.google = window.google;
+  //   this.initializeMap();
+  //   this.listenKeyEvent();
+  //   this.listenClickEvent();    
+  // },
+  mounted() {
+    console.log('GMap loader Component mounted.')
+
+    const loader = new Loader({
       apiKey: this.apiKey,
       libraries: ['places'],
     });
-    this.google = googleMapApi;
-    this.initializeMap();
-    this.listenKeyEvent();
-    this.listenClickEvent();    
+
+    loader
+       .load()
+       .then((google) => {
+        // console.log(google)
+        this.google = google; 
+        this.initializeMap();
+        this.$emit('loadEvent',true);
+        this.listenKeyEvent();
+        this.listenClickEvent();           
+       })
+       .catch((e) => {
+        console.log(e)
+       });    
+       console.log('lllll')
+        console.log('os=',this.google)
+      
   },
 
   beforeUnmount() {

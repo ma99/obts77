@@ -49,7 +49,9 @@ class BookingController extends Controller
             $attributes = $this->validateRequest();
             $info =  $this->getUserInfoFrom($request);
             $info['password'] = Hash::make(Str::random(8));
-            $user = auth()->user()->createUser($info);             
+
+            // $user = auth()->user()->createUser($info);             
+            $user = User::createUser($info);             
         }        
         
         // $booking = $this->creatBooking($user, $attributes);

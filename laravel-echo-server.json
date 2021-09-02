@@ -1,8 +1,8 @@
 {
-	"authHost": "http://btms77.test",
+	"authHost": "http://btms.test",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [],
-	"database": "redis",
+	"database": "sqlite",
 	"databaseConfig": {
 		"redis": {},
 		"sqlite": {

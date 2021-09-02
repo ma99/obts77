@@ -4,16 +4,18 @@
     :mapConfig="mapConfig"
     :mapStyle="{width:'100%', height:'500px'}"
     @clicked="handleMapClicked"
+    @load-event="mapLoaderStatus"
   >
   
     <template v-slot="{ google, map }">
-
       <GoogleMapAutoComplete
+        v-if="loaded"
         :google="google"
         :map="map"
       />
 
       <GoogleMapMarker
+        v-if="loaded"
         v-for="stop in stops"
         :options="markerOptions"
         :position="getPosition(stop)"
@@ -25,6 +27,7 @@
       />      
 
       <GoogleMapInfoWindow        
+        v-if="loaded"
         :google="google"
         :map="map"
         :options="infoWindowOptions"
@@ -125,7 +128,8 @@ export default {
         scale: 1
       },      
       clickedMarker: {},
-      infoWindowOpened: false,          
+      infoWindowOpened: false,
+      loaded: false  // MapLoader not loaded fully        
     };
   },  
 
@@ -230,6 +234,10 @@ export default {
     },    
   },
   methods: {    
+    mapLoaderStatus(e) {
+        // console.log('evnt', e)
+        this.loaded = e
+    },
     getPosition(stop) {
       if (Object.keys(stop).length == 0) return;
 

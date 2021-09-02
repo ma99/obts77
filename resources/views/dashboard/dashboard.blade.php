@@ -2,5 +2,10 @@
 
 {{-- Same dashboard for all types of user --}}
 @section('content')
-    <dashboard :user="{{ json_encode($role) }}" />
+    <dashboard 
+        home-route="{{ route('welcome') }}"
+        logout-route="{{ route('logout') }}"
+        {{-- :user="{{ json_encode($role) }}"  --}}
+        user=@json($role) 
+    />
 @endsection

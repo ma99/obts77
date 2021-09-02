@@ -2,10 +2,10 @@
     <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-info elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+    <a :href="home" class="brand-link">
+      <img src="/dashboard/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
            style="opacity: .8">
-      <span class="brand-text font-weight-light">AdminLTE 3</span>
+      <span class="brand-text font-weight-light">B<i><strong>T</strong></i>MS</span>
     </a>
 
     <!-- Sidebar -->
@@ -13,7 +13,7 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+          <img src="/dashboard/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
           <a href="#" class="d-block">Alexander Pierce</a>
@@ -56,7 +56,7 @@
             <a href="#" class="nav-link" 
               :class="{ active: navItem == 2 }"
               @click="toggleActive(2, false)"
-              >
+            >
               <i class="fas fa-bus-alt nav-icon text-warning"></i>
               <p>
                 PRIMARY
@@ -155,22 +155,41 @@
           </li>    <!-- end of BUS -->                         
 
           <li v-if="isSuperAdmin" class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-cogs"></i>
+            <a href="#" class="nav-link"
+              :class="{ active: navItem == 3 }"
+              @click="toggleActive(3, false)"
+            >
+              <i class="nav-icon fas fa-cogs text-warning"></i>
               <p>MANAGEMENT
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <router-link :to="{name:'bus-schedules'}" class="nav-link">
+              <li class="nav-item" @click="toggleActive(31)">
+                <router-link :to="{name:'user-role'}" 
+                  class="nav-link"
+                  :class="{ active: childNavItem == 31 }"
+                >
+                  <i class="fas fa-user nav-icon" aria-hidden="true"></i>
+                  <p>User Role</p>
+              </router-link> 
+              </li>                   
+
+              <li class="nav-item" @click="toggleActive(32)">
+                <router-link :to="{name:'bus-schedules'}" 
+                  class="nav-link"
+                  :class="{ active: childNavItem == 32 }"
+                >
                     <i class="fas fa-clock nav-icon" aria-hidden="true"></i>
                     <p>Bus Schedules</p>
                 </router-link> 
                 </li>                   
 
-                <li class="nav-item">
-                  <router-link :to="{name:'route-cities'}" class="nav-link">
+                <li class="nav-item" @click="toggleActive(33)">
+                  <router-link :to="{name:'route-cities'}" 
+                    class="nav-link"
+                    :class="{ active: childNavItem == 33 }"
+                  >
                       <i class="fas fa-map-signs nav-icon" aria-hidden="true"></i>
                       <p>Route Cities</p>
                   </router-link> 
@@ -202,6 +221,21 @@
               </p>              
             </router-link>
           </li>          
+          <li class="nav-item">            
+            <!-- <router-link :to="{ name: 'first' }" class="nav-link"> -->              
+            <div>
+              <form method="post" :action="logout">
+                <csrf-token />
+                <div class="form-group my-3">
+                  <button type="submit" class="btn btn-warning btn-block">
+                    <i class="nav-icon fas fa-sign-out-alt"></i>
+                  Logout
+                </button>
+                </div>
+              </form>  
+            </div>              
+            <!-- </router-link> -->
+          </li>          
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -212,7 +246,11 @@
 
 <script>
     export default {
-      props: ['role'],
+      props: [
+        'home',
+        'logout',
+        'role'
+      ],
       data() {
         return {
           navItem: undefined,

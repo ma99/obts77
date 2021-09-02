@@ -90,4 +90,4 @@ Artisan::command('user {userId}', function () {
 	   return;   	
    }
    $this->error("Woops! User doesn't exist");
-})->describe('Display User Info');
+})->describe('Display User Info By ID');

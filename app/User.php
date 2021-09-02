@@ -50,16 +50,7 @@ class User extends Authenticatable
     }
 
     protected function createUser(array $data)
-    {
-      // return User::updateOrCreate(
-      //     ['phone' => $data['phone']],
-      //     [
-      //       'name' => $data['name'],
-      //       'email' => $data['email'],
-      //       'password' => $data['password'] // $attributes['password'] = Hash::make(Str::random(8)); 
-      //     ]
-      // );
-
+    {   
       return User::create(
           [
             'phone' => $data['phone'],
@@ -150,6 +141,16 @@ class User extends Authenticatable
     public function hasRole($role)
     {
       return null !== $this->roles()->where('name', $role)->first();
+    }
+
+    /**
+    * Check user role
+    * @param string $role
+    */
+    public function getRole()
+    {
+        // return $this->roles()->first()->name ?? null;
+        return optional($this->roles()->first())->name;
     }
 
 

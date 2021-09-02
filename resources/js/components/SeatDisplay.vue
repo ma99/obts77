@@ -142,7 +142,7 @@
         </div>
         <div class="card-body mt-n3 mb-md-n3 p-3 px-sm-4 d-md-flex justify-content-center align-items-center">
           <div class="px-2"> 
-            <img :src="'./storage/images/bus-icon.png'" class="img-bus mx-auto d-block">
+            <img :src="'./storage/images/bus/bus-icon.png'" class="img-bus mx-auto d-block">
           </div>
 
           <!-- {{-- DATE NAVIGATION --}} -->

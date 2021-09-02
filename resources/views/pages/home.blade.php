@@ -14,12 +14,12 @@
     <div class="col-12 mt-3">
       {{-- <seat-display :user= "{{auth()->user()}}" /> --}}
       <seat-display
-        user=@json($user) 
         phone-verification-route="{{ route('phoneverification.notice') }}" 
         cash-payment-route="{{ route('make.payment.cash') }}" 
         card-payment-route="{{ route('make.payment.card') }}" 
         login-route="{{ route('login') }}" 
         register-route="{{ route('register') }}" 
+        user=@json($user) 
       />
       {{-- {{ $user }} --}}
       {{-- @json($user) --}}

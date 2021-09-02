@@ -4,7 +4,11 @@
 
         <dashboard-header />  
 
-        <sidebar :role="user" />
+        <sidebar 
+            :role="user"
+            :home="homeRoute"
+            :logout="logoutRoute"
+        />
 
         <content-wrapper />
 
@@ -37,7 +41,11 @@
     import Footer from './Footer';
 
     export default {        
-        props: ['user'],
+        props: [
+            'user',
+            'homeRoute',
+            'logoutRoute'
+        ],
         components: {
             ContentWrapper,
             Controlbar,

@@ -5,15 +5,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
 // Route::get('admin/{vue?}', function () {
 //     return view('admin.admin');
 // })->where('vue', '[\/\w\.-]*');//->middleware('auth', 'role:super_admin,admin');
 
-Route::get('/admin/dashboard', function () {
-    return view('dashboard.dashboard', ['role' => 'super_admin']);
-});
+// Route::get('/admin/dashboard', function () {
+//     return view('dashboard.dashboard', ['role' => 'super_admin']);
+// });
+Route::get('/dashboard/admin', 'DashboardController@admin')->name('admin_dashboard');
+
+Route::get('/dashboard/user', 'DashboardController@user')->name('user_dashboard');
 
 Route::group(['middleware' => ['auth', 'role:super_admin']], function () {	
 	//Route::delete('/bookings/{booking}', 'BookingController@destroy');    

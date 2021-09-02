@@ -1,16 +1,16 @@
 <template>
     <div class="slide-wrapper">
       <div>
-        <img src="/storage/images/bus/1.jpg" class="img-fluid" alt="1">
+        <img src="/storage/images/bus/slider/1.jpg" class="img-fluid" alt="1">
       </div>
       <div>
-        <img src="/storage/images/bus/2.jpg" class="img-fluid" alt="2">
+        <img src="/storage/images/bus/slider/2.jpg" class="img-fluid" alt="2">
       </div>
       <div>
-        <img src="/storage/images/bus/3.jpg" class="img-fluid" alt="3">
+        <img src="/storage/images/bus/slider/3.jpg" class="img-fluid" alt="3">
       </div>
       <div>
-        <img src="/storage/images/bus/4.jpg" class="img-fluid" alt="4">
+        <img src="/storage/images/bus/slider/4.jpg" class="img-fluid" alt="4">
       </div>      
     </div>
 </template>

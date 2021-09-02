@@ -40,6 +40,8 @@ app.component('add-section', require('./components/AddSection.vue').default);
 app.component('border', require('./components/Border.vue').default);
 app.component('autocomplete', require('./components/Autocomplete.vue').default);
 app.component('stops-map', require('./components/stops/StopsMap.vue').default);
+app.component('map-test', require('./components/MapTest.vue').default);
+app.component('example-map', require('./components/ExampleMap.vue').default);
 app.component('header-icon', require('./components/HeaderIcon.vue').default);
 app.component('discount', require('./components/Discount.vue').default);
 

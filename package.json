@@ -29,6 +29,7 @@
         "webpack-notifier": "^1.10.0"
     },
     "dependencies": {
+        "@googlemaps/js-api-loader": "^1.12.2",
         "google-maps-api-loader": "^1.1.1",
         "laravel-echo": "^1.10.0",
         "node-notifier": "^5.4.3",
