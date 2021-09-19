@@ -12,4 +12,8 @@ class Role extends Model
     {
         return $this->belongsToMany(User::class); 
     }
+
+    public function roleBy($name) {
+        return $this->where('name', $name)->first();
+    }
 }

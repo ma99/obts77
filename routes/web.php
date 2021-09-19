@@ -79,6 +79,9 @@ Route::group(['middleware' => ['auth', 'role:super_admin']], function () {
 
 Route::group(['middleware' => ['auth', 'role:super_admin,admin,operator']], function () {
 	Route::get('/users/{phone}', 'Admin\UserController@index');
+	// Route::post('/roles/assign', 'Admin\UserController@assign');
+	// Route::post('/roles/revoke', 'Admin\UserController@revoke');
+	Route::post('users/role/{action}', 'Admin\UserController@action');
 	Route::post('/bookings/byStaff/{user?}', 'BookingController@createByStaff');
 	Route::post('/pay/cash', 'Payment\PaymentController@cash')->name('make.payment.cash');
 });

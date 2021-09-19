@@ -104,8 +104,17 @@ class User extends Authenticatable
     
     public function assign($role)
     {
-        //return $this->roles()->attach(Role::whereName($role)->first());
-        return $this->roles()->attach($role);
+        return $this->roles()->syncWithoutDetaching($role);
+        // return $this->roles()->attach($role);
+    }
+
+    public function revoke($role)
+    {        
+        return $this->roles()->detach($role);
+    }
+
+    public function userBy($phone) {
+        return $this->where('phone', $phone)->first();
     }
 
     public function isAdmin()
