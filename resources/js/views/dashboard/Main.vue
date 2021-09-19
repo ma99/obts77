@@ -5,7 +5,8 @@
         <dashboard-header />  
 
         <sidebar 
-            :role="user"
+            :role="role"            
+            :user="JSON.parse(user)"            
             :home="homeRoute"
             :logout="logoutRoute"
         />
@@ -43,6 +44,7 @@
     export default {        
         props: [
             'user',
+            'role',
             'homeRoute',
             'logoutRoute'
         ],

@@ -16,7 +16,7 @@
           <img src="/dashboard/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">{{user.name}}</a>
         </div>
       </div>
 
@@ -246,11 +246,15 @@
 
 <script>
     export default {
-      props: [
-        'home',
-        'logout',
-        'role'
-      ],
+      props: {
+        home: String,
+        logout: String,
+        role: String,
+        user: {
+          type: Object
+        },
+        name: '',
+      },
       data() {
         return {
           navItem: undefined,

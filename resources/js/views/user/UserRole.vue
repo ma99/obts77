@@ -21,8 +21,6 @@
     </div>
 
     <section class="content">      
-      <error-modal modal-id="error" :error-list="errorList" />
-      
       <loader :show="loading"></loader>
 
       <div class="d-flex mb-3">
@@ -78,7 +76,6 @@
       </div>
 
       <!-- manage -->
-       <!-- <div class="card card-outline card-info"> -->
        <div class="card">
         <div class="card-header text-info">
           <h5>Manage</h5>
@@ -145,24 +142,12 @@
 </template>
 <script>
 
-import ErrorModal from '../../components/ErrorModal'; 
-
-import { mapState, mapGetters, mapActions } from 'vuex';
-
-export default {  
-    components: {
-      'error-modal': ErrorModal,
-    },      
+export default {      
     data() {
-      return {                    
-          // actionStatus: '',
-          // alertType: '',
-          // bus: {}, 
+      return {                              
           loading: false,                   
           showAlert: false,
           show: false,                    
-          // departureCity: '',
-          errorList: [],
           message: null,
           role: null,
           rolePicked: null,
@@ -333,6 +318,8 @@ export default {
         this.role = role;
       },
       reset() {
+        this.rolePicked = null;
+        this.userInfo.role = null;
       },
     },
 }

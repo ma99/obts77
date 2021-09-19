@@ -6,6 +6,7 @@
         home-route="{{ route('welcome') }}"
         logout-route="{{ route('logout') }}"
         {{-- :user="{{ json_encode($role) }}"  --}}
-        user=@json($role) 
+        role=@json($role) 
+        user=@json($user) 
     />
 @endsection
