@@ -8,6 +8,9 @@ if(!function_exists('sendSms'))
     }
 }
 
+
+/*** Get previous route name ***/
+
 if (! function_exists('previousRoute')) {
     /**
      * Generate a route name for the previous request.
