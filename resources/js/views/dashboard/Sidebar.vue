@@ -11,14 +11,37 @@
     <!-- Sidebar -->
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="/dashboard/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex flex-column">
+        <div class="d-flex">          
+          <div class="image">
+            <img src="/dashboard/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info w-100">
+            <a class="d-block">
+              {{user.name}}
+            </a>
+            <!-- <span class="badge badge-danger">{{role}}</span> -->
+            <span 
+              class="badge" 
+              :class="[activeBadge]">{{role}}
+            </span>
+          </div>
         </div>
-        <div class="info">
-          <a href="#" class="d-block">{{user.name}}</a>
+        <div class="d-flex mt-3 justify-content-center">          
+          <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active">
+              Cras justo odio
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
+            <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+            <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
+            <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
+          </div>            
         </div>
       </div>
+      <!-- <div class="card card-body">
+          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+      </div>         -->
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -257,6 +280,7 @@
       },
       data() {
         return {
+          activeBadge: this.activeBadgeSelection(),
           navItem: undefined,
           childNavItem: undefined,
           sidebarScroll: undefined,
@@ -274,9 +298,26 @@
         isSuperAdmin() {
           return (this.role == 'super_admin') ?
                 true : false
-        }
+        },                
       },
       methods: {
+        activeBadgeSelection() {
+          var activeBadge = null;
+          if(this.role) {
+            switch(this.role) {
+              case 'super_admin':
+                  activeBadge = 'badge-danger';
+                  break;
+              case 'admin':
+                  activeBadge = 'badge-warning';
+                  break;
+              case 'operator':
+                activeBadge = 'badge-success';
+                break;
+            }
+          }
+          return activeBadge;  
+        },
         enableScrollbar() {
           this.sidebarScroll = OverlayScrollbars(document.getElementsByClassName("sidebar"),
             { /* your options */ 

@@ -6,6 +6,7 @@ namespace App\Extensions\Auth;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Validation\ValidationException;
 //use App\Extensions\Auth\Facades\Password;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 trait SendsPasswordReset
@@ -18,14 +19,16 @@ trait SendsPasswordReset
     }
 
     public function sendVerificationCodeSms(Request $request)
-    {
+    {      
       $phone = $this->validatePhone($request);
+
+      // $name = Route::currentRouteName();
+      // dd(url()->previous());
 
       $response = $this->broker()->sendVerificationCode(
             $this->credentials($request)
         );
 
-       //return $response == Password::RESET_LINK_SENT
        return $response == 'VERIFICATION_CODE_SENT'
                     ? $this->sendVerificationCodeResponse($request, $response)
                     : $this->sendVerificationCodeFailedResponse($request, $response);
@@ -86,8 +89,12 @@ trait SendsPasswordReset
     protected function sendVerificationCodeResponse(Request $request, $response)
     {
         //return back()->with('status', trans($response));
-        return redirect()->route('password.verify.show', ['phone' => $request->phone]);
-        // return view('auth.passwords.phone.verify', ['phone' => $request->phone]);
+
+        // return redirect()->route('password.verify.show', ['phone' => $request->phone]);
+       
+        return (previousRoute() === 'password.request.phone') ?  
+        redirect()->route('password.verify.show', ['phone' => $request->phone]) :
+        back()->with('status', 'Verification code has been sent!');
     }
 
     /**

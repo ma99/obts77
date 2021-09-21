@@ -25,10 +25,12 @@
                     {{-- <div class="d-flex justify-content-center"> --}}
                     <div class="d-flex">
                         <div class="col-6">
-                            <form method="post" action="{{ route('phoneverification.verify') }}">
+                            <form method="POST" action="{{ route('password.verify.phone') }}">
                                 @csrf
                                 <div class="form-group">
-                                    {{-- <label for="code">Verification Code</label> --}}
+                                    
+                                    <input type="hidden" name="phone" value="{{ $phone }}">
+
                                     <input id="code" class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" type="text" placeholder="Type code here" required autofocus>
                                     @if ($errors->has('code'))
                                         <span class="invalid-feedback" role="alert">
@@ -40,9 +42,10 @@
                                     <button class="btn btn-primary-light btn-block border-rounded">Verify Phone</button>
                                 </div>
                             </form>
-                            <form method="post" action="{{ route('phoneverification.resend') }}">
+                            <form method="POST" action="{{ route('password.send.sms') }}">
                                 @csrf                                
                                 <div class="form-group">
+                                    <input type="hidden" name="phone" value="{{ $phone }}">
                                     <button class="btn btn-warning-light btn-block border-rounded">Resend Code</button>
                                 </div>
                             </form>

@@ -8,7 +8,7 @@ namespace App\Extensions\Auth\Passwords;
 //class PasswordResetServiceProvider extends ServiceProvider implements DeferrableProvider
 use Illuminate\Auth\Passwords\PasswordResetServiceProvider as PasswordResetServiceProviderBase;
 
-//use App\Extensions\Auth\Passwords\PasswordBrokerManager;
+use App\Extensions\Auth\Passwords\PasswordBrokerManager;
 
 //class PasswordResetServiceProvider extends ServiceProvider implements DeferrableProvider
 class PasswordResetServiceProvider extends PasswordResetServiceProviderBase

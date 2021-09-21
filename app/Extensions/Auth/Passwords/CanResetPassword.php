@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Extension\Auth\Passwords;
+namespace App\Extensions\Auth\Passwords;
 
 use Illuminate\Auth\Passwords\CanResetPassword as CanResetPasswordBase;
 

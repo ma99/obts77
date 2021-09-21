@@ -25,7 +25,7 @@ class PhoneVerificationController extends Controller
             return $request->user()->hasVerifiedPhone()
                         //? redirect()->route('home')
                         ? redirect($this->redirectPath())
-                        : view('auth.passwords.phone.verify');
+                        : view('phone.verify');
 
         } catch(\Throwable $e) {
             //return $e->getMessage();
@@ -40,7 +40,7 @@ class PhoneVerificationController extends Controller
         //         'code' => ['The code is expired! Please try again or request another call.'],
         //     ]);
         // }
-
+        // dd($request->user);
         if ($request->user()->verification_code !== $request->code) {
             throw ValidationException::withMessages([
                 'code' => ['The code your provided is wrong. Please try again or request another call.'],
@@ -68,7 +68,7 @@ class PhoneVerificationController extends Controller
         $request->user()->smsToVerify();
 
         //return back()->with('resent', true);
-        return back()->with('status', 'Verification code has been sent!');;
+        return back()->with('status', 'Verification code has been sent!');
     }
 
     public function redirectPath()
