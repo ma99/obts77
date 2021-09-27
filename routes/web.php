@@ -117,8 +117,6 @@ Route::post('password/verify/phone', 'Auth\ForgotPasswordController@verify')->na
 Route::get('password/reset/phone/{token}', 'Auth\ResetPasswordController@showPhoneResetForm')->name('password.reset.phone');
 Route::post('password/reset/phone', 'Auth\ResetPasswordController@resetByPhone')->name('password.update.phone');
 
-//Route::post('password/phone', 'Auth\ForgotPasswordController@showPhoneRequestForm')->name('phone.password.request');
-
 /*Payment*/
 //Route::post('/pay/{booking}', 'Payment\PaymentController@index')->name('make.payment');
 //Route::post('/pay', 'Payment\PaymentController@cash')->name('make.payment.cash'); //shifted to admin grps
@@ -180,6 +178,11 @@ Route::get('/test', function() {
 });
 
 Auth::routes();
+
+// Route::get('user/{id}/profile/{name}', function ($id, $name) {
+//     return ['id' => $id, 'name' => $name];
+// })->name('profile');
+
 
 \DB::listen(function($sql) {
     \Log::info($sql->sql);

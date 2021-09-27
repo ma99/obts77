@@ -29,13 +29,13 @@ trait ResetsPasswords
     //         ['token' => $token, 'email' => $request->email]
     //     );
     // }
-
-     public function showPhoneResetForm(Request $request, $token = null)
-    {        
-        return view('auth.passwords.phone.reset')->with(
-            ['token' => $token, 'phone' => $request->phone]
-        );
-    }
+   
+    public function showPhoneResetForm(Request $request, $token = null)
+        {        
+            return view('auth.passwords.phone.reset')->with(
+                ['token' => $token, 'phone' => $request->phone]
+            );
+        }
 
     /**
      * Reset the given user's password.
@@ -45,6 +45,7 @@ trait ResetsPasswords
      */
     public function resetByPhone(Request $request)
     {
+
         $request->validate($this->phoneRules(), $this->validationErrorMessages());
 
         // Here we will attempt to reset the user's password. If it is successful we

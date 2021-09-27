@@ -7,7 +7,7 @@ use Illuminate\Auth\Passwords\DatabaseTokenRepository as DatabaseTokenRepository
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 // use Illuminate\Contracts\Hashing\Hasher as HasherContract;
 // use Illuminate\Database\ConnectionInterface;
-// use Illuminate\Support\Carbon;
+use Illuminate\Support\Carbon;
 // use Illuminate\Support\Str;
 
 class DatabaseTokenRepository extends DatabaseTokenRepositoryBase
@@ -67,6 +67,18 @@ class DatabaseTokenRepository extends DatabaseTokenRepositoryBase
     //     $this->connection = $connection;
     // }
     
+    // public function create(CanResetPasswordContract $user)
+    // {
+    //     $email = $user->getEmailForPasswordReset();
+    //     $phone = $user->getPhoneForPasswordReset();
+    //     $this->deleteExisting($user);
+    //     $token = $this->createNewToken();
+    //     $medium = isset($email) ? $email : $phone;
+    //     ddd($this->getPayload($medium, $token));
+    //     $this->getTable()->insert($this->getPayload($medium, $token));
+    //     return $token;
+    // }
+
     public function create(CanResetPasswordContract $user)
     {
         $email = $user->getEmailForPasswordReset();
@@ -86,10 +98,15 @@ class DatabaseTokenRepository extends DatabaseTokenRepositoryBase
             ->delete();
     }
 
-    // protected function getPayload($phone, $token)
-    // {
-    //     return ['phone' => $phone, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
-    // }
+    protected function getPayload($medium, $token)
+    {
+        // return ['phone' => $medium, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
+        if( strpos($medium, '@') !== false) 
+            {
+                return ['email' => $medium, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
+            }              
+            return ['phone' => $medium, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
+    }
     
     public function exists(CanResetPasswordContract $user, $token)
     {
@@ -102,29 +119,29 @@ class DatabaseTokenRepository extends DatabaseTokenRepositoryBase
                  $this->hasher->check($token, $record['token']);
     }
 
-    function __call($name_of_function, $arguments) { 
+    // function __call($name_of_function, $arguments) { 
               
-        // It will match the function name 
-        if ($name_of_function == 'getPayload') { 
-
-            if( strpos($arguments[0], '@') ) 
-            {
-                return ['email' => $medium, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
-            }              
-            return ['phone' => $medium, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
-        }
-            // switch ($arguments[0]) { 
+    //     // It will match the function name 
+    //     if ($name_of_function == 'getPayload') { 
+    //         ddd('mmmmmmmmmmmmm');
+    //         if( strpos($arguments[0], '@') !== false) 
+    //         {
+    //             return ['email' => $medium, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
+    //         }              
+    //         return ['phone' => $medium, 'token' => $this->hasher->make($token), 'created_at' => new Carbon];
+    //     }
+    //         // switch ($arguments[0]) { 
                       
-            //     // If there is only one argument 
-            //     // area of circle 
-            //     case '': 
-            //         return 3.14 * $arguments[0]; 
+    //         //     // If there is only one argument 
+    //         //     // area of circle 
+    //         //     case '': 
+    //         //         return 3.14 * $arguments[0]; 
                           
-            //     // IF two arguments then area is rectangel; 
-            //     case 2: 
-            //         return $arguments[0]*$arguments[1]; 
-            // } 
-    }
+    //         //     // IF two arguments then area is rectangel; 
+    //         //     case 2: 
+    //         //         return $arguments[0]*$arguments[1]; 
+    //         // } 
+    // }
 
 
     // /**
