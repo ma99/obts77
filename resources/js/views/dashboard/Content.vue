@@ -9,3 +9,8 @@
         }
     }
 </script>
+<style lang="scss" scoped>    
+    .layout-boxed .content-wrapper, .layout-boxed .main-header, .layout-boxed .main-footer {
+        z-index: 0; 
+    }
+</style>

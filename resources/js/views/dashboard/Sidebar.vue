@@ -12,30 +12,42 @@
     <div class="sidebar">
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex flex-column">
-        <div class="d-flex">          
+        <div class="d-flex info" :class="{ active: expand }">          
           <div class="image">
             <img src="/dashboard/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
           </div>
-          <div class="info w-100">
-            <a class="d-block">
+          <div class="px-2 py-1 w-100" @click="expand=!expand">
+            <a>
               {{user.name}}
-            </a>
-            <!-- <span class="badge badge-danger">{{role}}</span> -->
-            <span 
-              class="badge" 
-              :class="[activeBadge]">{{role}}
-            </span>
+            </a>            
+            <span class="float-right">
+              <transition name="fade" mode="out-in">
+                <span> 
+                  <i v-show="!expand" class="far fa-plus-square text-secondary"></i>
+                  <i v-show="expand" class="far fa-minus-square text-light"></i>
+                </span>
+              </transition>
+            </span>                
           </div>
         </div>
+        <div class="flex mt-2">
+          <span 
+            class="mx-3 badge" 
+            :class="[activeBadge]">{{role}}
+          </span>
+        </div>
         <div class="d-flex mt-3 justify-content-center">          
-          <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action active">
-              Cras justo odio
+          <div class="list-group"  v-show="expand">
+            <a href="#" class="list-group-item list-group-item-action">
+              <i class="far fa-id-card mr-2"></i>Profile
             </a>
-            <a href="#" class="list-group-item list-group-item-action">Dapibus ac facilisis in</a>
-            <a href="#" class="list-group-item list-group-item-action">Morbi leo risus</a>
+            <a href="#" class="list-group-item list-group-item-action">
+              <i class="far fa-list-alt mr-2"></i>My Orders
+            </a>
+            <a href="#" class="list-group-item list-group-item-action">
+              <i class="far fa-share-square mr-2"></i>Returns & Refunds
+            </a>
             <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
-            <a href="#" class="list-group-item list-group-item-action disabled" tabindex="-1" aria-disabled="true">Vestibulum at eros</a>
           </div>            
         </div>
       </div>
@@ -268,6 +280,7 @@
 </template>
 
 <script>
+    import Toggle from '../../components/ShowHide';
     export default {
       props: {
         home: String,
@@ -278,9 +291,13 @@
         },
         name: '',
       },
+      components: {
+        Toggle,
+      },
       data() {
         return {
           activeBadge: this.activeBadgeSelection(),
+          expand: false,
           navItem: undefined,
           childNavItem: undefined,
           sidebarScroll: undefined,
@@ -342,8 +359,48 @@
       }
     }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .sidebar {
     height: calc(100vh - (3.5rem + 1px));
+
+    // .list-group {      
+    //   .list-group-item {  
+    //     background-color: hsla(210, 16%, 27%, 1);      
+    //     .list-group-item-action a:hover {
+    //       color: hsla(211, 100%, 31%, 1) !important;
+    //     }
+    //   }
+    // }
+
   }
+  .list-group-item {
+      background-color: hsla(210, 16%, 27%, 1);      
+  }
+  .user-panel {
+   a:hover {
+    color: hsla(211, 100%, 50%, 1) !important; 
+   }
+   .info {
+      border-radius: 3px; 
+     &:hover {
+        background-color: hsla(210, 6%, 31%, 1);
+        cursor: pointer;
+      }
+      &.active {
+        background-color: hsla(188, 78%, 41%, 1);
+      }  
+    }    
+  }
+  .list-group-item-action {
+    &:hover, &:focus {
+      color: hsla(210, 17%, 98%, 1) !important;
+      background-color: hsla(210, 18%, 35%, 1);
+    }
+  }
+  .fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 </style>

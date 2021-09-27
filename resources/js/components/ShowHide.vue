@@ -13,8 +13,8 @@
              }" 
             >
               <!-- {{ expand ? 'Save' : 'Edit' }} -->
-              <i v-show="expand"class="fas fa-angle-double-up" aria-hidden="true"></i>
-              <i v-show="!expand"class="fas fa-angle-double-down" aria-hidden="true"></i>
+              <i v-show="expand" class="fas fa-angle-double-up" aria-hidden="true"></i>
+              <i v-show="!expand" class="fas fa-angle-double-down" aria-hidden="true"></i>
             </button>
           </transition>
         </p>                
