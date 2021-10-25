@@ -77,8 +77,21 @@ Route::group(['middleware' => ['auth', 'role:super_admin']], function () {
 	Route::delete('/route-cities/{route}/{routeCity}', 'Admin\RouteCitiesController@destroy');
 //});	// end of group
 
+// ticket operations
+// Route::group(['middleware' => ['auth', 'role:super_admin,admin']], function () {
+
+// 	Route::get('/tickets', 'Admin\TicketController@search');
+// });
+Route::group(['middleware' => ['auth']], function() {
+	Route::get('/tickets', 'Admin\TicketController@search');
+	Route::post('/tickets/cancel', 'Admin\TicketController@destroy');
+	// Route::get('/tickets/cancel', 'Admin\TicketController@destroy');
+});
+
+
 Route::group(['middleware' => ['auth', 'role:super_admin,admin,operator']], function () {
 	Route::get('/users/{phone}', 'Admin\UserController@index');
+	Route::get('/users/roles/all', 'Admin\UserController@roles');
 	// Route::post('/roles/assign', 'Admin\UserController@assign');
 	// Route::post('/roles/revoke', 'Admin\UserController@revoke');
 	Route::post('users/role/{action}', 'Admin\UserController@action');
@@ -91,6 +104,7 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::post('/bookings', 'BookingController@store');
 	Route::delete('/bookings/{booking}', 'BookingController@destroy');    
 	Route::post('/discount', 'DiscountController@index');
+
 });
 
 

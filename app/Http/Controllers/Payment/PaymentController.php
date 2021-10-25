@@ -90,7 +90,7 @@ class PaymentController extends Controller
         $name = auth()->user()->name;
         $id = auth()->user()->id;
         // $data['received_by'] = "$name'_'$id";
-        $data['received_by'] = "{$name}_{$id}";
+        $data['received_by'] = "{$name}/{$id}";
         
         if ($request->has('paymentMethod')) {
 

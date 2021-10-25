@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Events\SeatStatusUpdated;
 use App\Schedule;
 use App\Booking;
 use App\Seat;
-use App\Bus;
+// use App\Trip;
 use App\User;
+use App\Bus;
+// use App\Events\SeatStatusUpdated;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
+    // protected $trip;
+    protected $booking;
+    protected $user;
+
+    public function __construct(Booking $booking, User $user)
+    {
+        $this->booking = $booking;
+        $this->user = $user;
+    }
+
     public function store(Request $request)
     {   
         
@@ -28,7 +39,8 @@ class BookingController extends Controller
         //    $this->seatBooking($user, $attributes); 
         // });
 
-        return $this->seatBooking($user, $attributes);
+        // return $this->seatBooking($user, $attributes);
+        return $this->booking->seatBooking($user, $attributes);
 
         // return tap($this->validateRequest(), function($attributes) {
 
@@ -47,18 +59,20 @@ class BookingController extends Controller
         } else
         {
             $attributes = $this->validateRequest();
-            $info =  $this->getUserInfoFrom($request);
+            $info =  $this->user->getUserInfoFrom($request);
             $info['password'] = Hash::make(Str::random(8));
 
             // $user = auth()->user()->createUser($info);             
-            $user = User::createUser($info);             
+            $user = $this->user->createUser($info);             
         }        
         
         // $booking = $this->creatBooking($user, $attributes);
         // $attributes['booking_ref'] = $booking->id;
         // $attributes= $this->createSeatsFor($booking, $attributes);
         // return $this->bookedSeatInfo($attributes);
-           return $this->seatBooking($user, $attributes);
+           // return $this->seatBooking($user, $attributes);
+           return $this->booking->seatBooking($user, $attributes);
+
 
           // return tap($this->validateRequest(), function($attributes) use ($user) {
           //   $this->seatBooking($user, $attributes);
@@ -66,31 +80,43 @@ class BookingController extends Controller
           // }); 
     }
 
-    public function getUserInfoFrom(Request $request)
+    /*public function getUserInfoFrom(Request $request)
     {
         return $request->validate([
                 'name' => 'required',          
                 'email' => 'nullable',          
                 'phone' => 'required',    
         ]);    
-    }
+    }*/
 
+    /*** mod on 12oct
     public function seatBooking(User $user, array $attributes)
     {
         $booking = $this->createBooking($user, $attributes);     
         $attributes['booking_ref'] = $booking->id;
         return $attributes= $this->createSeatsFor($booking, $attributes);
         //return $this->bookedSeatInfo($attributes);        
-    }
+    }*/
 
-    public function createBooking(User $user, array $attributes)
+    /*public function seatBooking(User $user, array $attributes)
+    {
+        $booking = $this->booking->createBooking($user, $attributes);     
+
+        $this->trip->createIfNotExistBy($booking->bus_schedule_id, $booking->date);
+
+        $attributes['booking_ref'] = $booking->id;
+        return $attributes= $this->createSeatsFor($booking, $attributes);
+        //return $this->bookedSeatInfo($attributes);        
+    }*/
+
+    /*public function createBooking(User $user, array $attributes)
     {
         unset($attributes['selected_seats']);
         //return auth()->user()->bookings()->create($attributes);
         return $user->bookings()->create($attributes);
-    }
+    }*/
 
-    public function createSeatsFor($booking, $attributes)
+    /*public function createSeatsFor($booking, $attributes)
     {
         extract($attributes);
 
@@ -116,7 +142,7 @@ class BookingController extends Controller
 
         //return response()->json($attributes);
         return $attributes;
-    }
+    }*/
 
     public function bookedSeatInfo($attributes)
     {
@@ -178,41 +204,37 @@ class BookingController extends Controller
 
     public function destroy(Booking $booking)
     {
-        //dd(auth()->user()->authorizeRoles(['super_admin', 'admin']));
-
-        // if (! auth()->user()->authorizeRoles(['super_admin', 'admin'])) {
-        //     //dd('here');
-        //     $this->authorize('delete', $booking);
-        // }
-        $this->authorize('delete', $booking);
+       
+        $this->authorize('manage', $booking);
+        $this->booking->cancel($booking);
        //$bookingId = $booking->id;
-       $scheduleId = $booking->schedule_id;
+       /*$scheduleId = $booking->schedule_id;
        $busId = $booking->bus_id;               
        $travelDate = $booking->date;
-       //$travelDate = date("d-m-Y", strtotime($booking->date)) ;
-       $this->removeSeatBookedOrBuyingStatus($booking, $scheduleId, $travelDate);
+       *///$travelDate = date("d-m-Y", strtotime($booking->date)) ;
+       // $this->removeSeatBookedOrBuyingStatus($booking, $scheduleId, $travelDate);
         return redirect('/home');
     }
 
-    public function removeSeatBookedOrBuyingStatus($booking, $scheduleId, $busId, $travelDate)
-    {
-        // by Deleting from bookings, seats table
+    // public function removeSeatBookedOrBuyingStatus($booking, $scheduleId, $busId, $travelDate)
+    // {
+    //     // by Deleting from bookings, seats table
 
-        //Booking::destroy($bookingId); // deleting by pk
+    //     //Booking::destroy($bookingId); // deleting by pk
 
-        //$seats = Seat::where('booking_id', $bookingId)->get();            
-        $seats = $booking->load('seats');
+    //     //$seats = Seat::where('booking_id', $bookingId)->get();            
+    //     $seats = $booking->load('seats');
 
-        $booking->delete();
+    //     $booking->delete();
 
-        foreach ($seats as $seat) {
-            $updateSeatInfo = [
-                    'seat_no' => $seat['seat_no'],
-                    'status' => 'available',
-            ];            
-            $updateSeatInfo = json_decode(json_encode($updateSeatInfo)); //array to object
-            broadcast(new SeatStatusUpdated($updateSeatInfo, $scheduleId, $busId, $travelDate))->toOthers();
-        }
-        return;
-    }
+    //     foreach ($seats as $seat) {
+    //         $updateSeatInfo = [
+    //                 'seat_no' => $seat['seat_no'],
+    //                 'status' => 'available',
+    //         ];            
+    //         $updateSeatInfo = json_decode(json_encode($updateSeatInfo)); //array to object
+    //         broadcast(new SeatStatusUpdated($updateSeatInfo, $scheduleId, $busId, $travelDate))->toOthers();
+    //     }
+    //     return;
+    // }
 }

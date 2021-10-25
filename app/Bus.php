@@ -21,8 +21,7 @@ class Bus extends Model
     public function schedules()
     {
     	return $this->belongsToMany(Schedule::class)
-                    ->withPivot('id')
-                    ->withPivot('departure_city_id')
+                    ->withPivot('id', 'departure_city_id')
                     ->withTimestamps(); 
     }
 

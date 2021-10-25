@@ -95,6 +95,17 @@
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-header">15 Notifications</span>
           <div class="dropdown-divider"></div>
+          <router-link :to="{ name:'notification', params: {id: '1'} }" 
+            class="dropdown-item"
+          > 
+            <i class="fas fa-envelope mr-2"></i> Hello world
+            <span class="float-right text-muted text-sm">3 mins</span>
+          </router-link>
+          <!-- <span @click.prevent="showMePath()">            
+            <i class="fas fa-envelope mr-2"></i> Hello world
+            <span class="float-right text-muted text-sm">3 mins</span>
+          </span> -->
+          <div class="dropdown-divider"></div>
           <a href="#" class="dropdown-item">
             <i class="fas fa-envelope mr-2"></i> 4 new messages
             <span class="float-right text-muted text-sm">3 mins</span>
@@ -110,7 +121,11 @@
             <span class="float-right text-muted text-sm">2 days</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+          <!-- <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a> -->
+          <router-link :to="{ name:'notifications'}" 
+            class="dropdown-item dropdown-footer"
+          >See All Notifications
+          </router-link>
         </div>
       </li>
       <li class="nav-item">
@@ -124,8 +139,27 @@
 
 <script>
     export default {
+        props: {          
+          user: {
+            type: Object
+          },
+        },
+        data() {
+          return {
+
+          }
+        },
         mounted() {
             console.log('Header mounted.')
-        }
+        },
+        methods: {
+          /*showMePath() {
+            const USER = this.user;
+            console.log(USER)
+            if(USER !== null) {
+              this.$router.push({ name: 'notification', params: {userid: '3', id: '1'} })
+            }
+          },*/
+        },
     }
 </script>

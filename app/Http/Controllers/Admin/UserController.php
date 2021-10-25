@@ -20,7 +20,8 @@ class UserController extends Controller
                 'name'  => $user->name,
                 'email' => $user->email ?? 'N/A', //$user->email ?? 'N/A',
                 'error' => '',
-                'role' => $user->getRole(), //$user->getRole() ?? 'N/A',
+                'role' => $user->getRole('name'), //$user->getRole() ?? 'N/A',
+                'roleDescription' => $user->getRole('description'),
             ];
         }
         return [
@@ -45,6 +46,12 @@ class UserController extends Controller
         return [
             'message' => 'Revoked',        
         ];
+    }
+
+    public function roles()
+    {
+       return Role::where('name', '!=', 'super_admin')->get();
+       // ddd(Role::where('name', '!=', 'super_admin')->get());
     }
 
     public function assign(User $user, Role $role)

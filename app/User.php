@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Trip;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,6 +46,42 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'creator_id'); 
     }
 
+    public function supervisor()
+    {
+        return $this->hasOne(Supervisor::class); 
+    }
+
+    public function driver()
+    {
+        return $this->hasOne(Driver::class); 
+    }
+    
+    public function helper()
+    {
+        return $this->hasOne(Helper::class); 
+    }
+
+    public function allBookingsBy($user)
+    {
+        // return $user->bookings()->get();
+        $bookings = $user->bookings()->get();
+        // return 
+        $bookings = $bookings->map(function ($booking) {                 
+            return is_null($this->pendingTripBy($booking->bus_schedule_id, date("Y-m-d", strtotime($booking->date)))) ? null : $booking;            
+        })->filter();
+       
+        return $bookings;
+    }
+
+    public function pendingTripBy($busScheduleId, $date)
+    {
+        // $date = date("Y-m-d", strtotime($date));
+        return $trip = Trip::where('bus_schedule_id', $busScheduleId)
+                    ->where('date', $date)
+                    ->where('status', 'Pending')                  
+                    ->first();
+    }
+
     public function roles()
     {
         return $this->belongsToMany(Role::class); 
@@ -60,6 +97,15 @@ class User extends Authenticatable
             'password' => $data['password'], 
           ]
       );
+    }
+
+    public function getUserInfoFrom(Request $request)
+    {
+        return $request->validate([
+                'name' => 'required',          
+                'email' => 'nullable',          
+                'phone' => 'required',    
+        ]);    
     }
 
     public function getUserInfo()
@@ -157,10 +203,10 @@ class User extends Authenticatable
     * Check user role
     * @param string $role
     */
-    public function getRole()
+    public function getRole(String $attribute)
     {
         // return $this->roles()->first()->name ?? null;
-        return optional($this->roles()->first())->name;
+        return optional($this->roles()->first())->$attribute;
     }
 
 

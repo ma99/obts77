@@ -83,21 +83,38 @@
         <div class="card-body bg-lightyellow">
           <form>
             <div class="row justify-content-center px-3">
-              <div class="col-md bg-lightcyan mb-2 px-0 rounded">                
+              <div class="col-md-9 bg-lightcyan mb-2 px-0 rounded mr-2">                
                 <div class="bg-cyan p-2 rounded-top">
-                  <h4>Role Name</h4>
+                  <h4>Role</h4>
                 </div>
                 <div class="row p-3">
-                  <div class="col-md">
+                  <div class="col-md mr-2">
+                    <legend class="pt-0">Assigned</legend>
                     <div class="custom-control custom-radio">
-                      <input type="radio" id="customRadio1" class="custom-control-input" value="admin" v-model="rolePicked">
-                      <label class="custom-control-label" for="customRadio1">Administrator</label>
+                      <input type="radio" id="assignedRole" class="custom-control-input" :value="userInfo.role?? false" v-model="rolePicked">                      
+                      <label class="custom-control-label" for="assignedRole">{{userInfo.roleDescription}}</label>
                     </div>                    
                   </div>
+                                      
+                  <div class="form-group col-md-5 mr-2">
+                    <label for="inputState">Select New Role</label>
+                    <select v-model="selectedRole" id="inputState" class="form-control custom-select">
+                      <option value="" disabled>Please select one</option>
+                      <option 
+                        v-for="role in roles" 
+                        :value="{name: role.name, description: role.description}"
+                        :disabled="isAssignedAndSelectedSame(role.name)"
+                      >
+                        {{ role.description }}
+                      </option>
+                    </select>
+
+                  </div>
                   <div class="col-md">
+                    <legend class="pt-0">Selected</legend>
                     <div class="custom-control custom-radio">
-                      <input type="radio" id="customRadio2" class="custom-control-input" value="operator" v-model="rolePicked">
-                      <label class="custom-control-label" for="customRadio2">Operator</label>
+                      <input type="radio" id="selectedRole" class="custom-control-input" :value="selectedRoleValue" v-model="rolePicked">
+                      <label class="custom-control-label" for="selectedRole">{{selectedRoleName}}</label>
                     </div>
                   </div>                                
                 </div>            
@@ -150,9 +167,17 @@ export default {
           show: false,                    
           message: null,
           role: null,
+          roles: [],
           rolePicked: null,
           actionPicked: null,
+          // disable: false, 
           searchDisabled: true,
+          // selected: '',
+          selectedRole: '',
+          // selectedRole: {
+          //   name: '',
+          //   description: ''
+          // },
           showUserNotExistText: false,
           userExist: '',
           userInfo: {
@@ -162,12 +187,14 @@ export default {
             email:'',
             error: '',
             role: null,
+            roleDescription: '',
           },
       }
     },
-    async mounted() {
-        this.loading = true;        
-        this.loading = false;
+    mounted() {
+        // this.loading = true;        
+        // this.loading = false;
+         this.getRoles();
     },      
     watch: {        
       'userInfo.phone'(value, oldValue) {
@@ -178,8 +205,12 @@ export default {
        'userInfo.role'(value) {          
          if(value) {          
           this.rolePicked = value;
+          // this.removeSameRoleFromRolesArray(value);
          }
        },
+       'selectedRole'(value) {
+          this.rolePicked = this.userInfo.role ?? '';
+       }
     },            
     computed: {     
       isValid() {
@@ -212,7 +243,19 @@ export default {
           }
         }        
         return this.inValidAction();
-      }       
+      },
+      selectedRoleValue() {
+        return (this.selectedRole !== null) ? this.selectedRole.name : '';
+      },
+      selectedRoleName() {
+        return (this.selectedRole !== null) ? this.selectedRole.description : '';
+      },
+      /*isAssignedAndSelectedSame() {
+        if (this.userInfo.role !== null) {
+          return (this.userInfo.role === this.selectedRole.name)?? false;
+        }
+        return false;
+      },*/
     },
     methods: {        
       actionAlert(icon, message) {
@@ -223,6 +266,28 @@ export default {
           timer: 3000,
           closeOnClickOutside: false,
         })
+      },
+      async getRoles() {
+        this.loading = true;          
+        this.roles = []; 
+        // this.resetUserInfo();
+        var vm = this;                
+        let url = '/users/roles/all';
+        await axios.get(url)
+            .then(function (response) {                  
+              response.data.error ? vm.error = response.data.error : vm.roles = response.data;              
+              vm.loading = false;
+        });
+      },
+      // removeSameRoleFromRolesArray(role) {
+      //   let index = this.roles.findIndex(element => element.name === role);
+      //   this.roles.splice(index, 1);
+      // },
+      isAssignedAndSelectedSame(role) {
+        if (this.userInfo.role !== null) {
+          return (this.userInfo.role === role)?? false;
+        }
+        return false;
       },
       userRoleIs(role, superAdmin) {
         if (role == superAdmin) {

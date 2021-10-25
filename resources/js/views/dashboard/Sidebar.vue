@@ -50,10 +50,7 @@
             <a href="#" class="list-group-item list-group-item-action">Porta ac consectetur ac</a>
           </div>            
         </div>
-      </div>
-      <!-- <div class="card card-body">
-          Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
-      </div>         -->
+      </div>    
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -218,9 +215,9 @@
                     <i class="fas fa-clock nav-icon" aria-hidden="true"></i>
                     <p>Bus Schedules</p>
                 </router-link> 
-                </li>                   
+              </li>                   
 
-                <li class="nav-item" @click="toggleActive(33)">
+              <li class="nav-item" @click="toggleActive(33)">
                   <router-link :to="{name:'route-cities'}" 
                     class="nav-link"
                     :class="{ active: childNavItem == 33 }"
@@ -228,9 +225,208 @@
                       <i class="fas fa-map-signs nav-icon" aria-hidden="true"></i>
                       <p>Route Cities</p>
                   </router-link> 
-                </li>                          
+                </li>                
             </ul>
-          </li> <!--  end of management -->                          
+            <!-- staff                           -->
+                <!-- level-2 -->
+              <ul class="nav nav-treeview">      
+                <!-- note: remove 'menu-open' -->          
+                <li class="nav-item has-treeview menu-open">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon text-warning"></i>
+                    <p>
+                      STAFF
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <!-- level-3 -->
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item" @click="toggleActive(34)">
+                      <router-link :to="{name:'driver'}" 
+                        class="nav-link"
+                        :class="{ active: childNavItem == 34 }"
+                      >
+                        <i class="far fa-dot-circle nav-icon text-warning"></i>
+                        <p>Driver</p>
+                      </router-link>
+                    </li>                    
+                    <li class="nav-item" @click="toggleActive(35)">
+                      <router-link :to="{name:'supervisor'}"
+                      class="nav-link"
+                      :class="{ active: childNavItem == 35 }"
+                      >
+                        <i class="far fa-dot-circle nav-icon text-warning"></i>
+                        <p>Supervisor</p>
+                      </router-link>
+                    </li>
+                    <li class="nav-item" @click="toggleActive(36)">
+                      <router-link :to="{name:'helper'}"
+                      class="nav-link"
+                      :class="{ active: childNavItem == 36 }"
+                      >
+                        <i class="far fa-dot-circle nav-icon text-warning"></i>
+                        <p>Helper</p>
+                      </router-link>
+                    </li>
+                  </ul>
+                </li>              
+              </ul>
+              <!-- end -->
+          </li> 
+            <!-- note: remove 'menu-open' -->
+            <li v-if="isAdmin" class="nav-item has-treeview"> 
+              <a href="#" class="nav-link"
+                :class="{ active: navItem == 4 }"
+                @click="toggleActive(4, false)"
+              >
+                <i class="nav-icon fas fa-circle"></i>
+                <p>
+                <!-- level-1 -->
+                  OPERATIONS
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <!-- level-2 -->
+              <ul class="nav nav-treeview">      
+                <!-- note: remove 'menu-open' -->          
+                <li class="nav-item has-treeview menu-open">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon text-success"></i>
+                    <p>
+                      TICKETS
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <!-- level-3 -->
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item" @click="toggleActive(41)">
+                      <router-link :to="{name:'cancel'}" 
+                        class="nav-link"
+                        :class="{ active: childNavItem == 41 }"
+                      >
+                        <i class="far fa-dot-circle nav-icon text-success"></i>
+                        <p>Cancel</p>
+                      </router-link>
+                    </li>                    
+                    <li class="nav-item" @click="toggleActive(42)">
+                      <router-link :to="{name:'processRefund'}"
+                      class="nav-link"
+                      :class="{ active: childNavItem == 42 }"
+                      >
+                        <i class="far fa-dot-circle nav-icon text-success"></i>
+                        <p>Process Refund</p>
+                      </router-link>
+                    </li>
+                  </ul>
+                </li>              
+              </ul>
+              <!-- level-2 -->
+              <ul class="nav nav-treeview">                
+                <li class="nav-item has-treeview">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>
+                      Level 2
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <!-- level-3 -->
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>Level 3</p>
+                      </a>
+                    </li>                    
+                    <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>Level 3</p>
+                      </a>
+                    </li>
+                  </ul>
+                </li>              
+              </ul>
+            </li>
+
+            <!-- User -->
+            <li v-else class="nav-item has-treeview menu-open"> 
+              <a href="#" class="nav-link"
+                :class="{ active: navItem == 4 }"
+                @click="toggleActive(4, false)"
+              >
+                <i class="nav-icon fas fa-circle"></i>
+                <p>
+                <!-- level-1 -->
+                  OPERATIONS
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <!-- level-2 -->
+              <ul class="nav nav-treeview">      
+                <!-- note: remove 'menu-open' -->          
+                <li class="nav-item has-treeview menu-open">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon text-success"></i>
+                    <p>
+                      TICKETS
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <!-- level-3 -->
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item" @click="toggleActive(41)">
+                      <router-link :to="{name:'cancel'}" 
+                        class="nav-link"
+                        :class="{ active: childNavItem == 41 }"
+                      >
+                        <i class="far fa-dot-circle nav-icon text-success"></i>
+                        <p>Cancel</p>
+                      </router-link>
+                    </li>                    
+                    <li class="nav-item" @click="toggleActive(42)">
+                      <router-link :to="{name:'requestRefund'}"
+                      class="nav-link"
+                      :class="{ active: childNavItem == 42 }"
+                      >
+                        <i class="far fa-dot-circle nav-icon text-success"></i>
+                        <p>Request Refund</p>
+                      </router-link>
+                    </li>
+                  </ul>
+                </li>              
+              </ul>
+              <!-- level-2 -->
+              <ul class="nav nav-treeview">                
+                <li class="nav-item has-treeview">
+                  <a href="#" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>
+                      Level 2
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <!-- level-3 -->
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>Level 3</p>
+                      </a>
+                    </li>                    
+                    <li class="nav-item">
+                      <a href="#" class="nav-link">
+                        <i class="far fa-dot-circle nav-icon"></i>
+                        <p>Level 3</p>
+                      </a>
+                    </li>
+                  </ul>
+                </li>              
+              </ul>
+            </li>
+            
+          <!-- </li>  end of operations                           -->
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-th"></i>
@@ -280,7 +476,6 @@
 </template>
 
 <script>
-    import Toggle from '../../components/ShowHide';
     export default {
       props: {
         home: String,
@@ -290,9 +485,6 @@
           type: Object
         },
         name: '',
-      },
-      components: {
-        Toggle,
       },
       data() {
         return {
@@ -314,6 +506,10 @@
       computed: {
         isSuperAdmin() {
           return (this.role == 'super_admin') ?
+                true : false
+        },
+        isAdmin() {
+          return (this.role == 'super_admin' || this.role == 'admin') ?
                 true : false
         },                
       },

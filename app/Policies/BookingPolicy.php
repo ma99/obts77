@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Booking;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
 class BookingPolicy
 {
@@ -20,8 +21,19 @@ class BookingPolicy
 
     public function manage(User $user, Booking $booking)
     {
-        return $user->is($booking->creator);
+        // ddd('here');
+        // return $user->is($booking->creator);
+        return $user->id === $booking->creator_id
+                ? Response::allow()
+                : Response::deny('You do not own this booking.');
     }
+
+    // public function search(User $user)
+    // {
+    //     ddd(auth()->phone);
+    //     // return $user->phone === auth()->phone;
+    //     return $user->id === $booking->creator_id;
+    // }
 
     /**
      * Determine whether the user can view any bookings.

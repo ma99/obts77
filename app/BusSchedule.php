@@ -13,6 +13,11 @@ class BusSchedule extends Pivot
     {
         return $this->hasMany(Booking::class, 'bus_schedule_id');
     }
+    
+    public function trips()
+    {
+        return $this->hasMany(Trips::class, 'bus_schedule_id');
+    }
 
     public function getCityRouteBy($departure_city, $arrival_city)
     {

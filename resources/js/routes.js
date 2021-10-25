@@ -124,11 +124,63 @@ export const routes = [
         name: 'stop',
         component: require('./views/city/Stop').default
     },
+    {
+        path: '/dashboard/admin/stop',
+        name: 'stop',
+        component: require('./views/city/Stop').default
+    },
+
+    // Staff
+    {
+        path: '/dashboard/admin/staffs/driver',
+        name: 'driver',
+        component: require('./views/staffs/Driver').default
+    },
+    {
+        path: '/dashboard/admin/staffs/supervisor',
+        name: 'supervisor',
+        component: require('./views/staffs/Supervisor').default
+    },
+    {
+        path: '/dashboard/admin/staffs/helper',
+        name: 'helper',
+        component: require('./views/staffs/Helper').default
+    },
+
+    // Operations
+    {
+        path: '/dashboard/admin/tickets/cancel',
+        name: 'cancel',
+        component: require('./views/operations/ticket/Cancel').default
+    },
+    {
+        path: '/dashboard/admin/tickets/refund',
+        name: 'processRefund',
+        component: require('./views/operations/ticket/ProcessRefund').default
+    },
+
     // user
     {
-        path: '/user/dashboard',
+        path: '/dashboard/user',
         component: require('./views/Home').default,
-        name: 'userDashboard'
+        name: 'user_dashboard'
+      
+    },
+    {
+        path: '/dashboard/user/tickets/refund',
+        name: 'requestRefund',
+        component: require('./views/Operations/ticket/RequestRefund').default
+    },
+    {
+        path: '/dashboard/user/notifications',
+        component: require('./views/notification/Notifications').default,
+        name: 'notifications'
+      
+    },
+    {
+        path: '/dashboard/user/notifications/:id',
+        component: require('./views/notification/Notification').default,
+        name: 'notification'
       
     },
     //404

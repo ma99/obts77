@@ -2,7 +2,9 @@
 
     <div class="wrapper">
 
-        <dashboard-header />  
+        <dashboard-header
+            :user="JSON.parse(user)"            
+        />  
 
         <sidebar 
             :role="role"            
@@ -11,7 +13,9 @@
             :logout="logoutRoute"
         />
 
-        <content-wrapper />
+        <content-wrapper 
+            :role="role"            
+        />
 
         <controlbar />
 
@@ -90,13 +94,13 @@
         padding: 0 1rem;
     }
 
-    .layout-fixed .control-sidebar {
-        position: absolute;
-    }
-    .control-sidebar {
-        z-index: 9999;
-    }
-    .control-sidebar::before {
-        position: absolute;
-    }
+    // .layout-fixed .control-sidebar {
+    //     position: absolute;
+    // }
+    // .control-sidebar {
+    //     z-index: 9999;
+    // }
+    // .control-sidebar::before {
+    //     position: absolute;
+    // }
 </style>

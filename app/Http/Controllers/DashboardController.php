@@ -23,26 +23,24 @@ class DashboardController extends Controller
         // if (Auth::check()) {
             // The user is logged in...
 
-            $role = Auth::user()->getRole();
-            $user = Auth::user();
+            $role = Auth::user()->getRole('name');
+            // $user = Auth::user();
 
            if (is_null($role)) {
                 return view('errors.401', ['message' => 'Not Authorized']);
-                // return 'you are not authorized';
             } 
 
-            // return view('dashboard.dashboard', ['role' => $role]);
-            return view('dashboard.dashboard', ['role' => $role, 'user' => $user]);
+            return view('dashboard.dashboard', ['role' => $role, 'user' => Auth::user()]);
         // }            
     }
 
     public function user()
     {
-        $role = Auth::user()->getRole();
-        $user = Auth::user();
+        $role = Auth::user()->getRole('name');
+        // $user = Auth::user();
 
            if (is_null($role)) {
-                return view('dashboard.dashboard', ['role' => 'regular', 'user' => $user]);
+                return view('dashboard.dashboard', ['role' => 'regular', 'user' => Auth::user()]);
             } 
         return redirect()->route('admin_dashboard');    
     }
