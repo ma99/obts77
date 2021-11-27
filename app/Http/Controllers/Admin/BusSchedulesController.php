@@ -41,8 +41,7 @@ class BusSchedulesController extends Controller
 
     //     return 'success';
     // }
-
-
+    
     public function destroy(Bus $bus, $schedule)
     {
         

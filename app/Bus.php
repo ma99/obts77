@@ -42,14 +42,57 @@ class Bus extends Model
         return $this->belongsTo(Type::class);
     }
 
+    public function drivers()
+    {
+        return $this->belongsToMany(Driver::class); 
+    }
+
+    public function supervisors()
+    {
+        return $this->belongsToMany(Supervisor::class); 
+    }
+
+    public function helpers()
+    {
+        return $this->belongsToMany(Helper::class); 
+    } 
+
+    public function addDriver($id)
+    {
+        return $this->drivers()->syncWithoutDetaching($id);
+    }
+
+    public function addHelper($id)
+    {
+        return $this->helpers()->syncWithoutDetaching($id);
+    }
+
+    public function addSupervisor($id)
+    {
+        return $this->supervisors()->syncWithoutDetaching($id);
+    }
+
+    public function removeDriver($id)
+    {
+        return $this->drivers()->detach($id);
+    }
+
+    public function removeHelper($id)
+    {
+        return $this->helpers()->detach($id);
+    }
+
+    public function removeSupervisor($id)
+    {
+        return $this->supervisors()->detach($id);
+    }
+
     // public function typeBy($typeId)
     // {
     //     return $this->belongsTo(Type::class)
     //                 ->where('id', $typeId)->first();
 
     // }
-
-
 
     /*public function getBusesWithSeatPlan()
     {

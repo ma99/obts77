@@ -115,6 +115,11 @@ export const routes = [
         component: require('./views/bus/BusSchedules').default
     },
     {
+        path: '/dashboard/admin/bus-staff',
+        name: 'bus-staff',
+        component: require('./views/bus/BusStaff').default
+    },
+    {
         path: '/dashboard/admin/city',
         name: 'city',
         component: require('./views/city/City').default

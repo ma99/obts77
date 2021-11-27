@@ -240,3 +240,66 @@ export const sortBusSchedulesByTime = ({ commit, getters, state, rootGetters }) 
    commit('SORT_BUS_SCHEDULES_BY_TIME', schedules);
 }
 
+/** STAFF */
+// export const getDriversByBus = ({ commit, dispatch }, id) => {
+//     return Bus.drivers(id).then(response => {        
+//         commit('SET_DRIVERS_BY_BUS', response.data);
+//         // dispatch('sortBusSchedulesByTime');
+//     })
+//     .catch(error => {
+//             // console.log(error.response.data);
+//             // let errors = {"schedules":[error.response.data.message]};
+//             // commit('EMPTY_SCHEDULES_BY_BUS');
+//             dispatch('setErrors', 
+//              error.response.data.errors,
+//                 { root: true }
+//             );
+//     });
+// }
+
+export const getStaffByBus = ({ commit, dispatch }, id) => {            
+    return Bus.staff(id).then(response => {
+        commit('SET_STAFF_BY_BUS', response.data);
+        // dispatch('sortByBusId');
+    })
+    .catch(error => {
+        console.log(error.response.data);
+        dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
+    });
+}
+
+export const addStaffByBus = ({ commit, dispatch }, {data, id}) => {
+    Bus.attachStaff(data, id).then(response => {
+        commit('ADD_STAFF_BY_BUS', response.data);
+        // dispatch('sortBusSchedulesByTime');
+        dispatch('setSuccess', 
+             {status: true},
+            { root: true }
+        );
+    })
+    .catch(error => {
+        //console.log(error.response.data.message);
+        dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
+    });
+}
+
+export const removeStaffByBus = ({ commit, dispatch }, {staffId, type, busId}) => {    
+    Bus.detachStaff(staffId, type, busId).then(response => {
+      
+        commit('REMOVE_STAFF_BY_BUS', response.data);
+        // dispatch('sortBusSchedulesByTime');
+    })
+    .catch(error => {
+        console.log(error.response.data);
+    });
+}
+
+export const emptyStaffByBus = ({ commit }) => { 
+    commit('EMPTY_STAFF_BY_BUS');
+}

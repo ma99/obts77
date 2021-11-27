@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    // return $request->user();
+    ddd($request->user());
 });
 
 //bus
@@ -31,10 +32,16 @@ Route::get('/{bus}/ss', function(App\Bus $bus) {
 
 
 Route::get('/buses', 'Api\SearchBusesController@index');
+Route::get('/drivers', 'Api\SearchDriversController@index');
+Route::get('/helpers', 'Api\SearchHelpersController@index');
+Route::get('/supervisors', 'Api\SearchSupervisorsController@index');
 Route::get('/types', 'Api\SearchTypesController@index');
 Route::get('/routes', 'Api\SearchRoutesController@index');
 Route::get('/fares', 'Api\SearchFaresController@index');
 Route::get('/stops', 'Api\SearchStopsController@index');
+
+// Staff
+Route::get('/{bus}/staff', 'Api\SearchStaffController@index');
 
 //schedule
 Route::get('/schedules', 'Api\SearchSchedulesController@index');

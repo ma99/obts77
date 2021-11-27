@@ -14,7 +14,6 @@ class TicketController extends Controller
     {
         $this->ticket = $ticket;
     }
-
     
     public function search()
     {

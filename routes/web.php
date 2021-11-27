@@ -33,6 +33,10 @@ Route::group(['middleware' => ['auth', 'role:super_admin']], function () {
 	Route::patch('/buses/{bus}', 'Admin\BusController@update');
 	Route::delete('/buses/{bus}', 'Admin\BusController@destroy');
 
+	//staff
+	Route::post('/{bus}/staff', 'StaffController@store');
+	Route::delete('/staff/{type}/{staff}/bus/{bus}', 'StaffController@destroy');
+
 	//city
 	Route::post('/cities', 'Admin\CityController@store');
 	Route::delete('/cities/{city}', 'Admin\CityController@destroy');

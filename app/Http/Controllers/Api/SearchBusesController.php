@@ -17,9 +17,8 @@ class SearchBusesController extends Controller
    {        
         // $error = ['error' => 'No results found'];
 
-        $buses = Bus::with('seat_plan')->get();    
-
-       
+        $buses = Bus::with('seat_plan')->get(); 
+        
         if (!count($buses)) {
           // throw new DataNotFoundException('bus');
           DataException::dataNotFoundFor('bus');

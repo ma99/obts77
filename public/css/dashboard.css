@@ -49228,6 +49228,14 @@ a.text-muted:hover {
   border-radius: 0.5rem;
 }
 
+.rounded-top-left {
+  border-top-left-radius: 0.25rem !important;
+}
+
+.rounded-top-right {
+  border-top-right-radius: 0.25rem !important;
+}
+
 /** TEXT COLOR 
 *****************************/
 .dodgerblue {
@@ -49280,6 +49288,10 @@ a.text-muted:hover {
 
 .bg-mayablue {
   background-color: #74C0FC;
+}
+
+.bg-mayablue-medium {
+  background-color: #d4ecff;
 }
 
 .bg-lightgreen {

@@ -10,6 +10,9 @@ import * as mutations from "./mutations";
 import * as actions from "./actions";
 
 import bus from "./modules/bus";
+import driver from "./modules/driver";
+import helper from "./modules/helper";
+import supervisor from "./modules/supervisor";
 import city from "./modules/city";
 import fare from "./modules/fare";
 import schedule from "./modules/schedule";
@@ -27,6 +30,9 @@ export const store = createStore({
 
     modules: {
         bus,
+        driver,
+        helper,
+        supervisor,
         city,
         fare,
         route,

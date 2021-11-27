@@ -1,13 +1,17 @@
 .z-1035 {
 	z-index: 1035;
 }
-
 .border-rounded {
 	border-radius: 5rem!important;
 }
-
 .rounded-xlg {
  border-radius: .5rem; 
+}
+.rounded-top-left {
+  border-top-left-radius: 0.25rem !important;
+}
+.rounded-top-right {
+  border-top-right-radius: 0.25rem !important;
 }
 
 /** TEXT COLOR 
@@ -51,15 +55,15 @@
 .bg-mediumyellow {
   background-color: #ffe066;
 }
-
 .bg-aliceblue {
   background-color: #e7f5ff;
 }
-
 .bg-mayablue {
   background-color: $maya-blue; 
 }
-
+.bg-mayablue-medium {
+  background-color: $maya-blue-medium;
+}
 .bg-lightgreen {
   background-color: #F1F8E9;
 }

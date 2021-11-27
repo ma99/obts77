@@ -34,7 +34,27 @@
 
             <route-list id="route" v-model="routeId" />
 
-            <div class="form-group">
+            <!-- expand -->
+            <div class="mt-4 mb-2 p-2 rounded" style="background-color: hsla(261, 100%, 86%, 1);">
+              <div class="p-1" @click="expand=!expand" style="cursor: pointer;">
+                <span class="fa-stack fa-2x" v-show="!expand">
+                  <i class="fas fa-circle fa-stack-2x" style="color: hsla(263, 94%, 62%, 1);"></i>
+                  <i class="far fa-edit fa-stack-1x fa-inverse" style="color: hsla(261, 79%, 71%, 1);"></i>
+                </span>
+                <span class="h5 text-secondary" v-show="!expand">Add New Entry</span>
+                <span class="float-right">
+                  <transition name="fade" mode="out-in">
+                    <span> 
+                      <i v-show="!expand" class="far fa-plus-square"></i>
+                      <i v-show="expand" class="far fa-minus-square"></i>
+                    </span>
+                  </transition>
+                </span>
+              </div>  
+
+              <div class="mx-2 my-3" v-show="expand">
+            
+                <div class="form-group">
                 <label for="city">First City</label>
                   <select v-model="firstCity" class="form-control custom-select"> 
                       <option value="" disabled>Please select one</option>
@@ -47,9 +67,9 @@
                           {{ city.name }}
                       </option>                                             
                   </select>
-            </div>
+                </div>
 
-            <div class="form-group">
+                <div class="form-group">
                 <label for="city">Second City</label>
                   <select v-model="secondCity" class="form-control custom-select"> 
                       <option value="" disabled>Please select one</option>
@@ -62,9 +82,9 @@
                           {{ city.name }}
                       </option>                                             
                   </select>
-            </div>    
+                </div>  
 
-            <div class="form-group">
+                <div class="form-group">
               <label for="cityDistance">Distance: </label>              
               <small v-show="secondCity.name" class="text-muted font-italic ml-2"> {{ firstCity.name }} to {{ secondCity.name }}
               </small> 
@@ -77,9 +97,9 @@
                 <span class="invalid-feedback" v-if="has('distance')" v-text="get('distance')">
                 </span>
               </div>              
-            </div>
+                </div>
 
-            <div v-if="has('first_city_id')" class="mb-2">
+                <div v-if="has('first_city_id')" class="mb-2">
                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
                   <h4 class="alert-heading">
                     <i class="fas fa-bell bg-danger rounded-lg p-2 mr-2"></i>
@@ -88,8 +108,8 @@
                   <p class="ml-5"> <strong>{{ firstCity.name }} - {{ secondCity.name }} </strong> already exists or invalid!</p>
                 </div>
                 
-            </div> 
-            <div class="text-center mt-4">
+                </div> 
+                <div class="text-center mt-4">
               <div class="button-group">
               <!-- <div class="button-group text-center mt-4"> -->
               <button @click.prevent="save()" class="btn btn-primary mr-2 px-5" :disabled="!isValid">
@@ -101,13 +121,14 @@
                 Cancel
               </button>
               </div>
-            </div>
-          </form>
-          
+                </div>
+              </div>
+            </div> <!-- end expand -->
+          </form>          
         </div>
         <div class="p-3 bg-app-purple flex-fill">
             <div v-if="!citiesAvailable" class="text-center mt-2">
-              <span class="fa-stack text-shadow">
+              <span class="fa-stack text-shadow" style="font-size: 4.5em;">
                 <i class="fas fa-circle fa-stack-2x" style="color: hsl(261, 77%, 75%)"></i>
                 <i class="fas fa-route fa-stack-1x" style="color: hsl(263, 94%, 62%)"></i>
               </span>         
@@ -207,6 +228,7 @@
                         second_city: '',
                     },
                     errorList: [],
+                    expand: false,
                     instanceOfScrollbar: undefined,
                 }
                 },
@@ -467,7 +489,7 @@
     }
 </script>
 <style lang="scss" scoped>    
-  .fa-stack { font-size: 4.5em; }
+  // .fa-stack { font-size: 4.5em; }
   .table thead th {
     border-bottom: 1px solid hsl(188, 78%, 41%);
   } 

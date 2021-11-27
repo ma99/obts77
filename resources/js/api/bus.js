@@ -36,4 +36,18 @@ export default {
 	detach(schedule, bus) {
 		return Api.delete(`bus-schedules/${bus}/${schedule}`);
 	},
+
+	// drivers(id) {
+	// 	return Api.get(`api/${id}/drivers`);
+	// },
+	staff(id) {
+		return Api.get(`api/${id}/staff`);
+	},
+
+	attachStaff(data, id) {
+		return Api.post(`/${id}/staff`, data)
+	},
+	detachStaff(staffId, type, busId) {
+		return Api.delete(`staff/${type}/${staffId}/bus/${busId}`)
+	},
 }

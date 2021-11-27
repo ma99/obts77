@@ -69,3 +69,43 @@ export const SORT_BUS_SCHEDULES_BY_CITY = (state, schedules) => {
 export const SORT_BUS_SCHEDULES_BY_TIME = (state, schedules) => {
     state.schedulesByBus = schedules;
 }
+
+/*** STAFF */
+export const SET_STAFF_BY_BUS = (state, staff) => {    
+    state.staffByBus = staff;
+}
+
+export const ADD_STAFF_BY_BUS = (state, staff) => {    
+    console.log(staff);
+    if (staff.driver !== false) {
+        state.staffByBus.drivers.push(staff.driver);
+    }
+    if (staff.helper !== false) {
+        state.staffByBus.helpers.push(staff.helper);
+    }
+    if (staff.supervisor !== false) {
+        state.staffByBus.supervisors.push(staff.supervisor);
+    }
+}
+
+export const REMOVE_STAFF_BY_BUS = (state, staff) => {
+    console.log(staff);
+    if (staff.type == 'driver') {
+        const index = state.staffByBus.drivers.findIndex(element => element.id === staff.id);
+        state.staffByBus.drivers.splice(index, 1);
+    }
+
+    if (staff.type == 'helper') {
+        const index = state.staffByBus.helpers.findIndex(element => element.id === staff.id);
+        state.staffByBus.helpers.splice(index, 1);
+    }
+
+    if (staff.type == 'supervisor') {
+        const index = state.staffByBus.supervisors.findIndex(element => element.id === staff.id);
+        state.staffByBus.supervisors.splice(index, 1);
+    }
+}
+
+export const EMPTY_STAFF_BY_BUS = (state, schedules) => {   
+    state.staffByBus = [];
+}

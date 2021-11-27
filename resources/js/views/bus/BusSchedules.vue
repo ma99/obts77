@@ -60,73 +60,94 @@
                 Seats: <span class="text-secondary">{{ totalSeats }}</span>
               </div>
             </div>
-
-            <div class="form-group">
-                <label for="city">Departure City</label>
-                  <select 
-                    v-model="departureCity" 
-                    class="form-control custom-select"
-                    v-bind:class="{ 'is-invalid': has('route-cities') }"
-                  > 
-                      <option value="" disabled>Please select one</option>
-                      <option v-for="city in routeCityList"
-                           v-bind:value="city.id"
-                        >
-                          {{ city.name }}
-                      </option>                                            
-                  </select>
-                  <span class="invalid-feedback" v-if="has('route-cities')" v-text="get('route-cities')">
+            <!-- expand -->
+            <div class="mt-4 mb-2 p-2 bg-mayablue-medium rounded">
+              <div class="p-1" @click="expand=!expand" style="cursor: pointer;">
+                <span class="fa-stack fa-2x text-shadow" v-show="!expand">
+                  <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                  <i class="far fa-edit fa-stack-1x fa-inverse" style="color: #74C0FC;"></i>
                 </span>
-            </div>
+                <span class="text-secondary h5" v-show="!expand">Add New Entry</span>
+                <span class="float-right">
+                  <transition name="fade" mode="out-in">
+                    <span> 
+                      <i v-show="!expand" class="far fa-plus-square"></i>
+                      <i v-show="expand" class="far fa-minus-square"></i>
+                    </span>
+                  </transition>
+                </span>
+              </div>                
 
-            <div class="form-group">
-                <label for="schedule">Schedules: 
-                </label>
-                <!-- <span class="text-muted mx-2"><small>Departure - Arrival</small></span> -->
-                <span class="text-muted mx-2"><small>Departure Time</small></span>
-                <select v-model="schedules" class="form-control" multiple size="7">
+              <div class="mx-2 my-3" v-show="expand">
+                <!-- below prev code   -->
+                <div class="form-group">
+                    <label for="city">Departure City</label>
+                      <select 
+                        v-model="departureCity" 
+                        class="form-control custom-select"
+                        v-bind:class="{ 'is-invalid': has('route-cities') }"
+                      > 
+                          <option value="" disabled>Please select one</option>
+                          <option v-for="city in routeCityList"
+                               v-bind:value="city.id"
+                            >
+                              {{ city.name }}
+                          </option>                                            
+                      </select>
+                      <span class="invalid-feedback" v-if="has('route-cities')" v-text="get('route-cities')">
+                    </span>
+                </div>
 
-                  <option v-for="schedule in availableScheduleList"
-                       v-bind:value="
-                            schedule.id"
-                    >
-                       {{ schedule.departure_time }}  
-                  </option>                                             
-                </select>
-                <span v-show="availableScheduleList.length > 0" class="text-muted font-italic"><small>*Select multiple by pressing <kbd>Ctrl</kbd> key </small></span>
-            </div>    
+                <div class="form-group">
+                    <label for="schedule">Schedules: 
+                    </label>
+                    <!-- <span class="text-muted mx-2"><small>Departure - Arrival</small></span> -->
+                    <span class="text-muted mx-2"><small>Departure Time</small></span>
+                    <select v-model="schedules" class="form-control" multiple size="7">
 
-            <div v-show="show" class="alert alert-warning" role="alert">
-                <h4 class="alert-heading">
-                  <i class="fas fa-exclamation-triangle text-red"></i>
-                  <button type="button" class="close" aria-label="Close">
-                    <span aria-hidden="true" v-on:click.prevent="show = false">&times;</span>
-                  </button>
-                </h4>                
-                <span v-show="false"> {{ showError }}</span>
+                      <option v-for="schedule in availableScheduleList"
+                           v-bind:value="
+                                schedule.id"
+                        >
+                           {{ schedule.departure_time }}  
+                      </option>                                             
+                    </select>
+                    <span v-show="availableScheduleList.length > 0" class="text-muted font-italic"><small>*Select multiple by pressing <kbd>Ctrl</kbd> key </small></span>
+                </div>    
 
-              {{ get('bus_id') }}
-            </div>
+                <div v-show="show" class="alert alert-warning" role="alert">
+                    <h4 class="alert-heading">
+                      <i class="fas fa-exclamation-triangle text-red"></i>
+                      <button type="button" class="close" aria-label="Close">
+                        <span aria-hidden="true" v-on:click.prevent="show = false">&times;</span>
+                      </button>
+                    </h4>                
+                    <span v-show="false"> {{ showError }}</span>
 
-            <div class="text-center mt-4">
-              <div class="button-group">
-                <button @click.prevent="save()"  type="button" class="btn btn-primary mr-2 px-5" :disabled="!isValid">
-                  <i class="far fa-save mr-2"></i>
-                Save
-                </button>                     
-                <button @click.prevent="reset('all')"  type="button" class="btn btn-warning">
-                  <i class="far fa-window-close"></i>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
-          
+                  {{ get('bus_id') }}
+                </div>
+
+                <div class="text-center mt-4">
+                  <div class="button-group">
+                    <button @click.prevent="save()"  type="button" class="btn btn-primary mr-2 px-5" :disabled="!isValid">
+                      <i class="far fa-save mr-2"></i>
+                    Save
+                    </button>                     
+                    <button @click.prevent="reset('all')"  type="button" class="btn btn-warning">
+                      <i class="far fa-window-close"></i>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>            
+            </div> <!-- end expand -->
+          </form>          
         </div>
+
         <div class="p-3 bg-mayablue flex-fill">
             
             <div v-if="!schedulesAvailable" class="text-center mt-2">
-              <span class="fa-stack">
+              <span class="fa-stack text-shadow" style="font-size: 4.5em;">
                 <i class="fas fa-circle fa-stack-2x" style="color: #228be6"></i>
                 <i class="fas fa-clock fa-stack-1x" style="color: #74C0FC"></i>
               </span>         
@@ -217,6 +238,7 @@ export default {
           departureCity: '',
           disableSorting: true,
           errorList: [],
+          expand: false,
           instanceOfScrollbar: undefined,
           schedules: [],
       }
@@ -510,7 +532,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>    
-  .fa-stack { font-size: 4.5em; }
   .table thead th {
     border-bottom: 1px solid hsl(188, 78%, 41%);
   }

@@ -17,8 +17,6 @@
       <div class="mx-1 my-1 my-sm-2 text-center">
        <slot></slot>        
       </div>
-
-
     </div>
 </template>
 
@@ -40,7 +38,8 @@
           }); 
         },        
         close() {
-          this.$emit('update:show', false);          
+          // this.$emit('update:show', false);          
+          this.$emit('close', false);          
         },
       },
       mounted() {

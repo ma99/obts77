@@ -207,6 +207,16 @@
               </router-link> 
               </li>                   
 
+              <li class="nav-item" @click="toggleActive(34)">
+                <router-link :to="{name:'bus-staff'}" 
+                  class="nav-link"
+                  :class="{ active: childNavItem == 34 }"
+                >
+                    <i class="fas fa-users-cog nav-icon" aria-hidden="true"></i>
+                    <p>Bus Staff</p>
+                </router-link> 
+              </li>
+
               <li class="nav-item" @click="toggleActive(32)">
                 <router-link :to="{name:'bus-schedules'}" 
                   class="nav-link"
