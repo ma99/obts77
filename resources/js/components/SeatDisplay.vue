@@ -832,6 +832,14 @@
         'loginRoute',
         'registerRoute'
       ],
+      // props: {
+      //   user: Object,
+      //   phoneVerificationRoute: String,
+      //   cashPaymentRoute: String,
+      //   cardPaymentRoute: String,
+      //   loginRoute: String,
+      //   registerRoute: String      
+      // },
 
        components: {          
             // 'mymodal': Modal,          
@@ -944,6 +952,7 @@
               },
               // userExist: false,
               userExist: '',
+              cityRouteId: '',
               form: new Form({  //data as object
                 name: '',
                 email:'',
@@ -953,6 +962,7 @@
                 date: '',
                 schedule_id: '',
                 bus_schedule_id: '',
+                city_route_id: '',
                 selected_seats: '',
                 total_seats: '',
                 amount: '',
@@ -1434,17 +1444,18 @@
         sortBusByDepartureTime() {
           var vm = this;
           this.buses.sort(function(a, b) {
-            var timeA = vm.convertTime12to24(a.departure_time);
+            var timeA = parseInt(vm.convertTime12to24(a.departure_time));
              // ignore upper and lowercase
-            var timeB = vm.convertTime12to24(b.departure_time );// ignore upper and lowercase
-            if (timeA < timeB) {
-              return -1;
-            }
-            if (timeA > timeB) {
-              return 1;
-            }
-            // names must be equal
-            return 0;
+            var timeB = parseInt(vm.convertTime12to24(b.departure_time));// ignore upper and lowercase
+            // if (timeA < timeB) {
+            //   return -1;
+            // }
+            // if (timeA > timeB) {
+            //   return 1;
+            // }
+            // // names must be equal
+            // return 0;
+            return timeA - timeB;
           });
         },
         showTheModal(modalId, show) {                    
@@ -1620,7 +1631,7 @@
           this.loading = true;
           console.log('sMMMM')           
           var vm = this;
-          this.buses ='';
+          this.buses = [];
 
           await this.getBusData().then(response => {
             // console.log(response.data);
@@ -1631,12 +1642,8 @@
              // vm.steps.search.isDoing = false;
              // vm.steps.search.isDone = true;
              vm.stepsAction('search', 'isDone');
-             
-             // vm.steps.select.isDoing = true;
-             // vm.stepsAction('select', 'isDoing');
-             
 
-             console.log('sMMMMEEEE1111')
+             // console.log('sMMMMEEEE1111')
              if (vm.busError) {
                 vm.seatNotAvailableAlert('SCHEDULE', 'warning');
                 return;
@@ -1654,7 +1661,7 @@
              }               
 
           })
-          console.log('sMMMM222222222')          
+          // console.log('sMMMM222222222')          
         },
         async getBusData() {
           try {
@@ -1703,6 +1710,7 @@
           this.selectedSeat = [];
           this.busScheduleId = bus.bus_schedule_id;
           this.busId = bus.bus_id;
+          this.cityRouteId = bus.city_route_id;
           // this.selectedPickupPoint = '';
           // this.selectedDroppingPoint = '';
           this.stops.selectedPickupPoint = '';
@@ -1766,6 +1774,7 @@
             this.url = BOOKING_BY_STAFF_URL;
             this.userInfo.phone = this.form.phone;
             this.userInfo.name = this.form.name;
+            this.userInfo.email = this.form.email;
           }
           var vm = this; 
           swal({
@@ -1792,6 +1801,7 @@
               vm.form.date = vm.startDate;
               //vm.form.schedule_id = vm.scheduleId;
               vm.form.bus_schedule_id = vm.busScheduleId;
+              vm.form.city_route_id = vm.cityRouteId;
               vm.form.selected_seats = vm.selectedSeat;
               vm.form.total_seats = vm.totalSeats;
               vm.form.amount = vm.totalFare; 
@@ -1849,6 +1859,7 @@
                 date: vm.startDate,
                 //schedule_id: vm.scheduleId,
                 bus_schedule_id: vm.busScheduleId,
+                city_route_id: vm.cityRouteId,
                 selected_seats:vm.selectedSeat,
                 total_seats: vm.totalSeats,
                 amount: vm.totalFare,

@@ -1,15 +1,19 @@
 import Api from './api';
 
 export default {
-	supervisors() {
-		return Api.get('api/supervisors');
+	supervisors(token) {
+		return Api.get('api/supervisors', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
 	},
 
 	store(data) {
 		return Api.post('supervisors', data);
 	},
 
-	delete(id) {
-        return Api.delete(`supervisors/${id}`);
+	delete(data) {
+        return Api.delete('supervisors/delete', {data: data});
     },
 }

@@ -7,6 +7,8 @@
         logout-route="{{ route('logout') }}"
         {{-- :user="{{ json_encode($role) }}"  --}}
         role=@json($role) 
-        user=@json($user) 
+        token=@json($token) 
+        user="{{$user}}"
     />
+        {{-- user=@json($user)  --}}
 @endsection

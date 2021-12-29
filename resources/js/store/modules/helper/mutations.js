@@ -11,3 +11,15 @@ export const SORT_HELPERS_BY_ID = (state) => {
         
     state.availableHelperList = helpers;
 }
+
+export const ADD_HELPER = (state, helper) => {          
+    state.availableHelperList.push(helper);
+}
+
+export const DELETE_HELPER = (state, index) => {
+    state.availableHelperList.splice(index, 1);
+}
+
+export const SET_DELETED_STATUS = (state, deleted) => {
+    state.deleted = deleted.status;
+}

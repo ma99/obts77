@@ -11,14 +11,12 @@ class Schedule extends Model
     protected $guarded = [];
 
     public function setDepartureTimeAttribute($value)
-	{
-	    //$this->attributes['departure_time'] = Carbon::createFromFormat('g:i A', $value)->format('H:i:s');
+	{	    
         $this->attributes['departure_time'] = Carbon::createFromFormat('G:i', $value)->format('H:i:s');
 	}
 
 	public function getDepartureTimeAttribute($value)
     {   
-    	//return Carbon::createFromFormat('H:i:s', $value)->format('g:i A');
     	return Carbon::parse($value)->format('g:i A');
     }
 
@@ -41,5 +39,10 @@ class Schedule extends Model
     public function bookings()
     {
         return $this->hasMany(Booking::class, 'bus_schedule_id');
+    }
+
+    public function scheduleBy($id)
+    {
+        return $this->findOrFail($id);
     }
 }

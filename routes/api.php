@@ -14,10 +14,22 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    // return $request->user();
-    ddd($request->user());
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
 });
+
+Route::middleware('auth:sanctum')->get('/users', function (Request $request) {
+    return \App\User::all();
+});
+
+Route::middleware('auth:sanctum')->group(function () {    
+    Route::get('/buses', 'Api\SearchBusesController@index');
+    Route::get('/seatplans', 'Api\SearchSeatplanController@index');
+    // Staff
+    Route::get('/{bus}/staff', 'Api\SearchStaffController@index');
+});
+
 
 //bus
 //Route::get('/bus', 'Api\SearchBusController@busInfo');
@@ -31,7 +43,9 @@ Route::get('/{bus}/ss', function(App\Bus $bus) {
 });
 
 
-Route::get('/buses', 'Api\SearchBusesController@index');
+Route::get('/trips/supervisors/users/{user}', 'Api\SearchTripsController@index');
+Route::get('/tripsdetails/{busschedule}/{cityRoute}', 'Api\SearchTripsDetailsController@index');
+// Route::get('/trips/supervisors/{supervisor}', 'Api\SearchTripsController@index');
 Route::get('/drivers', 'Api\SearchDriversController@index');
 Route::get('/helpers', 'Api\SearchHelpersController@index');
 Route::get('/supervisors', 'Api\SearchSupervisorsController@index');
@@ -39,16 +53,15 @@ Route::get('/types', 'Api\SearchTypesController@index');
 Route::get('/routes', 'Api\SearchRoutesController@index');
 Route::get('/fares', 'Api\SearchFaresController@index');
 Route::get('/stops', 'Api\SearchStopsController@index');
+Route::get('/slides', 'Api\SearchSlidesController@index');
+Route::get('/slides/active', 'Api\SearchSlidesController@slides');
 
-// Staff
-Route::get('/{bus}/staff', 'Api\SearchStaffController@index');
 
 //schedule
 Route::get('/schedules', 'Api\SearchSchedulesController@index');
 Route::get('/{bus}/schedules', 'Api\SearchSchedulesController@busSchedules');
 
-//seat plan
-Route::get('/seatplans', 'Api\SearchSeatPlanController@index');
+
 
 Route::get('/divisions', 'Api\SearchDivisionsController@index');
 Route::get('/districts', 'Api\SearchDistrictsController@index');

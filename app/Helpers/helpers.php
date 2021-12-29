@@ -30,3 +30,13 @@ if (! function_exists('previousRoute')) {
         return $routeName;
     }
 }
+
+/*** Convert JS object to PHP array ***/
+
+if (! function_exists('jsObjectToPhpArray')) {
+    
+    function jsObjectToPhpArray($data)
+    {
+        return json_decode(json_encode($data), true);
+    }
+}

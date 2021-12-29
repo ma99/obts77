@@ -27,6 +27,11 @@ class City extends Model
     	return $this->hasMany(Stop::class);
     }
 
+    public function cityBy($id)
+    {
+        return $this->findOrFail($id);
+    }
+
     // public function fares()
     // {
     //     return $this->hasMany(Fare::class);

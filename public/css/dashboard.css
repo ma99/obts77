@@ -49267,7 +49267,7 @@ a.text-muted:hover {
 }
 
 .bg-lightyellow {
-  background-color: #FFFEE7;
+  background-color: #FFFEE7 !important;
 }
 
 .bg-lightlemonyellow {

@@ -85,18 +85,18 @@
                 </div>  
 
                 <div class="form-group">
-              <label for="cityDistance">Distance: </label>              
-              <small v-show="secondCity.name" class="text-muted font-italic ml-2"> {{ firstCity.name }} to {{ secondCity.name }}
-              </small> 
+                  <label for="cityDistance">Distance: </label>              
+                  <small v-show="secondCity.name" class="text-muted font-italic ml-2"> {{ firstCity.name }} to {{ secondCity.name }}
+                  </small> 
 
-              <div class="input-group">
-                <input v-model="distance" type="number" class="form-control" v-bind:class="{ 'is-invalid': has('distance') }" name="city_distance" id="cityDistance" placeholder="Enter distance in km here">
-                <div class="input-group-append">
-                  <span class="input-group-text">km</span>
-                </div>
-                <span class="invalid-feedback" v-if="has('distance')" v-text="get('distance')">
-                </span>
-              </div>              
+                  <div class="input-group">
+                  <input v-model="distance" type="number" class="form-control" v-bind:class="{ 'is-invalid': has('distance') }" name="city_distance" id="cityDistance" placeholder="Enter distance in km here">
+                  <div class="input-group-append">
+                    <span class="input-group-text">km</span>
+                  </div>
+                  <span class="invalid-feedback" v-if="has('distance')" v-text="get('distance')">
+                  </span>
+                  </div>              
                 </div>
 
                 <div v-if="has('first_city_id')" class="mb-2">
@@ -364,12 +364,12 @@
                     this.citiesToBeAdded = {
                         first_city: this.firstCity.name, 
                         second_city: this.secondCity.name, 
-                    };
+                    }
                     let data = {
                       first_city_id: this.firstCity.id,
                       second_city_id: this.secondCity.id,
                       distance: this.distance,
-                    };
+                    }
                     await this.addRouteCity({
                         data: data,                        
                         id: this.route.id

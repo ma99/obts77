@@ -12,10 +12,14 @@ export const SORT_DRIVERS_BY_ID = (state) => {
     state.availableDriverList = drivers;
 }
 
-export const ADD_SEATPLAN = (state, seatplan) => {          
-    state.availableSeatPlanList.push(seatplan);
+export const ADD_DRIVER = (state, driver) => {          
+    state.availableDriverList.push(driver);
 }
 
-export const DELETE_SEATPLAN = (state, index) => {
-    state.availableSeatPlanList.splice(index, 1);
+export const DELETE_DRIVER = (state, index) => {
+    state.availableDriverList.splice(index, 1);
+}
+
+export const SET_DELETED_STATUS = (state, deleted) => {
+    state.deleted = deleted.status;
 }

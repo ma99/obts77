@@ -12,14 +12,8 @@ use App\Driver;
 
 
 class SearchDriversController extends Controller
-{
-    // private $driver;
-
-    // public function __construct(Driver $driver)
-    // {
-    //     $this->driver = $driver;
-    // }
-     private $staff;
+{    
+    private $staff;
 
     public function __construct(Service $staff)
     {

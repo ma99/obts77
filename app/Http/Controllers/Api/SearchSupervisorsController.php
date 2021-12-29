@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-//use GuzzleHttp\Client;
 use App\Exceptions\DataNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Libraries\DataException;
 use App\Services\Staff\Service;
-use App\Supervisor;
 use Illuminate\Http\Request;
+use App\Supervisor;
 
 
 class SearchSupervisorsController extends Controller
@@ -25,7 +24,6 @@ class SearchSupervisorsController extends Controller
         $supervisors = Supervisor::all();
 
          if (!count($supervisors)) {
-          // throw new DataNotFoundException('supervisor');
           DataException::dataNotFoundFor('supervisor');
         }
         return $this->staff->detailsOf($supervisors);

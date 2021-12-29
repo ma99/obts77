@@ -2,15 +2,15 @@ export const SET_STOPS = (state, stops) => {
     state.availableStopList = stops;
 }
 
-export const SORT_SEATPLANS_BY_ID = (state) => {
-    const seatplans = state.availableSeatPlanList;
+// export const SORT_SEATPLANS_BY_ID = (state) => {
+//     const seatplans = state.availableSeatPlanList;
     
-    seatplans.sort((a, b) => {
-        return a.id - b.id;
-    });    
+//     seatplans.sort((a, b) => {
+//         return a.id - b.id;
+//     });    
         
-    state.availableSeatPlanList = seatplans;
-}
+//     state.availableSeatPlanList = seatplans;
+// }
 
 export const ADD_STOP = (state, stops) => {	
 	const availableStops = state.availableStopList;      

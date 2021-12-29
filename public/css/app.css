@@ -17717,7 +17717,7 @@ h3 {
 }
 
 .bg-lightyellow {
-  background-color: #FFFEE7;
+  background-color: #FFFEE7 !important;
 }
 
 .bg-lightlemonyellow {

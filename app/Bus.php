@@ -25,6 +25,11 @@ class Bus extends Model
                     ->withTimestamps(); 
     }
 
+    public function busBy($id)
+    {
+        return $this->findOrFail($id);
+    }
+
     // public function schedulesBy($routeId)
     // {
     //     //return $this->belongsToMany(Schedule::class)

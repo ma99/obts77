@@ -23,6 +23,12 @@ class Service
 	// 	// $this->bus = $bus;
 	// }	
 
+	public function assignRoleFor($role, $staff)
+    {
+    	$staff->user->assign($role);
+    	return;    	
+    }
+
 	public function addStaffToBus($attributes, Bus $bus)
     {   		
    		
@@ -107,6 +113,7 @@ class Service
             'name' => $staffUserInfo->name, 
             'email' => $staffUserInfo->email, 
             'phone' => $staffUserInfo->phone, 
+            'images' => $staff->images
         ];
     }
 }

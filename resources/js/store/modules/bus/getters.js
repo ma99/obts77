@@ -21,3 +21,7 @@ export const isRegNumberAvailable = (state) => (number) => {
 		bus.bus.reg_no === number
 	); 
 }
+
+export const isTripAvailable = (state) => {
+    return state.trips.length > 0;
+}

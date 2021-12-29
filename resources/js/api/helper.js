@@ -1,15 +1,19 @@
 import Api from './api';
 
 export default {
-	helpers() {
-		return Api.get('api/helpers');
+	helpers(token) {
+		return Api.get('api/helpers', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
 	},
 
 	store(data) {
 		return Api.post('helpers', data);
 	},
 
-	delete(id) {
-        return Api.delete(`helpers/${id}`);
+	delete(data) {
+        return Api.delete('helpers/delete', {data: data});
     },
 }

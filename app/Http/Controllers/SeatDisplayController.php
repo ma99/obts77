@@ -24,7 +24,7 @@ class SeatDisplayController extends Controller
             // The user is logged in...
             $user = Auth::user()->getUserInfo();            
             // dd($user);
-            return view('pages.home', ['user' => $user]);
+            return view('pages.home', ['user' => json_encode($user)]);
         }
 
         $user= 'guest';

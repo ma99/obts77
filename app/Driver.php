@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Driver extends Model
 {
+    protected $guarded = [];
+    
     public function buses()
     {
         return $this->belongsToMany(Bus::class);
@@ -14,24 +16,33 @@ class Driver extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }    
+    }   
 
-    // public function detailsOf($drivers)
+    public function images()
+     {
+         return $this->morphMany(Image::class, 'owner');
+     } 
+
+    public function add($data)
+    {
+        return $this->create($data);
+    }
+
+    public function saveImagesOf($images, $driver)
+    {
+        foreach ($images as $image) {            
+            $driver->images()->create(jsObjectToPhpArray($image));
+        }
+        return;
+    } 
+
+    // public function jsObjectToPhpArray($image)
     // {
-    //     foreach ($drivers as $driver) {   
-    //         $driverUserInfo = $driver->user;  
-   
-    //         $driversInfo[] = [
-    //             'id' => $driver->id,
-    //             'user_id' => $driver->user_id,
-    //             'nid' => $driver->nid,
-    //             'address' => $driver->address,
-    //             'name' => $driverUserInfo->name, 
-    //             'email' => $driverUserInfo->email, 
-    //             'phone' => $driverUserInfo->phone, 
-    //         ];
-    //     }
-
-    //     return $driversInfo;
+    //     return json_decode(json_encode($image), true);
     // }
+
+    public function findBy($id)
+    {
+        return $this->findOrFail($id);
+    }    
 }

@@ -1,15 +1,19 @@
 import Api from './api';
 
 export default {
-	drivers() {
-		return Api.get('api/drivers');
+	drivers(token) {
+		return Api.get('api/drivers', {
+			headers: {
+				Authorization: `Bearer ${token}`
+			}
+		});
 	},
 
 	store(data) {
 		return Api.post('drivers', data);
 	},
 
-	delete(id) {
-        return Api.delete(`drivers/${id}`);
+	delete(data) {		
+        return Api.delete('drivers/delete', {data: data});
     },
 }

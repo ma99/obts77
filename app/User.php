@@ -7,11 +7,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Laravel\Sanctum\HasApiTokens;
 
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -67,20 +68,20 @@ class User extends Authenticatable
         $bookings = $user->bookings()->get();
         // return 
         $bookings = $bookings->map(function ($booking) {                 
-            return is_null($this->pendingTripBy($booking->bus_schedule_id, date("Y-m-d", strtotime($booking->date)))) ? null : $booking;            
+            return is_null(Trip::pendingTripBy($booking->bus_schedule_id, date("Y-m-d", strtotime($booking->date)))) ? null : $booking;            
         })->filter();
        
         return $bookings;
     }
 
-    public function pendingTripBy($busScheduleId, $date)
-    {
-        // $date = date("Y-m-d", strtotime($date));
-        return $trip = Trip::where('bus_schedule_id', $busScheduleId)
-                    ->where('date', $date)
-                    ->where('status', 'Pending')                  
-                    ->first();
-    }
+    // public function pendingTripBy($busScheduleId, $date)
+    // {
+    //     // $date = date("Y-m-d", strtotime($date));
+    //     return $trip = Trip::where('bus_schedule_id', $busScheduleId)
+    //                 ->where('date', $date)
+    //                 ->where('status', 'Pending')                  
+    //                 ->first();
+    // }
 
     public function roles()
     {
@@ -89,7 +90,7 @@ class User extends Authenticatable
 
     protected function createUser(array $data)
     {   
-      return User::create(
+      return $this->create(
           [
             'phone' => $data['phone'],
             'name' => $data['name'],
@@ -99,7 +100,7 @@ class User extends Authenticatable
       );
     }
 
-    public function getUserInfoFrom(Request $request)
+    public function getUserInfoFrom($request)
     {
         return $request->validate([
                 'name' => 'required',          
@@ -111,21 +112,22 @@ class User extends Authenticatable
     public function getUserInfo()
     {
       return $arr = [
-        'name' => $this->isNameWithMultipleParts($this->name)?? $this->name,
+        // 'name' => $this->isNameWithMultipleParts($this->name)?? $this->name,
+        'name' => $this->name,
         'email' => $this->email,
         'role' => $this->roleType(),  //regular or staff
         'phone_verified' => $this->hasVerifiedPhone(),
       ];
     }
 
-    public function isNameWithMultipleParts($name) {
-      $nameParts = explode(' ', $name);
-      $namePartsLength = count($nameParts);
-      if ($namePartsLength > 0) {
-        return $nameParts[$namePartsLength - 1];
-      }
-      return null;
-    }
+    // public function isNameWithMultipleParts($name) {
+    //   $nameParts = explode(' ', $name);
+    //   $namePartsLength = count($nameParts);
+    //   if ($namePartsLength > 0) {
+    //     return $nameParts[$namePartsLength - 1];
+    //   }
+    //   return null;
+    // }
     public function roleType()
     {
       if ($this->hasAnyRole(['super_admin', 'admin', 'operator'])) {
@@ -140,14 +142,17 @@ class User extends Authenticatable
         return $this->phone;
     }
 
-    // public function remove(array $data)
-    // {        
-    //     unset($data['name']);
-    //     unset($data['phone']);
-    //     unset($data['password']);        
-    //     if (isset($data['email'])) { unset($data['email']); }
-    //     return $data;
-    // }
+    public function generateToken()
+    {
+        $token = $this->tokens()->first();
+        
+        if($token) {
+            $this->tokens()->delete();
+        }
+
+        return $this->createToken('admin-access')->plainTextToken;
+
+    }
     
     public function assign($role)
     {

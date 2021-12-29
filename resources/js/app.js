@@ -44,6 +44,7 @@ app.component('map-test', require('./components/MapTest.vue').default);
 app.component('example-map', require('./components/ExampleMap.vue').default);
 app.component('header-icon', require('./components/HeaderIcon.vue').default);
 app.component('discount', require('./components/Discount.vue').default);
+app.component('image-upload', require('./components/ImageUpload.vue').default);
 
 app.use(router)
 	.use(store)

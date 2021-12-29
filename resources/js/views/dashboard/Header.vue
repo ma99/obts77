@@ -143,16 +143,11 @@
           user: {
             type: Object
           },
-        },
-        data() {
-          return {
-
-          }
-        },
+        },        
         mounted() {
-            console.log('Header mounted.')
+            console.log('Header mounted.')         
         },
-        methods: {
+        methods: {          
           /*showMePath() {
             const USER = this.user;
             console.log(USER)

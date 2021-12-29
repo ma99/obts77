@@ -1,7 +1,7 @@
 import Driver from '../../../api/driver';
 
-export const getDrivers = ({ commit, dispatch }) => {
-    return Driver.drivers().then(response => {
+export const getDrivers = ({ commit, dispatch }, {token}) => {
+    return Driver.drivers(token).then(response => {
         commit('SET_DRIVERS', response.data);
         commit('SORT_DRIVERS_BY_ID');
     })
@@ -14,11 +14,15 @@ export const getDrivers = ({ commit, dispatch }) => {
     });
 }
 
-export const addSeatplan = ({ commit, dispatch }, data) => {
-   Seatplan.store(data).then(response => {
-        // console.log('afA=', response.data)
-
-        commit('ADD_SEATPLAN', response.data);
+export const addDriver = ({ commit, dispatch }, {driver, images}) => {
+    const data = {
+        user_id: driver.selectedUserId,
+        nid: driver.nid,
+        address: driver.address,
+        images: images
+    }
+   Driver.store(data).then(response => {
+        commit('ADD_DRIVER', response.data);
         //dispatch('setFaresByRoute');
         dispatch('setSuccess', 
             {status: true},
@@ -27,41 +31,26 @@ export const addSeatplan = ({ commit, dispatch }, data) => {
     })
     .catch(error => {
         console.log(error.response.data);
-        // dispatch('setErrors', 
-        //      error.response.data.errors,
-        //     { root: true }
-        // );
+        dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
     });
 }
 
-export const deleteSeatplan = ({ commit, state }, id) => {
+export const deleteDriver = ({ commit, dispatch, state }, {driver}) => {
 
-       return Seatplan.delete(id).then(response => {
-        
-            let index = state.availableSeatPlanList.findIndex(seatplan => seatplan.id === id);
-                        
-            commit('DELETE_SEATPLAN', index);
-            // dispatch('setFaresByRoute');
-        })
-        .catch(error => {
-            console.log(error.response.data);
-        });
-    }
+   return Driver.delete(driver).then(response => {
+        let index = state.availableDriverList.findIndex(driver => driver.id === response.data.id);
+                    
+        commit('DELETE_DRIVER', index);
+        dispatch('setDeletedStatus', {status: true});
+    })
+    .catch(error => {
+        console.log(error.response.data);
+    });
+}
 
-export const updateSeatplan = ({ commit }, seatplan ) => {
-        // console.log('Fare=', fare);
-        const data = {
-            city_route_id: fare.city.id,
-            details: fare.details
-        }
-        
-        return Seatplan.update(data, fare.id).then(response => {            
-            
-            fare.updated_at = response.data;
-            
-            commit('UPDATE_FARE', fare);
-        })
-        .catch(error => {
-            console.log(error.response.data);
-        });
+export const setDeletedStatus = ({ commit }, deleted) => {    
+    commit('SET_DELETED_STATUS', deleted);
 }

@@ -111,6 +111,7 @@ class SearchTicketController extends Controller
 							'available_seats' => $availableSeats,
 							'departure_time' => $schedule->departure_time,
 							'arrival_time' => $schedule->arrival_time,
+							'city_route_id' => $cityRouteInfo->id,
 						];
 			 		}
 		 		}

@@ -50,6 +50,7 @@ class BookingController extends Controller
         // });
     }   
 
+    // public function createByStaff(Request $request, User $user=null)
     public function createByStaff(Request $request, User $user=null)
     {        
         if ($user) 
@@ -60,10 +61,11 @@ class BookingController extends Controller
         {
             $attributes = $this->validateRequest();
             $info =  $this->user->getUserInfoFrom($request);
+            // $info =  $this->getUserInfoFrom($request);
             $info['password'] = Hash::make(Str::random(8));
 
             // $user = auth()->user()->createUser($info);             
-            $user = $this->user->createUser($info);             
+            $user = \App\User::createUser($info);             
         }        
         
         // $booking = $this->creatBooking($user, $attributes);
@@ -80,14 +82,14 @@ class BookingController extends Controller
           // }); 
     }
 
-    /*public function getUserInfoFrom(Request $request)
-    {
-        return $request->validate([
-                'name' => 'required',          
-                'email' => 'nullable',          
-                'phone' => 'required',    
-        ]);    
-    }*/
+    // public function getUserInfoFrom(Request $request)
+    // {
+    //     return $request->validate([
+    //             'name' => 'required',          
+    //             'email' => 'nullable',          
+    //             'phone' => 'required',    
+    //     ]);    
+    // }
 
     /*** mod on 12oct
     public function seatBooking(User $user, array $attributes)
@@ -160,6 +162,7 @@ class BookingController extends Controller
         return request()->validate([
             //'bus_id' => 'required',          
             'bus_schedule_id' => 'required',          
+            'city_route_id' => 'required',          
             //'schedule_id' => 'required',          
             'total_seats' => 'required',
             'date' => 'required',

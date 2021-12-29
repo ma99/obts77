@@ -16,6 +16,7 @@ class CreateTripsTable extends Migration
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('bus_schedule_id');
+            $table->unsignedSmallInteger('city_route_id');
             $table->date('date');
             $table->string('status', 10)->default('Pending');
             $table->string('entry_by')->nullable();

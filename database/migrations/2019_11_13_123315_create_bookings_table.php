@@ -17,6 +17,7 @@ class CreateBookingsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('creator_id');            
             $table->unsignedBigInteger('bus_schedule_id');
+            $table->unsignedSmallInteger('city_route_id');
             $table->tinyInteger('total_seats');
             $table->float('amount', 8, 2); 
             $table->date('date');

@@ -70,84 +70,96 @@
                 <div class="row justify-content-center">
                   <div class="col-10">
                     <p class="h4">DRIVER</p>
-                    <table class="table table-striped table-hover table-sm">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th class="rounded-top-left">SL.# </th>
-                          <th>Id </th>
-                          <th>Name</th>
-                          <th>Phone</th>
-                          <th class="rounded-top-right">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(driver, index) in staffByBus.drivers" >                              
-                          <td>{{ index+1 }}</td>
-                          <td>{{ driver.id }}</td>
-                          <td>{{ driver.name }}</td>
-                          <td>{{ driver.phone }}</td>
-                          <td>                          
-                              <button v-on:click.prevent="remove(driver, 'driver')" class="btn btn-outline-danger">
-                                <i class="button-icon fas fa-trash"></i>Remove
-                              </button> 
-                          </td>                        
-                        </tr>                            
-                      </tbody>
-                    </table>      
+                    <div class="card">
+                      <div class="card-body p-3"> 
+                         <table class="table table-striped table-hover table-sm">
+                          <thead class="bg-primary">
+                            <tr>
+                              <th class="rounded-top-left">SL.# </th>
+                              <th>Id </th>
+                              <th>Name</th>
+                              <th>Phone</th>
+                              <th class="rounded-top-right">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="(driver, index) in staffByBus.drivers" >                              
+                              <td>{{ index+1 }}</td>
+                              <td>{{ driver.id }}</td>
+                              <td>{{ driver.name }}</td>
+                              <td>{{ driver.phone }}</td>
+                              <td>                          
+                                  <button v-on:click.prevent="remove(driver, 'driver')" class="btn btn-outline-danger">
+                                    <i class="button-icon fas fa-trash"></i>Remove
+                                  </button> 
+                              </td>                        
+                            </tr>                            
+                          </tbody>
+                        </table>      
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-10">
+                  <div class="col-10 mt-md-2">
                     <p class="h4">HELPER</p>
-                    <table class="table table-striped table-hover table-sm">
-                      <thead class="bg-info">
-                        <tr>
-                          <th class="rounded-top-left">SL.# </th>
-                          <th>Id </th>
-                          <th>Name</th>
-                          <th>Phone</th>
-                          <th class="rounded-top-right">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(helper, index) in staffByBus.helpers" >                              
-                          <td>{{ index+1 }}</td>
-                          <td>{{ helper.id }}</td>
-                          <td>{{ helper.name }}</td>
-                          <td>{{ helper.phone }}</td>
-                          <td>                          
-                              <button v-on:click.prevent="remove(helper, 'helper')" class="btn btn-outline-danger">
-                                <i class="button-icon fas fa-trash"></i>Remove
-                              </button> 
-                          </td>                        
-                        </tr>                            
-                      </tbody>
-                    </table>      
+                    <div class="card">
+                      <div class="card-body p-3"> 
+                        <table class="table table-striped table-hover table-sm">
+                          <thead class="bg-info">
+                            <tr>
+                              <th class="rounded-top-left">SL.# </th>
+                              <th>Id </th>
+                              <th>Name</th>
+                              <th>Phone</th>
+                              <th class="rounded-top-right">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="(helper, index) in staffByBus.helpers" >                              
+                              <td>{{ index+1 }}</td>
+                              <td>{{ helper.id }}</td>
+                              <td>{{ helper.name }}</td>
+                              <td>{{ helper.phone }}</td>
+                              <td>                          
+                                  <button v-on:click.prevent="remove(helper, 'helper')" class="btn btn-outline-danger">
+                                    <i class="button-icon fas fa-trash"></i>Remove
+                                  </button> 
+                              </td>                        
+                            </tr>                            
+                          </tbody>
+                        </table>   
+                      </div>
+                    </div>    
                   </div>
-                  <div class="col-10">
+                  <div class="col-10 mt-md-2">
                     <p class="h4">SUPERVISOR</p>
-                    <table class="table table-striped table-hover table-sm">
-                      <thead class="bg-success">
-                        <tr>
-                          <th class="rounded-top-left">SL.# </th>
-                          <th>Id </th>
-                          <th>Name</th>
-                          <th>Phone</th>
-                          <th class="rounded-top-right">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(supervisor, index) in staffByBus.supervisors" >                              
-                          <td>{{ index+1 }}</td>
-                          <td>{{ supervisor.id }}</td>
-                          <td>{{ supervisor.name }}</td>
-                          <td>{{ supervisor.phone }}</td>
-                          <td>                          
-                              <button v-on:click.prevent="remove(supervisor, 'supervisor')" class="btn btn-outline-danger">
-                                <i class="button-icon fas fa-trash"></i>Remove
-                              </button> 
-                          </td>                        
-                        </tr>                            
-                      </tbody>
-                    </table>      
+                    <div class="card">
+                      <div class="card-body p-3"> 
+                        <table class="table table-striped table-hover table-sm">
+                          <thead class="bg-success">
+                            <tr>
+                              <th class="rounded-top-left">SL.# </th>
+                              <th>Id </th>
+                              <th>Name</th>
+                              <th>Phone</th>
+                              <th class="rounded-top-right">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="(supervisor, index) in staffByBus.supervisors" >                              
+                              <td>{{ index+1 }}</td>
+                              <td>{{ supervisor.id }}</td>
+                              <td>{{ supervisor.name }}</td>
+                              <td>{{ supervisor.phone }}</td>
+                              <td>                          
+                                  <button v-on:click.prevent="remove(supervisor, 'supervisor')" class="btn btn-outline-danger">
+                                    <i class="button-icon fas fa-trash"></i>Remove
+                                  </button> 
+                              </td>                        
+                            </tr>                            
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>      
                   </div>
                 </div>                        
               </div>
@@ -188,8 +200,9 @@
             <form>
               <div class="form-row">                          
                 <div class="form-group col-sm-4">
-                  <label for="city">Driver</label>
+                  <label for="driver">Driver</label>
                   <select 
+                    id="driver"
                     v-model="selectedDriver" 
                     class="form-control custom-select"
                     :class="{ 'is-invalid': has('route-cities') }"
@@ -205,8 +218,9 @@
                 </div>
 
                 <div class="form-group col-sm-4">
-                  <label for="city">Helper</label>
+                  <label for="helper">Helper</label>
                   <select 
+                    id="helper" 
                     v-model="selectedHelper" 
                     class="form-control custom-select"
                     :class="{ 'is-invalid': has('route-cities') }"
@@ -222,8 +236,9 @@
                 </div>
 
                 <div class="form-group col-sm-4">
-                  <label for="city">Supervisor</label>
+                  <label for="supervisor">Supervisor</label>
                   <select 
+                      id="supervisor" 
                       v-model="selectedSupervisor" 
                       class="form-control custom-select"
                       :class="{ 'is-invalid': has('route-cities') }"
@@ -284,6 +299,9 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import Alert2 from '../../components/Alert2';  
 
 export default {  
+    props: {
+        token: String,
+    },
     components: {
       'error-modal': ErrorModal,
        alert: Alert2
@@ -310,10 +328,10 @@ export default {
     mounted() {
         this.loading = true;
         this.getRoutes();
-        this.getBuses();
-        this.getDrivers();
-        this.getHelpers();
-        this.getSupervisors();
+        this.getBuses({token: this.token});
+        this.getDrivers({token: this.token});
+        this.getHelpers({token: this.token});
+        this.getSupervisors({token: this.token});
         this.loading = false;
 
         if (this.any(this.errors)) {
@@ -345,7 +363,11 @@ export default {
           // this.getRouteCityList();          
           
           this.disableSorting = true;
-          await this.getStaffByBus(val);
+          // await this.getStaffByBus(val);
+          await this.getStaffByBus({ 
+            id: val,
+            token: this.token
+          });
           this.loading = false;
 
         },
@@ -551,11 +573,11 @@ export default {
         });
         this.showTheModal('error');
       },
-      showTheModal(modalId) {                  
-        $(`#${modalId}`).modal({
-          backdrop: 'static'
-        })
-      },
+      // showTheModal(modalId) {                  
+      //   $(`#${modalId}`).modal({
+      //     backdrop: 'static'
+      //   })
+      // },
       remove(staff, type) { 
           var vm = this;
           swal({

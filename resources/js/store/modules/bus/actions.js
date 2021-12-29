@@ -15,8 +15,8 @@ import Bus from '../../../api/bus';
     //     });
     // }
 
-    export const getBuses = ({ commit, dispatch }) => {            
-        return Bus.buses().then(response => {
+    export const getBuses = ({ commit, dispatch }, {token}) => {            
+        return Bus.buses(token).then(response => {
             commit('SET_BUSES', response.data);
             dispatch('sortByBusId');
         })
@@ -64,7 +64,7 @@ import Bus from '../../../api/bus';
             reg_no: bus.regNumber,
             number_plate: bus.numberPlate,
             type_id: bus.typeId,
-            route_id:bus.routeId,
+            route_id: bus.routeId,
             description: bus.description
         }
 
@@ -257,8 +257,8 @@ export const sortBusSchedulesByTime = ({ commit, getters, state, rootGetters }) 
 //     });
 // }
 
-export const getStaffByBus = ({ commit, dispatch }, id) => {            
-    return Bus.staff(id).then(response => {
+export const getStaffByBus = ({ commit, dispatch }, {id, token}) => {            
+    return Bus.staff(id, token).then(response => {
         commit('SET_STAFF_BY_BUS', response.data);
         // dispatch('sortByBusId');
     })
@@ -302,4 +302,107 @@ export const removeStaffByBus = ({ commit, dispatch }, {staffId, type, busId}) =
 
 export const emptyStaffByBus = ({ commit }) => { 
     commit('EMPTY_STAFF_BY_BUS');
+}
+
+// users
+export const getUsers = ({ commit, dispatch }, {token}) => {            
+    return Bus.users(token).then(response => {
+        commit('SET_USERS', response.data);
+        dispatch('sortUsersByName');
+    })
+    .catch(error => {
+        console.log(error.response.data);
+        dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
+    });
+}
+
+export const sortUsersByPhone = ({ commit, state }) => {
+    const users = state.users;
+
+    users.sort((a, b) => {
+        return a.phone - b.phone
+    });
+
+    commit('SORT_USERS_BY_PHONE', users);
+}
+
+export const sortUsersByName = ({ commit, state }) => {
+    const users = state.users;
+
+    users.sort((a, b) => {
+        let nameA = a.name.toUpperCase(); 
+        let nameB = b.name.toUpperCase(); 
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }            
+        return 0;
+    });
+
+    commit('SORT_USERS_BY_NAME', users);
+}
+
+// Trips
+export const getTripsBy = ({ commit, dispatch }, id) => {            
+    return Bus.trips(id).then(response => {
+        commit('SET_TRIPS', response.data);
+        // dispatch('sortByTripId');
+    })
+    .catch(error => {
+        console.log(error.response.data);
+        dispatch('setErrors', 
+             error.response.data.errors,
+            { root: true }
+        );
+    });
+}
+
+    // export const sortByTripId = ({ commit, state }) => {
+    //     const trips = state.trips;
+
+    //     trips.sort((a, b) => {
+    //         return a.id - b.id
+    //     });
+
+    //     commit('SORT_TRIPS_BY_ID', trips);
+    // }
+
+export const updateTrip = ({ commit, dispatch, state }, trip ) => {       
+        const DATA = {
+            status: trip.status,
+            entry_by: trip.entryBy
+        }      
+       
+        return Bus.updateTrip(DATA, trip.id).then(response => {            
+            console.log(response.data)
+            // DATA.id = SLIDE.id;
+            // DATA.image = SLIDE.image;
+
+            // let slide = {
+            //     data: DATA,
+            //     index: SLIDE.index,
+            // }
+            if (response.data.message !== 'success') {
+                return;
+            }
+            let index = state.trips.findIndex(item => item.id === trip.id);
+
+            commit('UPDATE_TRIPS', index);
+
+            dispatch('setSuccess', 
+                {status: true},
+                { root: true }
+            );
+        })
+        .catch(error => {
+            dispatch('setErrors', 
+                 error.response.data.errors,
+                { root: true }
+            );
+        });
 }

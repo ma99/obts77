@@ -58,13 +58,25 @@
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
+                                                     document.getElementById('dashboard-form').submit();">
+                                        <i class="fas fa-cogs mr-2"></i>             
+                                        {{ __('Dashboard') }}
+                                    </a>
+
+                                    <form id="dashboard-form" action="{{ route('user_dashboard') }}" method="GET" class="d-none">
+                                        @csrf
+                                    </form>
+
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
+                                         <i class="fas fa-sign-out-alt mr-2"></i>    
                                         {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
-                                    </form>
+                                    </form>                                    
                                 </div>
                             </li>
                         @endguest

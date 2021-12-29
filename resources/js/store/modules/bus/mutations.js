@@ -76,7 +76,6 @@ export const SET_STAFF_BY_BUS = (state, staff) => {
 }
 
 export const ADD_STAFF_BY_BUS = (state, staff) => {    
-    console.log(staff);
     if (staff.driver !== false) {
         state.staffByBus.drivers.push(staff.driver);
     }
@@ -89,7 +88,6 @@ export const ADD_STAFF_BY_BUS = (state, staff) => {
 }
 
 export const REMOVE_STAFF_BY_BUS = (state, staff) => {
-    console.log(staff);
     if (staff.type == 'driver') {
         const index = state.staffByBus.drivers.findIndex(element => element.id === staff.id);
         state.staffByBus.drivers.splice(index, 1);
@@ -108,4 +106,25 @@ export const REMOVE_STAFF_BY_BUS = (state, staff) => {
 
 export const EMPTY_STAFF_BY_BUS = (state, schedules) => {   
     state.staffByBus = [];
+}
+
+export const SET_USERS = (state, users) => {    
+    state.users = users;
+}
+
+export const SORT_USERS_BY_PHONE = (state, users) => {
+    state.users = users;
+}
+
+export const SORT_USERS_BY_NAME = (state, users) => {
+    state.users = users;
+}
+
+//TRIP
+export const SET_TRIPS = (state, trips) => {
+    state.trips = trips;
+}        
+
+export const UPDATE_TRIPS = (state, index) => {
+    state.trips.splice(index, 1);
 }

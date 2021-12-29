@@ -5,13 +5,29 @@ export default {
 	// 	return Api.get('api/types');
 	// },
 
-	buses() {
-		return Api.get('api/buses');
+	// buses() {
+	// 	return Api.get('api/buses');
+	// },
+	buses(token) {
+		return Api.get('api/buses', {
+		    headers: {   
+                // "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+		});
+	},
+	users(token) {
+		return Api.get('api/users', {
+		    headers: {   
+                // "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            }
+		});
 	},
 
-	seatplans() {
-		return Api.get('api/seatplans');
-	},
+	// seatplans() {
+	// 	return Api.get('api/seatplans');
+	// },
 
 	store(data) {
         return Api.post('buses', data);
@@ -37,11 +53,25 @@ export default {
 		return Api.delete(`bus-schedules/${bus}/${schedule}`);
 	},
 
+	trips(id) {
+		return Api.get(`api/trips/supervisors/users/${id}`);
+	},	
+	updateTrip(data, id) {
+        return Api.patch(`trips/${id}`, data);
+    },
+
 	// drivers(id) {
 	// 	return Api.get(`api/${id}/drivers`);
 	// },
-	staff(id) {
-		return Api.get(`api/${id}/staff`);
+	// staff(id) {
+	// 	return Api.get(`api/${id}/staff`);
+	// },
+	staff(id, token) {
+		return Api.get(`api/${id}/staff`, {
+			headers: {   
+                Authorization: `Bearer ${token}`
+            }
+		});
 	},
 
 	attachStaff(data, id) {

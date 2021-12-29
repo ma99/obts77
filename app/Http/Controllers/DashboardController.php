@@ -24,13 +24,22 @@ class DashboardController extends Controller
             // The user is logged in...
 
             $role = Auth::user()->getRole('name');
+            $token = null;
+
             // $user = Auth::user();
 
            if (is_null($role)) {
                 return view('errors.401', ['message' => 'Not Authorized']);
             } 
+            if( $role == 'admin' || $role == 'super_admin' ) {               
+                $token = Auth::user()->generateToken();
+            }
 
-            return view('dashboard.dashboard', ['role' => $role, 'user' => Auth::user()]);
+            return view('dashboard.dashboard', [
+                'role' => $role, 
+                'token' => $token, 
+                'user' => json_encode(Auth::user())
+            ]);
         // }            
     }
 
@@ -40,7 +49,11 @@ class DashboardController extends Controller
         // $user = Auth::user();
 
            if (is_null($role)) {
-                return view('dashboard.dashboard', ['role' => 'regular', 'user' => Auth::user()]);
+                return view('dashboard.dashboard', [
+                    'role' => 'regular', 
+                    'token' => null,
+                    'user' => json_encode(Auth::user())
+                ]);
             } 
         return redirect()->route('admin_dashboard');    
     }

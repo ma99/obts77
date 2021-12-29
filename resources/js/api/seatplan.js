@@ -1,8 +1,12 @@
 import Api from './api';
 
 export default {
-	seatplans() {
-		return Api.get('api/seatplans');
+	seatplans(token) {
+		return Api.get('api/seatplans', {
+			headers: {                   
+        		Authorization: `Bearer ${token}`
+    		}
+		});
 	},
 
 	store(data) {

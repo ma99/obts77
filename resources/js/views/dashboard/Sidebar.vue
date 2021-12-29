@@ -235,7 +235,16 @@
                       <i class="fas fa-map-signs nav-icon" aria-hidden="true"></i>
                       <p>Route Cities</p>
                   </router-link> 
-                </li>                
+              </li>
+              <li class="nav-item" @click="toggleActive(34)">
+                  <router-link :to="{name:'slide'}" 
+                    class="nav-link"
+                    :class="{ active: childNavItem == 34 }"
+                  >
+                      <i class="fas fa-cogs nav-icon" aria-hidden="true"></i>
+                      <p>Slider Settings</p>
+                  </router-link> 
+              </li>                
             </ul>
             <!-- staff                           -->
                 <!-- level-2 -->
@@ -360,7 +369,7 @@
             </li>
 
             <!-- User -->
-            <li v-else class="nav-item has-treeview menu-open"> 
+            <li v-else class="nav-item has-treeview"> 
               <a href="#" class="nav-link"
                 :class="{ active: navItem == 4 }"
                 @click="toggleActive(4, false)"
@@ -436,6 +445,15 @@
             </li>
             
           <!-- </li>  end of operations                           -->
+
+          <li v-if="isSupervisor" class="nav-item">            
+            <router-link :to="{ name: 'trip' }" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p class="font-weight-bold text-danger">
+                Trip Status
+              </p>              
+            </router-link>
+          </li>
 
           <li class="nav-item">
             <a href="#" class="nav-link">
@@ -522,6 +540,11 @@
           return (this.role == 'super_admin' || this.role == 'admin') ?
                 true : false
         },                
+        isSupervisor() {
+          if (this.isAdmin) return true;
+          return (this.role == 'supervisor') ?
+                true : false
+        }
       },
       methods: {
         activeBadgeSelection() {
@@ -536,6 +559,18 @@
                   break;
               case 'operator':
                 activeBadge = 'badge-success';
+                break;
+              case 'driver':
+                  activeBadge = 'badge-info';
+                  break;
+              case 'supervisor':
+                activeBadge = 'badge-primary';
+                break;
+              case 'helper':
+                activeBadge = 'badge-secondary';
+                break;
+              case 'user':
+                activeBadge = 'badge-light';
                 break;
             }
           }

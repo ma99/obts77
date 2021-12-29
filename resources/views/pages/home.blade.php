@@ -19,7 +19,7 @@
         card-payment-route="{{ route('make.payment.card') }}" 
         login-route="{{ route('login') }}" 
         register-route="{{ route('register') }}" 
-        user=@json($user) 
+        user="{{$user}}"
       />
       {{-- {{ $user }} --}}
       {{-- @json($user) --}}

@@ -76,6 +76,11 @@ export const routes = [
         name: 'type',
         component: require('./views/bus/Type').default
     },
+    {
+        path: '/dashboard/admin/trip',
+        name: 'trip',
+        component: require('./views/bus/Trip').default
+    },
     // {
     //     path: '/dashboard/admin/list',
     //     component: require('./views/bus/BusList').default
@@ -150,6 +155,13 @@ export const routes = [
         path: '/dashboard/admin/staffs/helper',
         name: 'helper',
         component: require('./views/staffs/Helper').default
+    },
+
+    //Slider
+    {
+        path: '/dashboard/admin/slider/slide',
+        name: 'slide',
+        component: require('./views/slider/Slide').default
     },
 
     // Operations

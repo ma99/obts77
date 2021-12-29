@@ -18,12 +18,23 @@ class Trip extends Model
         return date("d-m-Y", strtotime($value));
     }
 
-    public function createIfNotExistBy($bus_schedule_id, $date)
+    public function createIfNotExistBy($bus_schedule_id, $city_route_id,  $date)
     {
-        Trip::firstOrCreate(
-        ['bus_schedule_id' => $bus_schedule_id, 'date' => $date]        
-    );
-
+        Trip::firstOrCreate([
+            'bus_schedule_id' => $bus_schedule_id, 
+            'city_route_id' => $city_route_id, 
+            'date' => $date
+        ]);
     }
+
+    public function pendingTripBy($busScheduleId, $date)
+    {
+        // $date = date("Y-m-d", strtotime($date));
+        return $trip = Trip::where('bus_schedule_id', $busScheduleId)
+                    ->where('date', $date)
+                    ->where('status', 'Pending')                  
+                    ->first();
+    }
+
     
 }

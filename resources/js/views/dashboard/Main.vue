@@ -7,14 +7,16 @@
         />  
 
         <sidebar 
-            :role="role"            
             :user="JSON.parse(user)"            
+            :role="role"            
             :home="homeRoute"
             :logout="logoutRoute"
         />
 
         <content-wrapper 
+            :user="JSON.parse(user)"            
             :role="role"            
+            :token="token"            
         />
 
         <controlbar />
@@ -49,6 +51,7 @@
         props: [
             'user',
             'role',
+            'token',
             'homeRoute',
             'logoutRoute'
         ],
@@ -58,11 +61,15 @@
             Sidebar,
             DashboardHeader: Header,
             DashboardFooter: Footer
-        },        
+        },               
         mounted() {
-          console.log('mounted');
+          console.log('main mounted');
           this.toggleBodyClass('add', ['hold-transition', 'sidebar-mini', 'sidebar-mini-md', 'layout-fixed', 'layout-boxed']);
-        
+          // if (this.token) {
+          //   console.log('t1', this.token)
+          //   // this.setLocalStorage(this.token);
+          //   this.setSessionFor(this.token);
+          // }
         },
         unmounted() {
           this.toggleBodyClass('remove', ['hold-transition', 'sidebar-mini', 'sidebar-mini-md', 'layout-fixed', 'layout-boxed']);
@@ -77,6 +84,13 @@
             // }
         },
         methods: {            
+            // setLocalStorage(token) {
+            setSessionFor(token) {
+                console.log('tm', token)
+                // localStorage.setItem('token', token)
+                sessionStorage.setItem('token', token)
+
+            },
             toggleBodyClass(actionType, className) {
                 const el = document.body;                
                 el.classList[actionType](...className);

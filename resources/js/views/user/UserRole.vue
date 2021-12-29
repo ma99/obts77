@@ -325,7 +325,6 @@ export default {
         });
       },
       isEmpty(obj) {
-        console.log('lenn='+ Object.values(obj).length);
         return Object.values(obj).length <= 1;
       },
       resetUserInfo() {

@@ -223,7 +223,7 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr  v-for="(bus, index) in availableBusList" >                              
+                        <tr  v-for="(bus, index) in availableBusList">                              
                           <td>{{ index+1 }}</td>                              
                           <td>{{ bus.bus.id }}</td>
                           <td> {{ getRouteBy(bus.bus.route_id).first_city}} <br />
@@ -284,6 +284,9 @@
     import { mapState, mapGetters, mapActions } from 'vuex';
 
     export default {        
+        props: {
+            token: String,
+        },
         components: {
             Box,
             'route-list': Route,
@@ -332,8 +335,9 @@
                     this.loading = true;
                     
                     await this.getBusTypes();
-                    await this.getBuses();
-                    await this.getSeatPlans();
+                    await this.getBuses({token: this.token});
+                    // await this.getBuses();
+                    await this.getSeatPlans({token: this.token});
 
                     this.loading = false;
 
@@ -502,7 +506,7 @@
                       //var vm = this;
                       this.loading = true;
                       this.addBus({
-                        bus: this.bus, 
+                        bus: this.bus,                         
                         numberOfSeat: this.numberOfSeat
                       });
                       // this.loading = false;

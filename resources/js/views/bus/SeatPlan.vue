@@ -239,6 +239,9 @@
 
 
     export default { 
+      props: {
+          token: String,
+      },
       components: {
           'app-modal': AppModal,
           'error-modal': ErrorModal,
@@ -281,7 +284,7 @@
       async mounted() {
           this.loading = true;
           this.createIndexList();
-          await this.getSeatPlans();
+          await this.getSeatPlans({token: this.token});
           this.loading = false;
           
           if (this.any(this.errors)) {

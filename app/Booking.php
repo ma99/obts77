@@ -68,7 +68,7 @@ class Booking extends Model
     {
         $booking = $this->createBooking($user, $attributes);     
 
-        $this->trip->createIfNotExistBy($booking->bus_schedule_id, $booking->date);
+        $this->trip->createIfNotExistBy($booking->bus_schedule_id, $booking->city_route_id, $booking->date);
 
         $attributes['booking_ref'] = $booking->id;
         return $attributes= $this->seat->createSeatsFor($booking, $attributes);

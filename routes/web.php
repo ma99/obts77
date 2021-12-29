@@ -32,10 +32,29 @@ Route::group(['middleware' => ['auth', 'role:super_admin']], function () {
 	Route::post('/buses', 'Admin\BusController@store');
 	Route::patch('/buses/{bus}', 'Admin\BusController@update');
 	Route::delete('/buses/{bus}', 'Admin\BusController@destroy');
+	//trip
+	Route::patch('/trips/{trip}', 'Admin\TripController@update');
+	
+	//Slider
+	Route::post('/slides', 'Admin\SlideController@store');
+	Route::patch('/slides/{slide}', 'Admin\SlideController@update');
+	Route::delete('/slides/{slide}', 'Admin\SlideController@destroy');
+
+	//driver
+	Route::post('/drivers', 'Admin\DriverController@store');
+	Route::delete('/drivers/delete', 'Admin\DriverController@destroy');
+
+	//helper
+	Route::post('/helpers', 'Admin\HelperController@store');
+	Route::delete('/helpers/delete', 'Admin\HelperController@destroy');
+
+	//supervisor
+	Route::post('/supervisors', 'Admin\SupervisorController@store');
+	Route::delete('/supervisors/delete', 'Admin\SupervisorController@destroy');
 
 	//staff
-	Route::post('/{bus}/staff', 'StaffController@store');
-	Route::delete('/staff/{type}/{staff}/bus/{bus}', 'StaffController@destroy');
+	Route::post('/{bus}/staff', 'Admin\StaffController@store');
+	Route::delete('/staff/{type}/{staff}/bus/{bus}', 'Admin\StaffController@destroy');
 
 	//city
 	Route::post('/cities', 'Admin\CityController@store');
@@ -79,6 +98,11 @@ Route::group(['middleware' => ['auth', 'role:super_admin']], function () {
 	//route cities
 	Route::post('/{route}/cities', 'Admin\RouteCitiesController@store');
 	Route::delete('/route-cities/{route}/{routeCity}', 'Admin\RouteCitiesController@destroy');
+
+	//images
+
+	Route::post('/images', 'ImageController@upload');
+	Route::delete('/images/delete', 'ImageController@destroy');
 //});	// end of group
 
 // ticket operations
@@ -89,6 +113,7 @@ Route::group(['middleware' => ['auth', 'role:super_admin']], function () {
 Route::group(['middleware' => ['auth']], function() {
 	Route::get('/tickets', 'Admin\TicketController@search');
 	Route::post('/tickets/cancel', 'Admin\TicketController@destroy');
+	Route::get('/supervisors/users/{id}', 'Admin\UserController@supervisor');
 	// Route::get('/tickets/cancel', 'Admin\TicketController@destroy');
 });
 

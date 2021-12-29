@@ -224,6 +224,9 @@ import ErrorModal from '../../components/ErrorModal';
 import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {  
+    props: {
+        token: String,
+    },
     components: {
       'error-modal': ErrorModal,
     },      
@@ -246,7 +249,7 @@ export default {
     async mounted() {
         this.loading = true;
         await this.getRoutes();
-        await this.getBuses();
+        await this.getBuses({token: this.token});
         await this.getSchedules();
         await this.getAvailableCities();
         this.loading = false;

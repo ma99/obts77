@@ -13,6 +13,7 @@ import bus from "./modules/bus";
 import driver from "./modules/driver";
 import helper from "./modules/helper";
 import supervisor from "./modules/supervisor";
+import slide from "./modules/slide";
 import city from "./modules/city";
 import fare from "./modules/fare";
 import schedule from "./modules/schedule";
@@ -33,6 +34,7 @@ export const store = createStore({
         driver,
         helper,
         supervisor,
+        slide,
         city,
         fare,
         route,
