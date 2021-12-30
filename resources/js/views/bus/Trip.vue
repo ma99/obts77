@@ -31,9 +31,33 @@
             <!-- Here goes page content -->
             <div class="col-12 my-2 text-center">
               <div class="bg-lightcyan rounded-pill py-2 text-primary" v-text="dateToday"></div>
+              
+              <div class="mt-3 mb-2 px-3 pt-3 bg-oceanblue rounded" v-if="isAdmin">
+                <form>                  
+                  <div class="form-row">
+                    <div class="form-group col-12 col-md-6 mx-auto">
+                      <!-- <label for="supervisor" class="float-left">Select Supervisor</label> -->
+                      <select 
+                          id="supervisor" 
+                          v-model="selectedSupervisor" 
+                          class="form-control custom-select"
+                          :class="{ 'is-invalid': has('route-cities') }"
+                      > 
+                          <option value="" disabled>Please select a supervisor</option>
+                          <option 
+                            v-for="supervisor in availableSupervisorList"
+                            :value="supervisor"      
+                          >
+                              {{ supervisor.name }}
+                          </option>                 
+                      </select>
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
             <div class="col-md-6" v-if="isTripAvailable">
-                <div class="card">
+                <div class="card bg-oceanblue">
                   <div class="card-body">
                    <form>
                     <div class="form-row">
@@ -100,8 +124,9 @@
                 </div>                  
             </div>
 
-            <div class="col-12 my-2 text-center" v-else>
-              <div class="card"> 
+            <div class="col-12 text-center" v-else>              
+              <div v-if="isAdmin && !searchMadeByAdmin"></div>
+              <div class="card" v-else> 
                   <div class="card-body bg-peach rounded">
                     <i class="fas fa-exclamation-triangle fa-2x mr-2"></i>
                     <span class="h5">                        
@@ -113,7 +138,7 @@
             
             <loader :show="loading"></loader>
 
-            <div class="col-md-6 mb-3" v-if="isTripAvailable">
+            <div class="col-md-6 mb-3" v-show="isTripAvailable">
               <div class="p-2 rounded bg-lightcyan">
                 <div class="p-1" @click="expand=!expand" style="cursor: pointer;">
                       <span class="fa-stack fa-2x text-shadow" v-show="!expand">
@@ -135,7 +160,7 @@
                   <div class="card">
                     <div class="card-body p-0">
                       <div class="scrollbar">
-                        <table class="table table-striped table-hover" style="font-size: 0.85rem;">
+                        <table class="table table-striped table-hover" style="font-size: 0.9rem;">
                             <thead class="bg-info">
                               <tr>
                                 <!-- <th>Sl.</th> -->
@@ -201,6 +226,7 @@
     export default {
         props: {
           role: String,
+          token: String,
           user: {
               type: Object
             },
@@ -228,35 +254,47 @@
                 statusToBe: '',
                 tripToBeUpdatedId: null,
                 expand: false,
-                instanceOfScrollbar: undefined
+                instanceOfScrollbar: {},
+                searchMadeByAdmin: false,
+                selectedSupervisor: '', 
                 // updateInitiated: false
             }
         },
         async mounted() {            
             console.log('Component mounted.')
+            if (this.isAdmin) {
+              this.getSupervisors({token: this.token});
+              return;
+            }              
             this.loading = true;
             await this.getTripsBy(this.user.id);
+            this.setTrips(this.trips);            
 
-            if (Array.isArray(this.trips)) {
-                this.trips.forEach(trip => {
-                    console.log(trip.id)
-                    console.log('1')
-                   this.getBusScheduleInfoBy(trip);
-                    console.log('2')                    
-                });
-            }
-            // console.log('333')                    
-            // console.log('TDS', this.tripsDetails)                    
-            // this.sortTripDetailsByDate();
-            this.enableScroll();
+            // this.enableScroll();
             this.loading = false;
         },
         beforeUnmount() {
-          if(this.instanceOfScrollbar) {            
+          if(!this.isEmpty(this.instanceOfScrollbar)) {          
             this.instanceOfScrollbar.destroy();
           }
         },
         watch: {
+          async selectedSupervisor(value) {
+            if(value) {
+              this.loading = true;
+              this.tripsDetails = [];
+              await this.getTripsBy(value.user_id);
+              this.searchMadeByAdmin = true;
+              this.setTrips(this.trips);   
+              this.loading = false;
+            }
+          },
+          isTripAvailable(value) {
+            if (value === true && this.isEmpty(this.instanceOfScrollbar)
+              ) {
+                this.enableScroll();
+            }
+          },
           'tripsDetails.length'(value) {
               if (value) {
                   if (value === this.trips.length) {
@@ -292,15 +330,19 @@
           ...mapGetters('bus', [
             'isTripAvailable'
           ]),
+          ...mapState('supervisor', [
+            'availableSupervisorList',
+          ]),
+          isAdmin() {
+            return (this.role === 'super_admin' || this.role === 'admin') ? true : false;
+          },
           isValid() {
             return this.statusToBe !=='';
           },
           dateToday() {
             let date = new Date(); 
-            // return nowDate.getFullYear()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getDate(); 
             let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
-            console.log(date.toLocaleString('en-GB', options));
             return date.toLocaleString('en-GB', options);
           }
         },
@@ -314,6 +356,9 @@
               'getTripsBy',
               'updateTrip'
           ]),
+          ...mapActions('supervisor', [
+          'getSupervisors',
+        ]),
           enableScroll() {
             this.instanceOfScrollbar = OverlayScrollbars(document.getElementsByClassName("scrollbar"),
             { 
@@ -333,19 +378,17 @@
                 timer: 2000,
                 closeOnClickOutside: false,
               });
+          },          
+          setTrips(trips) {
+            if (Array.isArray(trips)) {
+                trips.forEach(trip => {                   
+                   this.getBusScheduleInfoBy(trip);
+                });
+            }
           },
           sortTripDetailsByDate() {
-              // console.log('sssssssort')
               this.tripsDetails.sort((a, b) => {
-                  // return parseInt(this.convertTime12to24(a.schedule.departure_time)) - parseInt(this.convertTime12to24(b.schedule.departure_time));
                   return parseInt(this.convertTime12to24(a.arrival_time)) - parseInt(this.convertTime12to24(b.arrival_time));
-
-                  // let timeA = parseInt(this.convertTime12to24(a.schedule.departure_time));
-                  // console.log('a', timeA)
-                  // let timeB = parseInt(this.convertTime12to24(b.schedule.departure_time))
-                  // console.log('b', timeB)
-                  
-                  // return timeA - timeB;
               });                
           },
 
@@ -362,7 +405,6 @@
               hours = parseInt(hours, 10) + 12;
             }
 
-           // return `${hours}:${minutes}`;
             return `${hours}${minutes}`;
           },
 
@@ -372,9 +414,7 @@
                 this.tripToBeUpdatedId = null;
 
             },
-            tripStatusToBeUpdated(trip) {
-                console.log('4')
-                console.log(this.tripsDetails)
+            tripStatusToBeUpdated(trip) {            
                 this.trip = {
                     id: trip.id,
                     bus_schedule_id: trip.bus_schedule_id,
@@ -391,7 +431,6 @@
                     arrival_time: trip.arrival_time,
                     distance: trip.distance
                 }
-                // this.trip = DATA;
             },                        
             update() {
                 this.loading = true;
@@ -405,22 +444,14 @@
 
             },
             getBusScheduleInfoBy(trip) {
-                // this.loading = true;          
-                // this.supervisorInfo = ''; 
                 var vm = this;          
-                // let data = null;      
                 axios.get(`/api/tripsdetails/${trip.bus_schedule_id}/${trip.city_route_id}`)
                     .then(function (response) {
-                    // vm.setBusScheduleInfoToTrip(response.data);
-                    // vm.loading = false;                    
-                    // let data = response.data;
                     vm.setTripDetails(trip, response.data);
                 })
                 .catch(error => {
                     console.log(error.response.data);
                 });
-                // console.log('ddddd', data);
-                // return data;
             },
             setTripDetails(trip, data) {
                 const DATA = {
@@ -447,22 +478,10 @@
                 this.tripsDetails = [...this.tripsDetails, DATA];
                 // console.log('m', this.tripsDetails)
 
+            },            
+            isEmpty(obj) {
+                return Object.values(obj).length <= 1;
             },
-            // setTripInfo(trip) {
-            //         this.trip.id = trip.id;
-            //         this.trip.bus_schedule_id = trip.bus_schedule_id;
-            //         this.trip.date = trip.date;
-            //         this.trip.status = trip.status;
-               
-            // },
-            // setBusScheduleInfoToTrip(data) {
-            //     this.trip.bus = data.bus;
-            //     this.trip.schedule = data.schedule;
-            //     this.trip.departure_city = data.departure_city;
-            // },
-            // isEmpty(obj) {
-            //     return Object.values(obj).length <= 1;
-            // },
         }
     }
 </script>

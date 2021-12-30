@@ -17737,7 +17737,7 @@ h3 {
 }
 
 .bg-mayablue {
-  background-color: #74C0FC;
+  background-color: #74C0FC !important;
 }
 
 .bg-mayablue-medium {

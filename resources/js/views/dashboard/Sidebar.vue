@@ -83,7 +83,7 @@
               </li>
             </ul>
           </li>
-          <li v-if="isSuperAdmin" class="nav-item has-treeview menu-open">
+          <li v-if="isSuperAdmin" class="nav-item has-treeview">
             <!-- <a href="#" class="nav-link active"> -->
             <a href="#" class="nav-link" 
               :class="{ active: navItem == 2 }"
@@ -213,7 +213,7 @@
                   :class="{ active: childNavItem == 34 }"
                 >
                     <i class="fas fa-users-cog nav-icon" aria-hidden="true"></i>
-                    <p>Bus Staff</p>
+                    <p>Bus Staff Assign</p>
                 </router-link> 
               </li>
 
@@ -236,10 +236,10 @@
                       <p>Route Cities</p>
                   </router-link> 
               </li>
-              <li class="nav-item" @click="toggleActive(34)">
+              <li class="nav-item" @click="toggleActive(35)">
                   <router-link :to="{name:'slide'}" 
                     class="nav-link"
-                    :class="{ active: childNavItem == 34 }"
+                    :class="{ active: childNavItem == 35 }"
                   >
                       <i class="fas fa-cogs nav-icon" aria-hidden="true"></i>
                       <p>Slider Settings</p>
@@ -250,9 +250,9 @@
                 <!-- level-2 -->
               <ul class="nav nav-treeview">      
                 <!-- note: remove 'menu-open' -->          
-                <li class="nav-item has-treeview menu-open">
+                <li class="nav-item has-treeview">
                   <a href="#" class="nav-link">
-                    <i class="far fa-circle nav-icon text-warning"></i>
+                    <i class="fas fa-users nav-icon text-warning"></i>
                     <p>
                       STAFF
                       <i class="right fas fa-angle-left"></i>
@@ -260,30 +260,30 @@
                   </a>
                   <!-- level-3 -->
                   <ul class="nav nav-treeview">
-                    <li class="nav-item" @click="toggleActive(34)">
+                    <li class="nav-item" @click="toggleActive(361)">
                       <router-link :to="{name:'driver'}" 
                         class="nav-link"
-                        :class="{ active: childNavItem == 34 }"
+                        :class="{ active: childNavItem == 361 }"
                       >
-                        <i class="far fa-dot-circle nav-icon text-warning"></i>
+                        <i class="fas fa-user nav-icon text-primary"></i>
                         <p>Driver</p>
                       </router-link>
                     </li>                    
-                    <li class="nav-item" @click="toggleActive(35)">
+                    <li class="nav-item" @click="toggleActive(362)">
                       <router-link :to="{name:'supervisor'}"
                       class="nav-link"
-                      :class="{ active: childNavItem == 35 }"
+                      :class="{ active: childNavItem == 362 }"
                       >
-                        <i class="far fa-dot-circle nav-icon text-warning"></i>
+                        <i class="fas fa-user-tie nav-icon text-primary"></i>
                         <p>Supervisor</p>
                       </router-link>
                     </li>
-                    <li class="nav-item" @click="toggleActive(36)">
+                    <li class="nav-item" @click="toggleActive(363)">
                       <router-link :to="{name:'helper'}"
                       class="nav-link"
-                      :class="{ active: childNavItem == 36 }"
+                      :class="{ active: childNavItem == 363 }"
                       >
-                        <i class="far fa-dot-circle nav-icon text-warning"></i>
+                        <i class="far fa-user nav-icon text-primary"></i>
                         <p>Helper</p>
                       </router-link>
                     </li>
@@ -447,9 +447,12 @@
           <!-- </li>  end of operations                           -->
 
           <li v-if="isSupervisor" class="nav-item">            
-            <router-link :to="{ name: 'trip' }" class="nav-link">
-              <i class="nav-icon fas fa-th"></i>
-              <p class="font-weight-bold text-danger">
+            <router-link 
+              :to="{ name: 'trip' }" 
+              class="nav-link"
+            >
+              <i class="nav-icon fas fa-bullhorn text-light"></i>
+              <p class="font-weight-bold text-info">
                 Trip Status
               </p>              
             </router-link>

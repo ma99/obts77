@@ -89,7 +89,10 @@
                         <label for="inputAddress">Address</label>
                         <input type="text" class="form-control" id="inputAddress" placeholder="Write address here" v-model="helper.address">
                       </div>
-
+                      <div class="col-12">
+                        <label >NID Image</label> <br />
+                        <small class="my-1 text-muted"> *Upload NID's front & back side images.</small>
+                      </div>
                       <image-upload 
                         directory="nids" 
                         :saved="isImagesSaved"

@@ -49287,7 +49287,7 @@ a.text-muted:hover {
 }
 
 .bg-mayablue {
-  background-color: #74C0FC;
+  background-color: #74C0FC !important;
 }
 
 .bg-mayablue-medium {
