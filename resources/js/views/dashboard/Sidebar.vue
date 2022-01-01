@@ -328,7 +328,7 @@
                       </router-link>
                     </li>                    
                     <li class="nav-item" @click="toggleActive(42)">
-                      <router-link :to="{name:'processRefund'}"
+                      <router-link :to="{name:'process-refund'}"
                       class="nav-link"
                       :class="{ active: childNavItem == 42 }"
                       >
@@ -404,7 +404,7 @@
                       </router-link>
                     </li>                    
                     <li class="nav-item" @click="toggleActive(42)">
-                      <router-link :to="{name:'requestRefund'}"
+                      <router-link :to="{name:'request-refund'}"
                       class="nav-link"
                       :class="{ active: childNavItem == 42 }"
                       >

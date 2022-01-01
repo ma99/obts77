@@ -1,26 +1,4 @@
 <template>
-    <div class="content-wrapper">
-      <div class="content-header">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0 text-dark">Helper</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item">
-                  <router-link to="/dashboard">
-                    <i class="fas fa-dashboard nav-icon"></i>Dashboard
-                  </router-link>
-                </li>
-                <li class="breadcrumb-item active">Helper</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
-      <!-- /.content-header -->
-
       <section class="content">
         <error-modal modal-id="error" :error-list="errorList" />
         <!-- <div class="container-fluid"> -->
@@ -202,9 +180,6 @@
           <!-- /.row -->
         <!-- </div>/.container-fluid -->
       </section>
-      <!-- /.content -->
-    </div>
-    <!-- /.content-wrapper -->
 </template>
 
 <script>

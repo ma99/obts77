@@ -1,29 +1,4 @@
 <template>
-    <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-      <!-- Content Header (Page header) -->
-      <div class="content-header">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0 text-dark">Slide</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item">
-                  <router-link to="/dashboard">
-                    <i class="fas fa-dashboard nav-icon"></i>Dashboard
-                  </router-link>
-                </li>
-                <li class="breadcrumb-item active">Slide</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
-      <!-- /.content-header -->
-
-      <!-- Main content -->
       <section class="content">
         <error-modal modal-id="error" :error-list="errorList" />        
             <div class="p-2 bg-skyblue">
@@ -165,9 +140,6 @@
               </div>
             </div>
       </section>
-      <!-- /.content -->
-    </div>
-    <!-- /.content-wrapper -->
 </template>
 
 <script>

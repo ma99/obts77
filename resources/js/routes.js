@@ -172,7 +172,7 @@ export const routes = [
     },
     {
         path: '/dashboard/admin/tickets/refund',
-        name: 'processRefund',
+        name: 'process-refund',
         component: require('./views/operations/ticket/ProcessRefund').default
     },
 
@@ -180,12 +180,12 @@ export const routes = [
     {
         path: '/dashboard/user',
         component: require('./views/Home').default,
-        name: 'user_dashboard'
+        name: 'user-dashboard'
       
     },
     {
         path: '/dashboard/user/tickets/refund',
-        name: 'requestRefund',
+        name: 'request-refund',
         component: require('./views/Operations/ticket/RequestRefund').default
     },
     {
