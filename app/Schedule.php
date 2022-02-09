@@ -34,6 +34,7 @@ class Schedule extends Model
     public function buses()
     {
     	return $this->belongsToMany(Bus::class);
+        // return $this->belongsToMany(Bus::class)->using('App\BusSchedule');
     }
 
     public function bookings()

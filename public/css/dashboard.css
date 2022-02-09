@@ -49246,6 +49246,14 @@ a.text-muted:hover {
   color: #74C0FC;
 }
 
+.text-blueviolet {
+  color: #8a2ce2 !important;
+}
+
+.text-skyblue {
+  color: #3398db !important;
+}
+
 /** TEXT SHADOW
 *****************************/
 .text-shadow {

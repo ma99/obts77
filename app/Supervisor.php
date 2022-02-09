@@ -19,9 +19,14 @@ class Supervisor extends Model
     }    
 
     public function images()
-     {
-         return $this->morphMany(Image::class, 'owner');
-     } 
+    {
+        return $this->morphMany(Image::class, 'owner');
+    } 
+
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'owner');
+    }
 
     public function add($data)
     {

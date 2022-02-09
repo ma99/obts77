@@ -18,8 +18,12 @@ class CreateTripsTable extends Migration
             $table->unsignedBigInteger('bus_schedule_id');
             $table->unsignedSmallInteger('city_route_id');
             $table->date('date');
-            $table->string('status', 10)->default('Pending');
-            $table->string('entry_by')->nullable();
+            $table->unsignedTinyInteger('type')->nullable();
+            $table->unsignedTinyInteger('status')->default(1);
+            $table->unsignedInteger('driver_id')->nullable();
+            $table->unsignedInteger('supervisor_id')->nullable();
+            $table->unsignedInteger('helper_id')->nullable();
+            // $table->string('entry_by')->nullable();
             $table->timestamps();
         });
     }

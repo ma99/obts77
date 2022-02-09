@@ -47,6 +47,21 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class, 'creator_id'); 
     }
 
+    // public function ratings()
+    // {
+    //     return $this->hasMany(Rating::class);
+    // }
+
+    public function trips()
+    {
+        return $this->belongsToMany(Trip::class)->withPivot('id', 'reviewed');
+    }
+
+    public function tripReviewCompleted($tripId)
+    {
+        return $this->trips()->updateExistingPivot($tripId, ['reviewed' => 1]);
+    }
+
     public function supervisor()
     {
         return $this->hasOne(Supervisor::class); 

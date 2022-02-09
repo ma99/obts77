@@ -44,7 +44,10 @@ Route::get('/{bus}/ss', function(App\Bus $bus) {
 
 
 Route::get('/trips/supervisors/users/{user}', 'Api\SearchTripsController@index');
-Route::get('/tripsdetails/{busschedule}/{cityRoute}', 'Api\SearchTripsDetailsController@index');
+
+Route::get('/trips/route-cities/{cityRoute}/bus-schedules/{busSchedule}', 'Api\SearchTripsController@tripRouteCitites');
+
+// Route::get('/tripsdetails/{busschedule}/{cityRoute}', 'Api\SearchTripsDetailsController@index');
 // Route::get('/trips/supervisors/{supervisor}', 'Api\SearchTripsController@index');
 Route::get('/drivers', 'Api\SearchDriversController@index');
 Route::get('/helpers', 'Api\SearchHelpersController@index');
@@ -55,6 +58,7 @@ Route::get('/fares', 'Api\SearchFaresController@index');
 Route::get('/stops', 'Api\SearchStopsController@index');
 Route::get('/slides', 'Api\SearchSlidesController@index');
 Route::get('/slides/active', 'Api\SearchSlidesController@slides');
+
 
 
 //schedule
@@ -78,3 +82,16 @@ Route::get('/dropping', 'Api\SearchCitiesController@droppingPoints');
 // Routes Cities
 Route::get('/route-cities', 'Api\SearchRoutesCitiesController@index');
 Route::get('/{route}/cities', 'Api\SearchRoutesCitiesController@routeCities');
+
+
+// DB::listen(function($q) {
+//     file_put_contents(storage_path('logs/laravel.log'),'');
+// });
+
+// $count = 0;
+// DB::listen(function ($query) use (&$count){
+//     // $count++;
+//     \Log::info($count++);
+// });
+
+// dd($count);

@@ -350,7 +350,9 @@ export const sortUsersByName = ({ commit, state }) => {
 // Trips
 export const getTripsBy = ({ commit, dispatch }, id) => {            
     return Bus.trips(id).then(response => {
-        commit('SET_TRIPS', response.data);
+        if (response.data.message !== 'Not Available') {            
+            commit('SET_TRIPS', response.data);
+        }
         // dispatch('sortByTripId');
     })
     .catch(error => {
@@ -375,6 +377,9 @@ export const getTripsBy = ({ commit, dispatch }, id) => {
 export const updateTrip = ({ commit, dispatch, state }, trip ) => {       
         const DATA = {
             status: trip.status,
+            driver_id: trip.driverId,
+            supervisor_id: trip.supervisorId,
+            helper_id: trip.helperId,
             entry_by: trip.entryBy
         }      
        

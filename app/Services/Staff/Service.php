@@ -95,10 +95,13 @@ class Service
 
 	public function detailsOf($persons)
     {
-        foreach ($persons as $person) {   
-            $personsInfo[] = $this->infoFor($person);
-        }
-        return $personsInfo;
+    	if ($persons->count() > 0) {
+	        foreach ($persons as $person) {   
+	            $personsInfo[] = $this->infoFor($person);
+	        }
+	        return $personsInfo;
+    	}
+    	return;
     }
 
     public function infoFor($staff)

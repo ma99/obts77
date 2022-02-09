@@ -381,10 +381,26 @@
                   <i class="right fas fa-angle-left"></i>
                 </p>
               </a>
+
+              <!-- level-2 -->
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <router-link 
+                    :to="{ name: 'reviews' }" 
+                    class="nav-link"
+                  >
+                    <i class="nav-icon fas fa-bullhorn text-light"></i>
+                    <p class="font-weight-bold text-info">
+                      Reviews
+                    </p>              
+                  </router-link>
+                </li>                                
+              </ul>
+              
               <!-- level-2 -->
               <ul class="nav nav-treeview">      
                 <!-- note: remove 'menu-open' -->          
-                <li class="nav-item has-treeview menu-open">
+                <li class="nav-item has-treeview">
                   <a href="#" class="nav-link">
                     <i class="far fa-circle nav-icon text-success"></i>
                     <p>
@@ -415,7 +431,9 @@
                   </ul>
                 </li>              
               </ul>
-              <!-- level-2 -->
+              
+
+               <!-- level-2 -->
               <ul class="nav nav-treeview">                
                 <li class="nav-item has-treeview">
                   <a href="#" class="nav-link">
@@ -458,6 +476,17 @@
             </router-link>
           </li>
 
+          <!-- <li class="nav-item">
+            <router-link 
+              :to="{ name: 'reviews' }" 
+              class="nav-link"
+            >
+              <i class="nav-icon fas fa-bullhorn text-light"></i>
+              <p class="font-weight-bold text-info">
+                Reviews
+              </p>              
+            </router-link>
+          </li> -->
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-th"></i>

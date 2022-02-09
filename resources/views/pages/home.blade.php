@@ -4,6 +4,10 @@
   @include('includes.unverified.phone-warning')                
 @endsection
 
+@section('navbar')
+  @include('includes.navbar')  
+@endsection
+
 @section('content')
 <div class="container">
   <div class="row">

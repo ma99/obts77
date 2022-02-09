@@ -25,7 +25,10 @@ class TripController extends Controller
     {
         return request()->validate([
             'status' => 'required',
-            'entry_by' => 'required'
+            'driver_id' => 'required',            
+            'supervisor_id' => 'required',            
+            'helper_id' => 'required',            
+            // 'entry_by' => 'required'
         ]);
     }
 	    

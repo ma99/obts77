@@ -22,7 +22,7 @@ class BusSchedule extends Pivot
     {
         return $this->hasMany(Trip::class, 'bus_schedule_id')
             ->where('date', date("Y-m-d"))
-            ->where('status', 'Pending');
+            ->where('status', Trip::STATUS_PENDING);
     }
 
     /*public function sortByBusSchedule($collection)
@@ -48,6 +48,5 @@ class BusSchedule extends Pivot
     public function getBusScheduleBy($id)
     {
         return $this->findOrFail($id); 
-    }    
-    
+    }
 }

@@ -16,8 +16,13 @@
 //     },
 // ]
 export const routes = [    
+    // {
+    //   path: '/',      
+    //   name: 'welcome',
+    //   // component: require('./views/First').default
+    // },
     {
-      path: '/dashboard/admin/first-page',      
+      path: '/first-page',      
       name: 'first',
       component: require('./views/First').default
     },
@@ -182,6 +187,11 @@ export const routes = [
         component: require('./views/Home').default,
         name: 'user-dashboard'
       
+    },
+    {
+        path: '/dashboard/user/reviews',
+        name: 'reviews',
+        component: require('./views/Operations/Reviews').default
     },
     {
         path: '/dashboard/user/tickets/refund',

@@ -220,15 +220,19 @@ Route::get('/test', function() {
 	return false;*/
 });
 
+// Auth::routes(['verify' => true]);
 Auth::routes();
+Route::get('/reviews/completed', 'ReviewController@tripsReviewed');
+Route::get('/reviews/pending', 'ReviewController@tripsToBeReviewed');
+Route::post('/reviews/trips/{trip}/user-trips/{tripUser}', 'ReviewController@store');
 
 // Route::get('user/{id}/profile/{name}', function ($id, $name) {
 //     return ['id' => $id, 'name' => $name];
 // })->name('profile');
 
-
+/*
 \DB::listen(function($sql) {
     \Log::info($sql->sql);
     \Log::info($sql->bindings);
     \Log::info($sql->time);
-});
+});*/

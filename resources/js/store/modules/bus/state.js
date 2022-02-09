@@ -1,7 +1,10 @@
 export default {
 	availableBusList: [],
     types: [],        //bustypes
-    trips: [],        //bustypes
+    trips: [],
+    drivers: [],
+    supervisorId: '',             
+    helpers: [],            
     schedulesByBus: [],
     staffByBus: [],
     users: [],

@@ -20,8 +20,8 @@
 @import 'slider';
 
 //  AdminLTE (includes bootstrap)
-// @import '~admin-lte/build/scss/AdminLTE';
-
+// @import '~admin-lte/build/scss/adminlte';
+@import 'adminlte_login_and_register';
 // Variables
 @import 'variables';
 //colors

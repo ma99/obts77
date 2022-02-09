@@ -74,6 +74,6 @@ class Route extends Model
 
     public function getRouteBy($id)
     {
-     return Route::find($id);
+     return Route::findOrFail($id);
     }
 }

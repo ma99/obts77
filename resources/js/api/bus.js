@@ -56,16 +56,11 @@ export default {
 	trips(id) {
 		return Api.get(`api/trips/supervisors/users/${id}`);
 	},	
+
 	updateTrip(data, id) {
         return Api.patch(`trips/${id}`, data);
     },
 
-	// drivers(id) {
-	// 	return Api.get(`api/${id}/drivers`);
-	// },
-	// staff(id) {
-	// 	return Api.get(`api/${id}/staff`);
-	// },
 	staff(id, token) {
 		return Api.get(`api/${id}/staff`, {
 			headers: {   
@@ -73,10 +68,11 @@ export default {
             }
 		});
 	},
-
+	
 	attachStaff(data, id) {
 		return Api.post(`/${id}/staff`, data)
 	},
+
 	detachStaff(staffId, type, busId) {
 		return Api.delete(`staff/${type}/${staffId}/bus/${busId}`)
 	},

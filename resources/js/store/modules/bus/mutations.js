@@ -122,7 +122,12 @@ export const SORT_USERS_BY_NAME = (state, users) => {
 
 //TRIP
 export const SET_TRIPS = (state, trips) => {
-    state.trips = trips;
+    state.trips = trips.trips;
+    // state.trips.push(trips.trips);
+    state.drivers = trips.drivers;
+    state.helpers = trips.helpers;
+    state.supervisorId = trips.supervisor;
+
 }        
 
 export const UPDATE_TRIPS = (state, index) => {

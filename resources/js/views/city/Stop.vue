@@ -1,25 +1,4 @@
 <template>
-  <div class="content-wrapper">    
-    <div class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Bus Stops</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item">
-                <router-link :to="{ name: 'dashboard' }">
-                  <i class="fa fa-tachometer nav-icon"></i> Dashboard
-                </router-link>
-              </li>
-              <li class="breadcrumb-item active">Bus Stops</li>
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
-      </div><!-- /.container-fluid -->
-    </div>
-
     <section class="content">      
       <show-alert :show.sync="showAlert" :type="alertType">               
        <strong> City </strong> has been <strong>{{ actionStatus }} </strong>
@@ -228,7 +207,6 @@
         </div>
       </div>      
     </section>
-  </div>      
 </template>
 <script>
 // import MyMap from '../../components/stops/Map'; 
@@ -545,7 +523,17 @@ export default {
           latitude: this.stop.latitude,
           longitude: this.stop.longitude,
         });
-        this.stop= {};           
+        this.updateMapStopsInfoByThe(this.stop);
+        this.emptyTheStop();                  
+      },
+      updateMapStopsInfoByThe(stop) {
+        let index = this.getIndexOfStopFrom(this.mapStops, stop);
+        if (index) {
+          this.mapStops[index] = stop;
+        }
+      },
+      emptyTheStop() {
+        this.stop= {};        
       },
       enableScroll() {      
         this.instanceOfScrollbar = OverlayScrollbars(document.getElementsByClassName("scrollbar"),

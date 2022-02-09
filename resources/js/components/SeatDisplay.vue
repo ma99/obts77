@@ -739,7 +739,7 @@
                             <span class="help text-danger" v-if="form.errors.has('email')" v-text="form.errors.get('email')"></span>
                             </div>                        
                             
-                            <button class="btn btn-primary btn-block rounded-pill" :disabled="!isValid || form.errors.any()">Continue</button>
+                            <button type="submit" class="btn btn-primary btn-block rounded-pill" :disabled="!isValid || form.errors.any()">Continue</button>
                           </form>
                         </div>
                       </div>
@@ -1626,6 +1626,7 @@
         async searchBus() {         
           // console.log(this.startDate);
           // this.steps.search.isDoing = true;
+          this.resetErrors();
           this.stepsAction('search', 'isDoing');
           this.busError = false;
           this.loading = true;
@@ -1662,6 +1663,11 @@
 
           })
           // console.log('sMMMM222222222')          
+        },
+        resetErrors() {
+          if (this.form.errors.any()) {
+            this.form.errors.clear();
+          }
         },
         async getBusData() {
           try {
@@ -1915,10 +1921,7 @@
                  vm.loading = false;
           });
         },        
-        // getCityIdBy(cityName) {
-        //   let city = this.availableCityList.find(city => city.name == cityName);
-        //   return city.id;
-        // },
+        
         pickupStopsBy(city) {          
           this.error.pickupPoint = false;
           this.loading = true;

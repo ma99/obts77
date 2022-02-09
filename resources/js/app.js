@@ -25,8 +25,8 @@ const app = createApp({});
 
 app.component('csrf-token', require('./components/CsrfToken.vue').default);
 app.component('example-component', require('./components/ExampleComponent.vue').default);
-app.component('example-event', require('./components/ExampleEvent.vue').default);
-app.component('App', require('./views/App').default);
+// app.component('example-event', require('./components/ExampleEvent.vue').default);
+// app.component('App', require('./views/App').default);
 app.component('Dashboard', require('./views/dashboard/Main').default);
 app.component('seat-display', require('./components/SeatDisplay.vue').default);
 // app.component('seat-layout', require('./components/SeatLayout.vue').default);
@@ -45,6 +45,7 @@ app.component('example-map', require('./components/ExampleMap.vue').default);
 app.component('header-icon', require('./components/HeaderIcon.vue').default);
 app.component('discount', require('./components/Discount.vue').default);
 app.component('image-upload', require('./components/ImageUpload.vue').default);
+app.component('login', require('./components/auth/Login.vue').default);
 
 app.use(router)
 	.use(store)

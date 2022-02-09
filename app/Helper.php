@@ -23,6 +23,11 @@ class Helper extends Model
          return $this->morphMany(Image::class, 'owner');
      } 
 
+    public function reviews()
+    {
+         return $this->morphMany(Review::class, 'owner');
+    }
+
     public function add($data)
     {
         return $this->create($data);

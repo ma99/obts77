@@ -1,62 +1,75 @@
 @extends('layouts.app')
+
 @section('content')
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            @if (session('status'))
-                {{-- <div class="alert alert-success" role="alert">
-                    {{ session('status') }}
-                </div> --}}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                  {{ session('status') }}                    
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-            @endif
-            <div class="card shadow">
-                {{-- <div class="card-header">Verify your phone</div> --}}
-                {{-- <img src="{{ asset('images/img/verify-phone.svg') }}" class="card-img-top" alt="..."> --}}
-                <div class="card-body">
-                    {{-- <h5 class="card-title">Thank You!</h5> --}}
-                    <h5 class="card-title ml-3">Phone Verification</h5>
-                    <p class="card-text ml-3">A verification code has been sent to your phone.<br>Please enter the code below.</p>
+  
+<div class="login-box">
+  <div class="login-logo">
+    <a href="{{ route('welcome') }}"><b>Admin</b>LTE</a>
+  </div>
+  @if (session('status'))              
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ session('status') }}                    
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  @endif
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">
+        {{ __('A verification code has been sent to your phone. Please enter the code below.') }}
+      </p>      
 
-                    {{-- <div class="d-flex justify-content-center"> --}}
-                    <div class="d-flex">
-                        <div class="col-6">
-                            <form method="POST" action="{{ route('password.verify.phone') }}">
-                                @csrf
-                                <div class="form-group">
-                                    
-                                    <input type="hidden" name="phone" value="{{ $phone }}">
+      <form method="POST" action="{{ route('password.verify.phone') }}">
+        @csrf
+        
+        <div class="form-group my-2">
+          <input type="hidden" name="phone" value="{{ $phone }}">
+          <input id="code" class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" type="text" placeholder="Type code here" required autofocus>
 
-                                    <input id="code" class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" name="code" type="text" placeholder="Type code here" required autofocus>
-                                    @if ($errors->has('code'))
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('code') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="form-group">
-                                    <button class="btn btn-primary-light btn-block border-rounded">Verify Phone</button>
-                                </div>
-                            </form>
-                            <form method="POST" action="{{ route('password.send.sms') }}">
-                                @csrf                                
-                                <div class="form-group">
-                                    <input type="hidden" name="phone" value="{{ $phone }}">
-                                    <button class="btn btn-warning-light btn-block border-rounded">Resend Code</button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-6 auth-verify">
-                           
-                        </div>
-                    </div>
-                </div>
+          @if ($errors->has('code'))
+            <span class="invalid-feedback" role="alert">
+                <strong>{{ $errors->first('code') }}</strong>
+            </span>
+          @endif
+        </div>
+
+        <div class="row mb-2 mt-3">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block">
+                {{ __('Verify phone') }}
+            </button>
+          </div>          
+        </div>
+      </form>            
+
+      <form method="POST" action="{{ route('password.send.sms') }}">
+        @csrf                                
+        <div class="form-group my-2">
+            <input type="hidden" name="phone" value="{{ $phone }}">
+            <div class="row ">
+              <div class="col-12">
+                <button type="submit" class="btn btn-warning btn-block">
+                    {{ __('Resend code') }}
+                </button>
+              </div>          
             </div>
         </div>
+      </form>
     </div>
+    <!-- /.login-card-body -->
+    <div class="card-footer">
+      <p class="mb-3">
+      </p>            
+    </div>
+  </div>
 </div>
+<!-- /.login-box -->
+@endsection
+
+@section('scripts')
+<script>
+    document.body.classList.add('hold-transition', 'login-page');
+  </script>
 @endsection

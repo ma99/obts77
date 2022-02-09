@@ -18,7 +18,7 @@ class UserController extends Controller
                 'id' => $user->id,
                 'phone' => $user->phone,
                 'name'  => $user->name,
-                'email' => $user->email ?? 'N/A', //$user->email ?? 'N/A',
+                'email' => $user->email, //$user->email ?? 'N/A',
                 'error' => '',
                 'role' => $user->getRole('name'), //$user->getRole() ?? 'N/A',
                 'roleDescription' => $user->getRole('description'),

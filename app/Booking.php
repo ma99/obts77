@@ -5,7 +5,6 @@ namespace App;
 use App\Events\SeatStatusUpdated;
 use App\Seat;
 use App\Trip;
-use App\booking;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
@@ -51,12 +50,8 @@ class Booking extends Model
     public function creator()
     {
         return $this->belongsTo(User::class);
-    }
+    }    
 
-    // public function schedule()
-    // {
-    //     return $this->belongsTo(Schedule::class);
-    // }
     public function getBookingsByBusScheduleIdOnDate($id, $date)
     {
         return $this->where('bus_schedule_id', $id)
@@ -66,11 +61,14 @@ class Booking extends Model
 
     public function seatBooking(User $user, array $attributes)
     {
-        $booking = $this->createBooking($user, $attributes);     
+        $trip = $this->trip->createIfNotExists($attributes);
 
-        $this->trip->createIfNotExistBy($booking->bus_schedule_id, $booking->city_route_id, $booking->date);
+        $booking = $this->createBooking($user, $attributes);
+
+        $this->setUserTripForReviewingPurpose($user, $trip->id);
 
         $attributes['booking_ref'] = $booking->id;
+
         return $attributes= $this->seat->createSeatsFor($booking, $attributes);
         //return $this->bookedSeatInfo($attributes);        
     }
@@ -78,10 +76,16 @@ class Booking extends Model
     public function createBooking(User $user, array $attributes)
     {
         unset($attributes['selected_seats']);     
+        unset($attributes['city_route_id']);     
         return $user->bookings()->create($attributes);
     }
 
-    public function cancel($booking)
+    public function setUserTripForReviewingPurpose(User $user, $tripId)
+    {
+        return $user->trips()->syncWithoutDetaching($tripId);
+    }
+
+    public function cancel(Booking $booking)
     {
        $busScheduleId = $booking->bus_schedule_id;
        // $busId = $booking->bus_id;               

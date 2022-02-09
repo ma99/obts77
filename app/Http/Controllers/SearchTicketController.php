@@ -175,7 +175,7 @@ class SearchTicketController extends Controller
 		
 		if ($bookings->count()) {
 			foreach ($bookings as $booking) {
-				//dd($booking->seats);				
+				if ($booking->seats->count() > 0) {				
 					foreach ($booking->seats as $seat) {
 						$arr_seats[] = [				
 							'seat_no' => $seat->seat_no,
@@ -184,9 +184,10 @@ class SearchTicketController extends Controller
 							'checked' => false,
 							'fare'	  => $busFare
 						];
-					}										
+					}									
+					return $arr_seats;
+				}	
 			}
-			return $arr_seats;
 		}
 		return $arr_seats = [];			 
     }

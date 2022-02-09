@@ -18,12 +18,13 @@ class CityRoute extends Pivot
     {
         // $collection;
         return $collection->sort(function ($a, $b) {
-
-            $dt1 = $this::findOrFail($a->city_route_id)->distance;
+            // dd($a);
+            // $dt1 = $this::findOrFail($a->city_route_id)->distance;
             
-            $dt2 = $this::findOrFail($b->city_route_id)->distance;
+            // $dt2 = $this::findOrFail($b->city_route_id)->distance;
 
-            return ($dt1 - $dt2);
+            // return ($dt1 - $dt2);
+            return ($a['distance'] - $b['distance']);
         })->values()->all();   
     }
 
@@ -42,18 +43,37 @@ class CityRoute extends Pivot
 
     public function getArrivalCityBy($cityRouteId, $departureCityId)
     {
-        $city = $this->findOrFail($cityRouteId);
+        $city = $this->infoBy($cityRouteId);       
 
         if ($departureCityId === $city->first_city_id) {
-             return [
-                'arrival_city_id' =>  $city->second_city_id,
-                'distance' =>  $city->distance,
-             ];
+             // return [
+             //    'arrival_city_id' =>  $city->second_city_id,
+             //    // 'distance' =>  $city->distance,
+             // ];
+            return $city->second_city_id;
          }
 
-         return [
-            'arrival_city_id' =>  $city->first_city_id,
-            'distance' =>  $city->distance,
-         ]; 
+         // return [
+         //    // 'departure_city_id' =>  $departureCityId,
+         //    'arrival_city_id' =>  $city->first_city_id,
+         //    'distance' =>  $city->distance,
+         // ]; 
+
+         return $city->first_city_id;
+    }
+
+    public function areCityRouteCitiesSameAsRouteCities($cityRoute, $route)
+    {
+        return (
+            $route->first_city === $cityRoute['first_city'] || 
+            $route->first_city === $cityRoute['second_city'] ) &&
+            (
+            $route->second_city === $cityRoute['first_city'] || 
+            $route->second_city === $cityRoute['second_city'] );
+    }
+
+    public function infoBy($id)
+    {
+        return $this->findOrFail($id);
     }
 }
